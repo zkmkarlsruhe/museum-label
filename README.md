@@ -5,6 +5,7 @@ There are a lot of use cases for such displays.
 ### Use Cases
 - smart, multi-lingual exhibit information: make exhibit information accesible in most common languages.
 - general information: inform about upcoming events or display a heatmap of the current visitor flow
+- simple text: make information more available by translating them into simple text
 
 ### Low Level Decisions
 - Those Peripheral Displays (PD) require a wireless, low-bandwidth, secure communication protocol.
