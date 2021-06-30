@@ -28,4 +28,4 @@ sudo cp ./pi-files/boot-config.txt /boot/config.txt
 
 
 #enable xautostart
-echo "[[ -z \$DISPLAY && \$XDG_VTNR -eq 1 ]] && startx -- " >> /home/museumstechnik/.bash_profile
+echo "[[ -z \$DISPLAY && \$XDG_VTNR -eq 1 ]] && startx -- " >> /home/$USER/.bash_profile

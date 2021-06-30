@@ -2,14 +2,14 @@
 Description=Museumstechnik 7 Zoll Display Client
 
 [Service]
-ExecStart=/home/museumstechnik/display-client/index.js
+ExecStart=/home/hertzpi/display-client/index.js
 Restart=always
-User=museumstechnik
+User=hertzpi
 # Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
 Group=nogroup
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
-WorkingDirectory=/home/museumstechnik/display-client/
+WorkingDirectory=/home/hertzpi/display-client/
 
 [Install]
 WantedBy=multi-user.target
