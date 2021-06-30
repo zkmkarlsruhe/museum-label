@@ -1,3 +1,25 @@
+# 7 Zoll Display #
+
+### PI Set-up ###
+Prepare SD Card:
+* sudo dd if=raspbian-stretch-lite.img of=/dev/mmcblk0
+
+Prepare PI:
+* sudo raspi-config
+    * change default password
+    * change keyboard layout
+    * enable ssh
+* sudo apt update & sudo apt upgrade
+* sudo apt install curl git
+* sudo adduser hertzpi
+* sudo adduser hertzpi sudo
+* change to user hertzpi
+* git clone #REPO#
+* sudo raspi-config -> Boot Options -> B1 -> B2
+* cd display-client
+* sudo pi-setup.sh
+
+
 # Digitalized Museum Information 
 With this prototype we want to digitalize the information flow for the visitors using simple displays.
 There are a lot of use cases for such displays.
@@ -16,7 +38,3 @@ There are a lot of use cases for such displays.
 #### People we miss out on
 - people with seeing disabilities
 - people who can not read
-
-
-### Other 
-Christian has already started working on this. Get the hardware and make some basic tests.

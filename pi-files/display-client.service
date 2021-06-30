@@ -1,0 +1,15 @@
+[Unit]
+Description=Museumstechnik 7 Zoll Display Client
+
+[Service]
+ExecStart=/home/museumstechnik/display-client/index.js
+Restart=always
+User=museumstechnik
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/museumstechnik/display-client/
+
+[Install]
+WantedBy=multi-user.target
