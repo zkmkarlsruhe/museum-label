@@ -1,26 +1,58 @@
 <html>
+
 <head>
     <title>OSC relay client</title>
 
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="title" content="">
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="author" content="">
-
+    <script src="js/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script src="js/reconnecting-websocket.min.js" type="text/javascript"></script>
     <script src="js/osc-browser.min.js" type="text/javascript"></script>
     <script src="js/script.js" type="text/javascript"></script>
+    <script src="js/loadJson.js" type="text/javascript"></script>
 
     <link href='css/style.css' rel='stylesheet' type='text/css'>
     <style>
-        #detected {display: none;}
+        #detected {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
     <main>
         <p>Language: <span id="langid">-1</span> <span id="langname">?</span></p>
         <p id="detected">Listening...</p>
     </main>
+    <div>
+        <div class="meta-info">
+            <p id=artist_key> </p>
+            <p id=artist> </p>
+        </div>
+        <div class="meta-info">
+            <p id=title_key> </p>
+            <p id=title> </p>
+        </div>
+        <div class="meta-info">
+            <p id=material_key> </p>
+            <p id=material> </p>
+        </div>
+        <div class="meta-info">
+            <p id=format_key> </p>
+            <p id=format> </p>
+        </div>
+        <div class="meta-info">
+            <p id=year_key> </p>
+            <p id=year> </p>
+        </div>
+        <div class="meta-info">
+            <p id=description_key> </p>
+            <p id=description> </p>
+        </div>
+    </div>
 </body>
+
 </html>
