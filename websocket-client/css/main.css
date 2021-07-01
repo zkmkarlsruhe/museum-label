@@ -1,0 +1,50 @@
+html {
+    font-family: "UniversNext", "Helvetica", sans-serif;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	justify-content: space-between;
+}
+
+
+.content-div {
+	max-width: 780px;
+	margin: 0 auto;
+	text-align: justify;
+}
+
+.meta-info {
+    display: block;
+}
+
+.meta-info p { display: inline }
+.meta-info .key {
+    color: brown;
+    font-size: 3em;}
+.meta-info .value {
+    color: black; 
+    font-size: 2em; }
+
+header{
+	display: block;
+	width: 100%;
+	background-color: white;
+	color: black;
+}
+
+#topline {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#main-div {
+}
+
+footer {
+	width: 100%;
+}

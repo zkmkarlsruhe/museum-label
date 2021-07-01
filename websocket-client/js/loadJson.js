@@ -1,4 +1,12 @@
+let lang_id_map = new Map([
+	[0, 'noise'],
+	[1, 'en'],
+	[2, 'fr'],
+	[3, 'de'],
+	[4, 'en'],])
 
+let lang_id_array = ['noise','en','fr','de','en']
+	
 function setKeyJson(json){
     const pad = ": ";
 	document.getElementById("artist_key").innerHTML = json.artist + pad;
@@ -18,7 +26,12 @@ function setValueJson(json){
 	document.getElementById("description").innerHTML = json.description;
 }
 
-function loadAndSet(key_url, val_url) {
+function loadAndSet(lang_id) {
+
+	lang = lang_id_array[lang_id]
+	key_url = "assets/meta-text/" + lang + ".json" 
+	val_url = "assets/database/example_0/" + lang + ".json"
+
 	$.getJSON(key_url, function(json) {
 		setKeyJson(json);
 	});
@@ -26,11 +39,7 @@ function loadAndSet(key_url, val_url) {
 		setValueJson(json);
 	});
 }
+ 
+lang_id = 3
 
-test_key_url = "assets/meta-text/de.json" 
-test_val_url = "assets/database/example_0/de.json" 
-
-// test_key_url = "assets/meta-text/en.json" 
-// test_val_url = "assets/database/example_0/en.json" 
-
-loadAndSet(test_key_url, test_val_url)
+loadAndSet(lang_id)
