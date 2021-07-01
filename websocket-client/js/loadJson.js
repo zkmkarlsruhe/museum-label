@@ -14,7 +14,8 @@ function setKeyJson(json){
 	document.getElementById("year_key").innerHTML = json.year + pad;
 	document.getElementById("format_key").innerHTML = json.format + pad;
 	document.getElementById("material_key").innerHTML = json.material + pad;
-	document.getElementById("description_key").innerHTML = json.description + pad;
+	//document.getElementById("description_key").innerHTML = json.description + pad;
+	document.getElementById("description_key").innerHTML = "";
 }
 
 function setValueJson(json){

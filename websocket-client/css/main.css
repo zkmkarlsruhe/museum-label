@@ -14,20 +14,36 @@ body {
 .content-div {
 	max-width: 780px;
 	margin: 0 auto;
-	text-align: justify;
 }
 
 .meta-info {
-    display: block;
+    display: flex;
+    align-items: self-start;
+    justify-content: space-between;
 }
 
-.meta-info p { display: inline }
+.meta-info p {
+    display: inline;
+    margin: 0;
+}
+
 .meta-info .key {
     color: brown;
-    font-size: 3em;}
+    font-size: 22px;
+}
+
 .meta-info .value {
     color: black; 
-    font-size: 2em; }
+    font-size: 34px;
+    text-align: right;
+}
+
+.meta-info .description-value {
+	display: flex;
+    color: black; 
+    font-size: 28px;
+    text-align: justify;
+}
 
 header{
 	display: block;
