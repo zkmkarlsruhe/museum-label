@@ -5,7 +5,7 @@ let lang_id_map = new Map([
 	[3, 'de'],
 	[4, 'en'],])
 
-let lang_id_array = ['noise','en','fr','de','en']
+let lang_id_array = ['noise','en','fr','de','es']
 	
 function setKeyJson(json){
     const pad = ": ";
