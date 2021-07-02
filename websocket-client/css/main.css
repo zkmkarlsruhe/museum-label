@@ -3,13 +3,8 @@ html {
 }
 
 body {
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	justify-content: space-between;
+	margin: 4px;
 }
-
 
 .content-div {
 	max-width: 780px;
@@ -24,21 +19,27 @@ body {
 
 .meta-info p {
     display: inline;
-    margin: 0;
+    margin: 4px 0px;
 }
 
-.meta-info .key {
-    color: brown;
-    font-size: 22px;
-}
 
 .meta-info .value {
     color: black; 
-    font-size: 34px;
+    font-size: 24px;
+    text-align: right;
+}
+.meta-info #artist {
+    color: black; 
+    font-size: 36px;
+    text-align: right;
+}
+.meta-info #title {
+    color: black; 
+    font-size: 40px;
     text-align: right;
 }
 
-.meta-info .description-value {
+.description .value {
 	display: flex;
     color: black; 
     font-size: 28px;

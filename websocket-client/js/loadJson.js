@@ -14,16 +14,15 @@ function setKeyJson(json){
 	document.getElementById("year_key").innerHTML = json.year + pad;
 	document.getElementById("format_key").innerHTML = json.format + pad;
 	document.getElementById("material_key").innerHTML = json.material + pad;
-	//document.getElementById("description_key").innerHTML = json.description + pad;
-	document.getElementById("description_key").innerHTML = "";
+	document.getElementById("description_key").innerHTML = json.description + pad;
 }
 
 function setValueJson(json){
 	document.getElementById("artist").innerHTML = json.artist;
-	document.getElementById("title").innerHTML = json.title;
-	document.getElementById("year").innerHTML = json.year;
-	document.getElementById("format").innerHTML = json.format;
-	document.getElementById("material").innerHTML = json.material;
+	document.getElementById("title").innerHTML = json.title + " (" + json.year + ")";
+	// document.getElementById("year").innerHTML = json.year;
+	// document.getElementById("format").innerHTML = json.format;
+	document.getElementById("material").innerHTML = json.material + ", " + json.format + "";
 	document.getElementById("description").innerHTML = json.description;
 }
 
@@ -34,7 +33,7 @@ function loadAndSet(lang_id) {
 	val_url = "assets/database/example_0/" + lang + ".json"
 
 	$.getJSON(key_url, function(json) {
-		setKeyJson(json);
+		// setKeyJson(json);
 	});
 	$.getJSON(val_url, function(json) {
 		setValueJson(json);
