@@ -31,7 +31,8 @@ function loadAndSet(lang_id) {
 
 	lang = lang_id_array[lang_id]
 	val_url = "assets/database/example_0/" + lang + ".json"
-
+	console.log(lang_id);
+	console.log(val_url);
 	$.getJSON(val_url, function(json) {
 		setValueJson(json);
 	});
