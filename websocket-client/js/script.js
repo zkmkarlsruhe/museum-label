@@ -11,15 +11,15 @@ var oscPort = new osc.WebSocketPort({
 
 oscPort.on("message", function (message) {
 	console.log("received osc: ", message)
-	if(message.address == "/detecting") {
-		if(message.args[0].value == 0) {
+	if (message.address == "/detecting") {
+		if (message.args[0].value == 0) {
 			document.getElementById("detected").style.display = "none"
 		}
 		else {
 			document.getElementById("detected").style.display = "inline"
 		}
 	}
-	else if(message.address == "/lang") {
+	else if (message.address == "/lang") {
 		loadAndSet(message.args[0].value)
 	}
 })
