@@ -30,12 +30,8 @@ function setValueJson(json){
 function loadAndSet(lang_id) {
 
 	lang = lang_id_array[lang_id]
-	key_url = "assets/meta-text/" + lang + ".json" 
 	val_url = "assets/database/example_0/" + lang + ".json"
 
-	$.getJSON(key_url, function(json) {
-		// setKeyJson(json);
-	});
 	$.getJSON(val_url, function(json) {
 		setValueJson(json);
 	});
