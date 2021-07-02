@@ -37,7 +37,5 @@ function loadAndSet(lang_id) {
 		setValueJson(json);
 	});
 }
- 
-lang_id = 3
 
-loadAndSet(lang_id)
+loadAndSet(2)
