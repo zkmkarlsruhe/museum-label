@@ -5,7 +5,7 @@
 // OSC
 
 var oscPort = new osc.WebSocketPort({
-	url: "ws://localhost:8081",
+	url: "ws://10.10.0.159:8081",
 	metadata: true
 })
 
@@ -20,8 +20,7 @@ oscPort.on("message", function (message) {
 		}
 	}
 	else if(message.address == "/lang") {
-		document.getElementById("langid").innerHTML = message.args[0].value
-		document.getElementById("langname").innerHTML = message.args[1].value
+		loadAndSet(message.args[0].value)
 	}
 })
 
