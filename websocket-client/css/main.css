@@ -3,7 +3,8 @@ html {
 }
 
 body {
-	margin: 4px;
+    margin: 4px;
+    overflow: hidden;
 }
 
 .content-div {
