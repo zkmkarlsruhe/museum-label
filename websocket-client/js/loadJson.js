@@ -18,12 +18,12 @@ function setKeyJson(json){
 }
 
 function setValueJson(json){
-	document.getElementById("artist").innerHTML = json.artist;
-	document.getElementById("title").innerHTML = json.title + " (" + json.year + ")";
+	document.getElementById("artist").innerHTML = json.artist ;
+	document.getElementById("title").innerHTML = "> " + json.title;
 	// document.getElementById("year").innerHTML = json.year;
 	// document.getElementById("format").innerHTML = json.format;
-	// document.getElementById("material").innerHTML = json.material + ", " + json.format + "";
-	document.getElementById("material").innerHTML = json.material;
+	document.getElementById("material").innerHTML = json.material + ", " + json.format + ", " + json.year;
+	// document.getElementById("material").innerHTML = json.material+ " (" + json.year + ")";
 	document.getElementById("description").innerHTML = json.description;
 }
 

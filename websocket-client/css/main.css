@@ -10,16 +10,18 @@ body {
 .content-div {
 	max-width: 780px;
 	margin: 0 auto;
+    padding: 20px;
 }
 
 .meta-info {
     display: flex;
     align-items: self-start;
+    margin: 4px 0px;
 }
 
 .meta-info p {
     display: inline;
-    margin: 4px 0px;
+    margin: 0;
 }
 
 
@@ -29,37 +31,17 @@ body {
 }
 .meta-info #artist {
     color: black; 
-    font-size: 36px;
+    font-size: 32px;
 }
 .meta-info #title {
     color: black; 
     font-size: 40px;
+    font-weight: bold
 }
 
 .description .value {
-    padding: 0px 10px 0px 25px;
+    padding: 0;
 	display: flex;
     color: black; 
     font-size: 28px;
-    text-align: justify;
-}
-
-header{
-	display: block;
-	width: 100%;
-	background-color: white;
-	color: black;
-}
-
-#topline {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-#main-div {
-}
-
-footer {
-	width: 100%;
 }
