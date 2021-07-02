@@ -14,7 +14,6 @@ body {
 .meta-info {
     display: flex;
     align-items: self-start;
-    justify-content: space-between;
 }
 
 .meta-info p {
@@ -26,20 +25,18 @@ body {
 .meta-info .value {
     color: black; 
     font-size: 24px;
-    text-align: right;
 }
 .meta-info #artist {
     color: black; 
     font-size: 36px;
-    text-align: right;
 }
 .meta-info #title {
     color: black; 
     font-size: 40px;
-    text-align: right;
 }
 
 .description .value {
+    padding: 0px 10px 0px 25px;
 	display: flex;
     color: black; 
     font-size: 28px;
