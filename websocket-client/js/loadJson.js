@@ -22,7 +22,8 @@ function setValueJson(json){
 	document.getElementById("title").innerHTML = json.title + " (" + json.year + ")";
 	// document.getElementById("year").innerHTML = json.year;
 	// document.getElementById("format").innerHTML = json.format;
-	document.getElementById("material").innerHTML = json.material + ", " + json.format + "";
+	// document.getElementById("material").innerHTML = json.material + ", " + json.format + "";
+	document.getElementById("material").innerHTML = json.material;
 	document.getElementById("description").innerHTML = json.description;
 }
 
