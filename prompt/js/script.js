@@ -1,6 +1,7 @@
 import TEXT from "./text.js"
 
-debug = true
+let debug = true
+let currentState = "wait"
 
 // media
 let video = {
@@ -32,7 +33,7 @@ var oscPort = new osc.WebSocketPort({
 })
 
 oscPort.on("message", function (message) {
-    debugPrint("received osc: ", message)
+    debugPrint("received osc: " + message)
     if(message.address == "/state") {
       if(message.args.length == 0 || message.args[0].type != "s") {return}
       let state = message.args[0].value
@@ -51,15 +52,15 @@ oscPort.on("message", function (message) {
           fadeInId(text.id)
         })
       }
-      comm.state = state
+      currentState = state
     }
     else if(message.address == "/lang") {
       if(message.args.length == 0 ||
         (message.args[0].type != "f" &&  message.args[0].type != "i")) {return}
-      if(comm.state != "success") {return}
+      if(currentState != "success") {return}
       let index = message.args[0].value
       fadeOutId(text.id, () => {
-        textSetState(comm.state, index)
+        textSetState("success", index)
         fadeInId(text.id)
       })
     }
