@@ -1,0 +1,51 @@
+#N canvas 829 89 526 389 12;
+#X obj 35 103 netsend -u -b;
+#X msg 59 63 disconnect;
+#X obj 35 140 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 289 103 netreceive -u -b;
+#X obj 289 167 print;
+#X msg 289 29 listen 6006;
+#X msg 310 63 listen 0;
+#X obj 289 136 oscparse;
+#X obj 175 240 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 175 347 s \$0-oscout;
+#X obj 340 275 oscformat /lang;
+#X msg 340 230 list 1 en;
+#X msg 237 230 list 0 noise;
+#X msg 426 230 list 2 de;
+#X msg 35 29 connect localhost 5005;
+#X obj 149 64 r \$0-oscout;
+#X obj 94 200 oscformat /proximity;
+#X obj 97 172 hsl 100 15 0 1 0 0 empty empty 0-1 -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 175 275 oscformat /detecting;
+#X obj 20 282 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 49 6 connect localhost 9898;
+#X obj 20 317 oscformat /autostop;
+#X obj 24 238 oscformat /listen;
+#X obj 24 213 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 3 0 7 0;
+#X connect 5 0 3 0;
+#X connect 6 0 3 0;
+#X connect 7 0 4 0;
+#X connect 8 0 18 0;
+#X connect 10 0 9 0;
+#X connect 11 0 10 0;
+#X connect 12 0 10 0;
+#X connect 13 0 10 0;
+#X connect 14 0 0 0;
+#X connect 15 0 0 0;
+#X connect 16 0 9 0;
+#X connect 17 0 16 0;
+#X connect 18 0 9 0;
+#X connect 19 0 21 0;
+#X connect 20 0 0 0;
+#X connect 21 0 9 0;
+#X connect 22 0 9 0;
+#X connect 23 0 22 0;
