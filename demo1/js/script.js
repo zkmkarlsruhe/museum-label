@@ -27,7 +27,6 @@ oscPort.on("message", function (message) {
    	}
    	else if(message.address == "/lang") {
    		document.getElementById("greeting").innerHTML = greeting[message.args[0].value]
-        document.getElementById("flag").innerHTML = flag[message.args[0].value]
    	}
 })
 

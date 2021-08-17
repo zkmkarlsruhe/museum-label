@@ -5,7 +5,7 @@
 // OSC
 
 var oscPort = new osc.WebSocketPort({
-	url: "ws://10.10.0.159:8081",
+	url: "ws://localhost:8081",
 	metadata: true
 })
 
