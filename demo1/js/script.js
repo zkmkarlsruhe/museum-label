@@ -1,6 +1,6 @@
 // ref: https://github.com/colinbdclark/osc.js/
 
-let greeting = ["...", "Hello", "Bonjour", "Guten Tag", "Hola"]
+let greeting = ["...", "你好", "Hello", "Bonjour", "Guten Tag", "Ciao", "Здравствуйте", "Hola"]
 
 // use localhost when only connecting internally
 let host = "localhost"
