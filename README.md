@@ -1,7 +1,7 @@
 Digitalized Museum Information
 ==============================
 
-With this prototype we want to digitalize the information flow for the visitors using simple displays.
+With this prototype we want to digitize the information flow for the visitors using simple displays.
 There are a lot of use cases for such displays.
 
 Use Cases
@@ -54,24 +54,17 @@ proximity -----------OSC-------^
 Quick startup (on macOS):
 
 ~~~
-cd LanguageIdentifier
-./bin/LanguageIdentifier.app/Contents/MacOS/LanguageIdentifier --nolisten --autostop --senders localhost:5005 &
-
 cd ../digital-displays
 loaf proximity &
 
-cd controller
-source venv-controller/bin/activate
-./controller.py
-
-cd ../baton
-source venv-baton/bin/activate
-./baton.py
+./run.sh
 ~~~
 
 Open webclient index.html files in a web browser.
 
 The proximity loaf sketch is a proximity sensor simualtor which sends proximity sensor values (normalized 0-1) to the controller server.
+
+Once finished, quit the LanguageIdentifier app to shutdown.
 
 ### 7 Zoll Display PI Set-up
 
