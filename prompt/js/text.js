@@ -1,9 +1,17 @@
 const text = {
   lang: {
-    keys: ["noise", "en", "fr", "de", "es"],
-    names: ["noise", "English", "Français", "Deutsch", "Español"]
+    keys: ["noise", "zh", "en", "fr", "de", "it", "ru", "es"],
+    names: ["noise", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "русский", "Español"]
   },
   noise: {},
+  zh: {
+    wait: "",
+    listen: "请用您的母语发言。",
+    detect: "我在听。请继续前进。",
+    success: "我想我听说... <lang>",
+    fail: "我无法理解你。",
+    timeout: "我无法识别你的语言。因此，我向你展示英文文本标签。"
+  },
   en: {
     wait: "",
     listen: "Please speak in your native language.",
@@ -27,6 +35,22 @@ const text = {
     success: "Ich glaube, ich habe... <lang> gehört",
     fail: "Ich kann Sie nicht verstehen.",
     timeout: "Ich konnte ihre Sprache nicht erkennen. Daher zeige ich ihnen das englische Text Label."
+  },
+  it: {
+    wait: "",
+    listen: "Per favore, parlate nella vostra lingua madre.",
+    detect: "Sto ascoltando. Per favore, continua.",
+    success: "Credo di aver sentito... <lang>",
+    fail: "Non riesco a capirti.",
+    timeout: "Non ho potuto riconoscere la vostra lingua. Pertanto, vi mostro l'etichetta del testo inglese."
+  },
+  ru: {
+    wait: "",
+    listen: "Пожалуйста, говорите на своем родном языке.",
+    detect: "Я слушаю. Пожалуйста, продолжайте.",
+    success: "Кажется, я слышал... <lang>",
+    fail: "Я не могу тебя понять.",
+    timeout: "Я не смог распознать ваш язык. Поэтому я показываю вам этикетку с английским текстом."
   },
   es: {
     wait: "",
