@@ -13,7 +13,7 @@ BSD Simplified License.
 Description
 -----------
 
-The LID display logic controller acts as an OSC (Open Sound Control) server which implements a state machien to control interaction.  
+The LID display logic controller acts as an OSC (Open Sound Control) server which implements a state machine to control interaction.
 
 Dependencies
 ------------

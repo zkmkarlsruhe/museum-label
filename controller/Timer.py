@@ -47,7 +47,7 @@ class Timer:
     def start(self):
         if self._timer:
             self._timer.cancel()
-        self._timer = Timer(self.timeout, self._timeout)
+        self._timer = SimpleTimer(self.timeout, self._timeout)
         if self.verbose:
             print(self.name + ": started timer")
 
