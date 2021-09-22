@@ -12,28 +12,50 @@
 
 import asyncio
 import signal
+import argparse
 
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 
 from Logic import Logic
 
-##### variables
+##### parser
 
-# general interaction activity timeout in s
-activity_timeout = 30
+parser = argparse.ArgumentParser(description="language identification display logic controller")
 
-# listen timeout in s
-listen_timeout = 30
+parser.add_argument(
+    "--recvaddr", action="store", dest="recvaddr",
+    default="127.0.0.1", help="osc receive addr, default: 127.0.0.1")
+parser.add_argument(
+    "--recvport", action="store", dest="recvport",
+    default=5005, type=int, help="osc receive port, default: 5005")
 
-# print verbose event info?
-verbose = True
+parser.add_argument(
+    "--lidaddr", action="store", dest="lidaddr",
+    default="127.0.0.1", help="LanguageIdentifier app osc addr, default: 127.0.0.1")
+parser.add_argument(
+    "--lidport", action="store", dest="lidport",
+    default=9898, type=int, help="LanguageIdentifier app osc port, default: 9898")
 
-# osc receiver
-local_addr = ("127.0.0.1", 5005)
+parser.add_argument(
+    "--wsaddr", action="store", dest="wsaddr",
+    default="127.0.0.1", help="baton websocket relay osc addr, default: 127.0.0.1")
+parser.add_argument(
+    "--wsport", action="store", dest="wsport",
+    default=9999, type=int, help="baton websocket relay osc port, default: 9999")
 
-# osc clients
-langident_addr=("127.0.0.1", 9898)
-websocket_addr=("127.0.0.1", 9999)
+parser.add_argument(
+    "-a,--activity-timeout", action="store", dest="atimeout",
+    default=30, type=int, help="general interaction activity timeout in s, default: 30")
+
+parser.add_argument(
+    "-l,--listen-timeout", action="store", dest="ltimeout",
+    default=30, type=int, help="listen timeout in s, default: 30")
+
+parser.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+    help="enable verbose printing")
+
+# parse
+args = parser.parse_args()
 
 ##### signal
 
@@ -44,15 +66,22 @@ def sigint_handler():
 
 ##### main
 
+# signal handling
 loop = asyncio.get_event_loop()
 loop.add_signal_handler(signal.SIGINT, sigint_handler)
 
-logic = Logic(langident_addr=langident_addr, websocket_addr=websocket_addr,
-              listen_timeout=listen_timeout, activity_timeout=activity_timeout,
-              verbose=verbose)
+# logic instance
+logic = Logic(langident_addr=(args.lidaddr, args.lidport),
+              websocket_addr=(args.wsaddr, args.wsport),
+              listen_timeout=args.ltimeout, activity_timeout=args.atimeout,
+              verbose=args.verbose)
 
-server = AsyncIOOSCUDPServer(local_addr, logic.dispatcher, loop)
+# start server
+server = AsyncIOOSCUDPServer((args.recvaddr, args.recvport), logic.dispatcher, loop)
 loop.run_until_complete(server.create_serve_endpoint())
+print(f"recv <- osc {args.recvaddr}:{args.recvport}")
+print(f"send lid -> osc {args.lidaddr}:{args.lidport}")
+print(f"send ws  -> osc {args.wsaddr}:{args.wsport}")
 
 try:
     loop.run_forever()

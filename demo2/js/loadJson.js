@@ -1,4 +1,4 @@
-let lang_id_array = ['noise', 'en', 'fr', 'de', 'es'];
+let lang_id_array = ['noise', 'zh', 'en', 'fr', 'de', 'it', 'ru', 'es'];
 
 function setValueJson(json) {
 	$('#artist').fadeOut(500, function () {
@@ -23,4 +23,4 @@ function loadAndSet(lang_id) {
 	});
 }
 
-loadAndSet(1)
+loadAndSet(4) // de

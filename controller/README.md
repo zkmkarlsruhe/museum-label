@@ -13,7 +13,7 @@ BSD Simplified License.
 Description
 -----------
 
-The LID display logic controller acts as an OSC (Open Sound Control) server which implements a state machien to control interaction.  
+The LID display logic controller acts as an OSC (Open Sound Control) server which implements a state machine to control interaction.
 
 Dependencies
 ------------
@@ -30,33 +30,34 @@ Install Python 3, if not already available. For instance, on macOS using [Homebr
 brew install python3
 ```
 
-Create a virtual environment for the script's dependencies and activate it:
+Create a virtual environment and install the script's dependencies:
 
 ```shell
-python3 -m venv venv-controller
-source venv-controller/bin/activate
-```
-
-Install the dependent library via pip:
-
-```shell
-pip3 install python-osc
+make
 ```
 
 Running
 -------
 
-Make sure to activate the virtual environment before the first run in a new commandline session:
+Next, start the server on the commandline via the virtual environment wrapper script:
 
-    source venv-controller/bin/activate
-
-Next, start the controller on the commandline via:
-
-    ./controller.py
+    ./controller
 
 It can simply sit in the background and automatically handles OSC communication with clients.
 
 To stop the controller, use CTRL+C to issue an interrupt signal.
+
+### Calling Python script directly
+
+The Python script can be called directly without the wrapper script, but requires manually enabling or disabling the virtual environment:
+
+Aactivate the virtual environment before the first run in a new commandline session:
+
+    source venv-controller/bin/activate
+
+Use:
+
+    ./controller.py
 
 When finished, deactivate the virtual environment with:
 
