@@ -6,7 +6,7 @@
 
 ### Basic Raspberry PI OS Setup
 
-1. download the image from [the original site](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)
+1. download the image from [the original site](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit). Did not test the Lite image yet, but may work very well.
 
 2. install the image
       - Option 1: get raspberry pi imager
@@ -20,7 +20,6 @@
       - Insert SD CARD
       - power on
       - follow instructions (keyboard, WLAN, updates, ...)
-      - reboot and check again
 
 ### Custom PI OS
 
@@ -39,7 +38,8 @@
       choose: 1 -> S5 -> B1 or B2
 3. repository
       ```shell
-      git clone #REPO#
+      git clone https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/digital-displays.git
       cd display-client/setup
       sudo pi-setup.sh
       ```
+4. reboot
