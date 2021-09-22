@@ -63,30 +63,3 @@ loaf proximity &
 Open webclient index.html files in a web browser.
 
 The proximity loaf sketch is a proximity sensor simualtor which sends proximity sensor values (normalized 0-1) to the controller server.
-<<<<<<< HEAD
-=======
-
-Once finished, quit the LanguageIdentifier app to shutdown.
-
-### 7 Zoll Display PI Set-up
-
-Prepare SD Card:
-
-* sudo dd if=raspbian-stretch-lite.img of=/dev/mmcblk0
-
-Prepare PI:
-
-* sudo raspi-config
-    * change default password
-    * change keyboard layout
-    * enable ssh
-* sudo apt update & sudo apt upgrade
-* sudo apt install curl git
-* sudo adduser hertzpi
-* sudo adduser hertzpi sudo
-* change to user hertzpi
-* git clone #REPO#
-* sudo raspi-config -> Boot Options -> B1 -> B2
-* cd display-client
-* sudo pi-setup.sh
->>>>>>> 749cb615c67d35972e49ff17c7a154a8491d0c39
