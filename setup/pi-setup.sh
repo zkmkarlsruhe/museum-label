@@ -1,5 +1,4 @@
 #! /bin/bash
-
 USER=hertzpi
 
 # give $USER the power
@@ -25,6 +24,7 @@ sudo apt-get install chromium-browser htop -y
 
 # copy files
 sudo cp ./pi-files/openbox.conf /etc/xdg/openbox/autostart
+sudo cp ./pi-files/sudoers.conf /etc/sudoers.d/10-display-client
 sudo cp ./pi-files/boot-config.txt /boot/config.txt
 
 # enable xautostart
