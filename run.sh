@@ -21,10 +21,11 @@ BATON=../baton/baton
 CTLR=./controller/controller
 LID=../LanguageIdentifier/lid
 
-INPUTDEV=0
-INPUTCHAN=1
+# LanguageIdentifier specifics
 CONFIDENCE=0.5
 THRESHOLD=10
+INPUTDEV=0
+INPUTCHAN=1
 
 # platform specifics
 case "$(uname -s)" in
@@ -68,18 +69,18 @@ function getpid() {
 
 ##### parse command line arguments
 
-HELP="USAGE: run.sh [OPTIONS]
+HELP="USAGE: $(basename $0) [OPTIONS]
 
   run to start basic localhost system for testing,
   quit LanguageIdentifier app to shutdown everything
 
 Options:
   -h,--help              display this help message
-  -c,--confidence FLOAT  langid min confidence 0 - 1, default 0.75
-  -t,--threshold INT     langid volume threshold 0 - 100, default 25
+  -c,--confidence FLOAT  langid min confidence 0 - 1, default $CONFIDENCE
+  -t,--threshold INT     langid volume threshold 0 - 100, default $THRESHOLD
   -l,--list              list audio input devices and exit
-  --inputdev INT         audio input device number
-  --inputchan INT        audio input device channel, default 1
+  --inputdev INT         audio input device number, default $INPUTDEV
+  --inputchan INT        audio input device channel, default $INPUTCHAN
 "
 
 while [ "$1" != "" ] ; do
