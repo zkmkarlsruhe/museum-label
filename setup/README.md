@@ -43,3 +43,10 @@
       sudo pi-setup.sh
       ```
 4. reboot
+
+
+#### Saving the image
+```shell
+sudo fdisk -l
+sudo dd bs=4M if=/dev/SOMEdiskPARTION | gzip > baseRPI-`date +%d%m%y`.img.gz
+```

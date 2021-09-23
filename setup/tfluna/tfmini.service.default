@@ -1,0 +1,13 @@
+[Unit]
+Description=TF Mini Systemd Service Unit
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/bin/python /home/hertzpi/tfmini/mini.py -p 54322
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
