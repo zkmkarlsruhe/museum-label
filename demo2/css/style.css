@@ -9,6 +9,10 @@ body {
 	padding: 24px;
 }
 
+#label {
+  opacity: 0%;
+}
+
 .meta-info {
 	margin: 4px 0px;
 }
@@ -34,4 +38,11 @@ body {
 
 .description{
 	font-size: 28px;
+}
+
+/* ----- animation ----- */
+
+.transition-500ms {
+  transition: 500ms;
+  transition-timing-function: ease-in-out;
 }
