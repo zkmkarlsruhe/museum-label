@@ -1,7 +1,7 @@
 const text = {
   lang: {
     keys: ["noise", "zh", "en", "fr", "de", "it", "ru", "es"],
-    names: ["noise", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "русский", "Español"]
+    names: ["noise", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "Pусский", "Español"]
   },
   noise: {},
   zh: {
