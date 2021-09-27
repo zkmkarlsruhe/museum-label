@@ -24,12 +24,12 @@
 #X msg 181 298 success;
 #X msg 247 298 fail;
 #X msg 290 298 timeout;
-#X symbolatom 169 57 20 0 0 0 - - -;
-#X msg 87 57 localhost;
+#X symbolatom 220 57 20 0 0 0 - - -;
 #X msg 87 102 connect \$1 9999;
 #X text 121 236 state message;
 #X text 36 422 lang message;
 #X text 15 9 generate LID system OSC messages for testing;
+#X msg 87 57 symbol localhost;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 4 0 0 0;
@@ -50,6 +50,6 @@
 #X connect 21 0 18 0;
 #X connect 22 0 18 0;
 #X connect 23 0 18 0;
-#X connect 24 0 26 0;
-#X connect 25 0 26 0;
-#X connect 26 0 0 0;
+#X connect 24 0 25 0;
+#X connect 25 0 0 0;
+#X connect 29 0 25 0;
