@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=pi
-ExecStart=/usr/bin/python /home/hertzpi/tfmini/mini.py -p 54322
+User=USER
+ExecStart=/usr/bin/python PATH -p 54322
 Restart=on-failure
 
 [Install]
