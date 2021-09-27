@@ -42,7 +42,7 @@ const video = new Video()
 const prompt = new Prompt(TEXT)
 const label = new Label("assets/label")
 const receiver = new OSCReceiver(host, port, function(message) {
-  util.debugPrint("received osc: " + message.address + ", " + message.args.length + " args")
+  util.debugPrint("received osc: ", message)
   if(message.address == "/state") {
     if(message.args.length == 0 || message.args[0].type != "s") {return}
     let state = message.args[0].value
