@@ -13,9 +13,6 @@ RXD0 <-> TX(GREEN)
 Use ``` pinout ``` on the raspberry to see pinout :) # only avaliable with python-gpio installed
 
 # Software
-- edit tfmini.service.default:
-    - replace hertzpi with your username
-
 ```shell
 ./configPi.sh
 ./install.sh
