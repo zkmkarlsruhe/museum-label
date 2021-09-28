@@ -75,3 +75,12 @@ Take a look at http://rpf.io/configtxt for more options.
 
 #### Rotate the display
 Uncomment `display_rotate=1` in the `pi-files/boot-config.txt` before setup or modify `/boot/boot-config.txt` on the Pi and restart. 0 is the normal configuration. 1 is 90 degrees. 2 is 180 degress. 3 is 270 degrees.
+
+
+## TODOs
+- add autostart script for chromium (--kiosk)
+- disable notification
+- disable touchscreen
+- disable any standby option
+- wait for network to boot (raspi-config)
+

@@ -11,6 +11,8 @@ RXD0 <-> TX(GREEN)
 Use `pinout` on the raspberry to see pinout 
 
 ### Installation and service start
+__NOTE__: Currently you have to set the default parameters in mini.py in order modify the parameters (like port, destination) for the service!! This is an open TODO...
+
 ```shell
 ./configPi.sh
 ./install.sh
