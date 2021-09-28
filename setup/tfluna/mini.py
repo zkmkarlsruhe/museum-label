@@ -83,8 +83,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='TF Luna Lidar sensor')
     parser.add_argument('-u', '--use_udp', action='store_true',default=False, dest='use_udp', help='whether to use osc or udp')
-    parser.add_argument('-d', '--destination', default='127.0.0.1', dest='destination', help='destination hostname or IP', metavar='HOST')
-    parser.add_argument('-p', '--port', type=int, default='54322', dest='port', help='destination port to send to', metavar='PORT')
+    parser.add_argument('-d', '--destination', default='10.10.0.123', dest='destination', help='destination hostname or IP', metavar='HOST')
+    parser.add_argument('-p', '--port', type=int, default='5005', dest='port', help='destination port to send to', metavar='PORT')
     parser.add_argument('-i', '--interval', type=float, default=0.1, dest='interval', help='interval in seconds (default: 0.1 sec)', metavar='INTERVAL')
     parser.add_argument('-e', '--epsilon', type=float, default=0.05, dest='epsilon', help='minimum difference for sending a package', metavar='EPSILON')
     parser.add_argument('-m', '--max_distance', type=int, default=800, dest='max_distance', help='maximum allowed distance (rest is capped)', metavar='MAX_DISTANCE')
