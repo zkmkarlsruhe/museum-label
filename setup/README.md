@@ -1,15 +1,18 @@
-# 7" Smart Display Setup
+# Smart Display Setup
 
 This is a small guide of how to setup the smart display. Applications that run on the Pi can be installed by following the guides in the subfolders, e.g. sending distance measures with the TF Luna sensor over UDP. 
 
 ## Hardware requirements
-1. Raspberry Pi 3
+1. Raspberry Pi 3 (not tested with RPi 4)
 2. Power: 5V mini USB with 3 Ampere output
-3. SD Card Reader
+3. Display (tested with 7" UPERFECT 1024x600)
 4. 32 GB SD card
-5. Display
-6. keyboard
-7. mouse
+   
+##### Development
+1. SD Card Reader
+2. HDMI Monitor (optinonal) 
+3. USB Keyboard
+4. USB Mouse
 
 ### Basic Raspberry Pi OS Setup
 
@@ -63,3 +66,12 @@ download the image from [the original site](https://www.raspberrypi.org/software
 sudo fdisk -l
 sudo dd bs=4M if=/dev/SOMEdiskPARTION | gzip > baseRPI-`date +%d%m%y`.img.gz
 ```
+
+
+## Misc
+
+### Boot config
+Take a look at http://rpf.io/configtxt for more options.
+
+#### Rotate the display
+Uncomment `display_rotate=1` in the `pi-files/boot-config.txt` before setup or modify `/boot/boot-config.txt` on the Pi and restart. 0 is the normal configuration. 1 is 90 degrees. 2 is 180 degress. 3 is 270 degrees.
