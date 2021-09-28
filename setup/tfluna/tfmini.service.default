@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=USER
-ExecStart=/usr/bin/python PATH -p 54322
+ExecStart=/usr/bin/python3 PATH
 Restart=on-failure
 
 [Install]
