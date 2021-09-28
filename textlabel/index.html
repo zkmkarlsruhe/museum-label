@@ -1,39 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Digital Text Label</title>
-    <meta name="description" content=""/>
-    <meta name="author" content="Intelligent Museum"/>
-    <meta name="designer" content="Dan Wilcox"/>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-  </head>
-  <body>
-    <video id="video" src="assets/videoblocks-listen-hear-understand-cycle-training-education.mp4" loop playsinline autoplay muted nocontrols></video>
-    <div id="video-overlay" class="overlay transition-500ms"></div>
-    <main class="noselect">
-      <div id="prompt" class="overlay transition-250ms">
-        <div id="prompt-text" class="centered-text">
-        </div>
+<head>
+  <title>Digital Text Label</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content=""/>
+  <meta name="author" content="Intelligent Museum"/>
+  <meta name="designer" content="Dan Wilcox"/>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+  <video id="video" src="assets/videoblocks-listen-hear-understand-cycle-training-education.mp4" loop playsinline autoplay muted nocontrols></video>
+  <div id="video-overlay" class="overlay transition-500ms"></div>
+  <main class="noselect">
+    <div id="prompt" class="overlay transition-250ms">
+      <div id="prompt-text" class="centered-text">
       </div>
-      <div id="label" class="overlay transition-250ms">
-        <div id="label-title" class="meta-info">
-          <!-- <p id="label-title"></p> -->
-        </div>
-        <div id="label-artist" class="meta-info">
-          <!-- <p id="label-artist"></p> -->
-        </div>
-        <br>
-        <div id="label-material" class="meta-info">
-          <!-- <p id="label-material"></p> -->
-        </div>
-        <div id="label-description" class="meta-info">
-          <!-- <p id="label-description"></p> -->
-        </div>
+    </div>
+    <div id="label" class="overlay transition-250ms">
+      <div id="label-title" class="meta-info">
       </div>
-    </main>
-    <script src="js/osc/reconnecting-websocket.min.js" type="text/javascript"></script>
-    <script src="js/osc/osc-browser.min.js" type="text/javascript"></script>
-    <script src="js/script.js" type="module" charset="utf-8"></script>
+      <div id="label-artist" class="meta-info">
+      </div>
+      <br>
+      <div id="label-material" class="meta-info">
+      </div>
+      <div id="label-description" class="meta-info">
+      </div>
+    </div>
+  </main>
+  <script src="js/osc/reconnecting-websocket.min.js" type="text/javascript"></script>
+  <script src="js/osc/osc-browser.min.js" type="text/javascript"></script>
+  <script src="js/script.js" type="module" charset="utf-8"></script>
+</body>
 </html>

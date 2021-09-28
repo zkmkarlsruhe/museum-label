@@ -1,29 +1,73 @@
 
-
 body {
-	font-family: sans-serif;
-	margin: 0;
-	height: 100vh;
+  font-family: sans-serif;
+  margin: 0;
+  height: 100vh;
 }
 
 main {
-	width: 100%;
-	height: 100%;
-	/*background-color: red;*/
+  width: 100%;
+  height: 100%;
+  /*background-color: red;*/
 }
 
 #detecting {
-	display: none;
-	position: fixed;
-	top: 1em;
-	left: 1em;
-	font-size: 12pt;
-	color: rgb(100, 200, 100);
+  display: none;
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  font-size: 12pt;
+  color: rgb(100, 200, 100);
 }
 
 #greeting {
-	transform: translateY(100%);
-	text-align: center;
-	font-size: 128pt;
-	color: rgb(64, 64, 64);
+  font-size: 128pt;
+  color: rgb(64, 64, 64);
 }
+
+.centered-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* ----- SCALING ----- */
+
+/* Sumo Devices, Huge Screens */
+@media only screen and (min-width: 1440px) {}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width: 1200px) {
+  #greeting {
+    font-size: 200pt;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width: 992px) {}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width: 768px) {
+  #greeting {
+    font-size: 64pt;
+  }
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width: 480px) {
+  #greeting {
+    font-size: 52pt;
+  }
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width: 320px) {
+  #greeting {
+    font-size: 48pt;
+  }
+}
+
+/* Custom, iPhone Retina Landscape */
+@media only screen and (max-height: 420px) {}
