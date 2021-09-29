@@ -33,7 +33,7 @@ class Proximity:
 
     # cancel debounce timer
     def cancel(self):
-        if self.Timer is None:
+        if self.timer is None:
             return
         self.timer.cancel()
         self.timer = None
