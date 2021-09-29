@@ -2,17 +2,29 @@ import TEXT from "./text.js"
 import {Video, Prompt, Label, OSCReceiver, Timer} from "./classes.js"
 import * as util from "./util.js"
 
-//let debug = true
+// osc host & port
+// note: use IP address or DNS name when connecting external devices
+let host = "localhost"
+let port = 8081
 
-// osc host, use localhost when only connecting internally
-const host = "localhost"
-
-// osc host, use the server machine's IP address when connecting external devices
-//const host = "10.10.0.159"
-
-// osc port
-const port = 8081
-
+// parse url vars
+let vars = util.getURLVars()
+if("debug" in vars) {
+  util.debug = util.parseBool(vars.debug)
+  console.log(`var debug ${debug}`)
+}
+if("host" in vars) {
+  host = vars.host
+  console.log(`var host ${host}`)
+}
+if("port" in vars) {
+  let n = parseInt(vars.level)
+  if( n >= 1024) {
+    port = n
+    console.log(`var port ${port}`)
+  }
+}
+vars = null
 
 // transition timing
 const timing = {
@@ -42,16 +54,18 @@ const video = new Video()
 const prompt = new Prompt(TEXT)
 const label = new Label("assets/label")
 const receiver = new OSCReceiver(host, port, function(message) {
-  util.debugPrint("received osc: ", message)
+  if(util.debug) {
+    console.log("received osc: ", message)
+  }
   if(message.address == "/state") {
     if(message.args.length == 0 || message.args[0].type != "s") {return}
     let state = message.args[0].value
+    util.debugPrint("set state " + state)
     if(state == "wait") {
       showVideo()
       clear()
     }
-    else {
-      console.log("set state " + state)
+    else {  
       hideVideo()
       setState(state)
     }
@@ -60,8 +74,8 @@ const receiver = new OSCReceiver(host, port, function(message) {
   else if(message.address == "/lang") {
     if(message.args.length == 0 ||
       (message.args[0].type != "f" && message.args[0].type != "i")) {return}
-    if(prompt.state != "success") {return}
     let index = message.args[0].value
+    util.debugPrint("set lang " + index)
     setLang(index)
   }
 })
@@ -114,7 +128,6 @@ function setLang(index) {
   }, timing.fade.prompt)
   util.fadeOutId(label.id, () => {
     label.setLang(key)
-    //util.fadeInId(label.id, null, timing.fade.label)
   }, timing.fade.label)
   timer.label.start()
 }
@@ -123,9 +136,6 @@ function clear() {
   util.fadeOutId(prompt.id, () => {
     prompt.clear()
   }, timing.fade.prompt)
-  // util.fadeOutId(label.id, () => {
-  //   label.clear()
-  // }, timing.fade.label)
 }
 
 function showLabel() {

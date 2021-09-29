@@ -1,7 +1,7 @@
 
 // ----- util -----
 
-export let debug = true
+export let debug = false
 
 // only print if debug is set
 export function debugPrint(msg) {
@@ -43,4 +43,19 @@ export function fadeInId(id, completion, duration) {
     return window.setTimeout(completion, duration)
   }
   return null
+}
+
+// returns URL variables as key/value pairs:
+// ?foo=bar&baz=123 -> {foo: "bar", baz: 123}
+export function getURLVars() {
+  let vars = {}
+  let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+    vars[key] = value
+  })
+  return vars
+}
+
+// returns string as a bool
+export function parseBool(s) {
+  return (s === "true" || s === "1")
 }
