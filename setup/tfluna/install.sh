@@ -12,7 +12,7 @@ sudo adduser $user dialout
 # install requirements
 sudo apt update && sudo apt upgrade -y
 sudo apt install python-pip -y
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # remove any existing tfmini service and restart daemon
 ./remove_service.sh

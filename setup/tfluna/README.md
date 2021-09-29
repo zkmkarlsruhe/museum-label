@@ -1,6 +1,4 @@
 # Hardware/Serial ports (RX/TX pins)  
-Connection is as follows:  
-
 Raspberry Pi 3 <-> TFmini  
 
 +5V <-> 5V(RED)  
@@ -10,26 +8,42 @@ RXD0 <-> TX(GREEN)
 
 ![](media/luna.png)
   
-Use ``` pinout ``` on the raspberry to see pinout :) # only avaliable with python-gpio installed
+Use `pinout` on the raspberry to see pinout 
 
-# Software
+### Installation and service start
+__NOTE__: Currently you have to set the default parameters in mini.py in order modify the parameters (like port, destination) for the service!! This is an open TODO...
+
 ```shell
 ./configPi.sh
 ./install.sh
 reboot
 ```
 
-###
+### Removing the service
+```shell
+./remove_service.sh
 ```
-TF Luna Lidar sensor
 
-optional arguments:  
-  -h, --help            
-		show this help message and exit  
-  -i INTERVAL, --interval INTERVAL                      
-		interval in seconds (default: 0.1 sec)  
-  -d HOST, --destination HOST  
-                destination hostname or IP  
-  -p PORT, --port PORT   
-		destination port to send to  
+### Testing
+
+#### Using OSC 
+Start the client as follows
+```shell
+python3 mini.py --port 8080 --destination 10.10.0.123 --epsilon 0.002 --interval 0.1 --max_distance 800
 ```
+
+#### Using UDP
+Start the client as follows
+```shell
+python3 mini.py --use_udp --port 54322 --destination 127.0.0.1 --epsilon 0.002 --interval 0.1 --max_distance 800
+```
+
+Start the test server
+```shell
+python3 tests/receive.py
+```
+
+#### TODOs
+- unify OSC and UDP
+- add OSC endpoint as a parameter
+- ask for parameters during install script (currently using default values)
