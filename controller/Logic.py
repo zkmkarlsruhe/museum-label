@@ -108,7 +108,6 @@ class Logic:
     def state_set_success(self):
         if not self._state_set(State.SUCCESS): return
         self.listenTimer.cancel()
-        self.activityTimer.start()
 
     def state_set_fail(self):
         if not self._state_set(State.FAIL): return
@@ -148,6 +147,8 @@ class Logic:
             print(f"{address}: {args}")
         if len(args) == 1 and isnumber(args[0]):
             self.proximity.update(args[0])
+            if self.state != State.WAIT and self.state != State.SUCCESS:
+                self.proximity.cancel()
 
     def osc_receive_detecting(self, address, *args):
         if self.verbose:
@@ -184,11 +185,15 @@ class Logic:
     # ----- timeout callbacks -----
 
     def timeout_proximity(self):
-        close = self.proximity.is_close()
-        if close:
-            self.state_set_listen()
+        if self.proximity.is_close():
+            if self.state == State.WAIT:
+                self.state_set_listen()
         else:
-            self.state_set_wait()
+            if self.state == State.SUCCESS:
+                # person leaves, keep text label for a while
+                self.activityTimer.start()
+            else:
+                self.state_set_wait()
 
     def timeout_listen(self):
         if self.lang.tries > 0:
