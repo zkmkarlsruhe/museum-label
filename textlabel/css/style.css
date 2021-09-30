@@ -12,9 +12,10 @@ body {
   height: 100%;
   overflow: auto;
 
+  /* try to fit text into viewport width,
+     ref: https://stackoverflow.com/a/19814948 */
   font-family: sans-serif;
-  font-size: 1.5em;
-  line-height: 1.5em;
+  font-size: 4.5vmin;
   color: black;
   margin: 0;
   background-color: white;
@@ -47,6 +48,7 @@ body {
 
 #prompt-text {
   width: 90%;
+  line-height: 1.25em;
 }
 
 /* ----- label ----- */
@@ -54,30 +56,33 @@ body {
 #label {
   z-index: 1;
   opacity: 100%;
-  font-size: 1.25rem;
+  font-size: 3.75vmin;
+}
+
+#label-text {
+  width: 90%;
+  margin-left: 5%;
 }
 
 .meta-info {
-  margin: 1rem
-}
-
-.meta-info p {
-  display: inline;
-  color: black;
+  margin: 1em 0;
 }
 
 #label-title {
-  font-size: 1.5em;
-  font-weight: bold
+  font-size: 4.25vmin;
+  font-weight: bold;
 }
 
-#label-artist {
-  font-size: 1.25em;
-}
+#label-artist {}
 
 #label-material,
 #label-description {
-  font-size: 1em;
+  font-size: 3vmin;
+  line-height: 1.25em;
+}
+
+#label-material {
+  margin-bottom: 1.5em;
 }
 
 /* ----- animation ----- */
@@ -132,35 +137,19 @@ body {
 @media only screen and (min-width: 1440px) {}
 
 /* Large Devices, Wide Screens */
-@media only screen and (min-width: 1200px) {
-  body {
-    font-size: 3em;
-  }
-}
+@media only screen and (min-width: 1200px) {}
 
 /* Medium Devices, Desktops */
 @media only screen and (max-width: 992px) {}
 
 /* Small Devices, Tablets */
-@media only screen and (max-width: 768px) {
-  body {
-    font-size: 1.25em;
-  }
-}
+@media only screen and (max-width: 768px) {}
 
 /* Extra Small Devices, Phones */
-@media only screen and (max-width: 480px) {
-  body {
-    font-size: 1em;
-  }
-}
+@media only screen and (max-width: 480px) {}
 
 /* Custom, iPhone Retina */
-@media only screen and (max-width: 320px) {
-  body {
-    font-size: 0.8em;
-  }
-}
+@media only screen and (max-width: 320px) {}
 
 /* Custom, iPhone Retina Landscape */
 @media only screen and (max-height: 420px) {}
