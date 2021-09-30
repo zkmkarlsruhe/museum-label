@@ -69,6 +69,10 @@ const receiver = new OSCReceiver(host, port, function(message) {
     else {  
       hideVideo()
       setState(state)
+      if(state == "timeout") {
+        // show en label
+        setLang(TEXT.lang.keys.indexOf("en"))
+      }
     }
     hideLabel()
   }
