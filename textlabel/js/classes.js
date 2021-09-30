@@ -189,7 +189,7 @@ export class Timer {
 
   start() {
     stop()
-    this.timer = window.setTimeout(this.callback, this.delay)
+    this.timer = window.setTimeout(this._timeout.bind(this), this.delay)
   }
 
   stop() {
@@ -201,6 +201,11 @@ export class Timer {
 
   isRunning() {
     return this.timer === null
+  }
+
+  _timeout() {
+    this.callback()
+    this.timer = null
   }
 
 }

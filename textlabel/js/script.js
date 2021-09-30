@@ -40,6 +40,7 @@ const timing = {
 // transition timers
 const timer = {
   label: new Timer(function() {
+    // transition from prompt to label
     util.fadeOutId(prompt.id, () => {
       prompt.clear()
       showLabel()
@@ -118,6 +119,7 @@ function setState(state) {
     prompt.setState(state)
     util.fadeInId(prompt.id, null, timing.fade.prompt)
   }, timing.fade.prompt)
+  timer.label.stop()
 }
 
 function setLang(index) {
