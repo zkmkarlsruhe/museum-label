@@ -1,10 +1,12 @@
-#!/bin/bash
+#! /bin/sh
 
 # autostart
 AUTOSTARTFILE="/etc/xdg/lxsession/LXDE-pi/autostart"
 
-## add chrome
-CHROME="/usr/bin/chromium-browser "
-CHROMEPARAMS=" --kiosk  --disable-restore-session-state http://10.10.0.123:8081"
+## add start script
+STARTCMD="$(dirname $0)/textlabel.sh start"
+
 ##TODO check if $CHROME is already present
-echo $CHROME $CHROMEPARAMS | sudo tee -a $AUTOSTARTFILE
+
+echo $STARTCMD | sudo tee -a $AUTOSTARTFILE
+
