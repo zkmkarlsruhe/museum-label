@@ -4,17 +4,28 @@ import time
 import sys
 import argparse
 
-# https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another
-def translate(value, leftMin, leftMax, rightMin, rightMax):
-    # Figure out how 'wide' each range is
-    leftSpan = leftMax - leftMin
-    rightSpan = rightMax - rightMin
+# map a value within an input range min-max to an output range
+def mapValue(value, inmin, inmax, outmin, outmax):
+    # the following is borrowed from OpenFrameworks ofMath.cpp
+    if abs(inmin - inmax) < 0.0001:
+        return outmin
+    else:
+        outval = ((value - inmin) / (inmax - inmin) * (outmax - outmin) + outmin)
+        if outmax < outmin:
+            if outval < outmax:
+                outval = outmax
+            elif outval > outmin:
+                outval = outmin
+        else:
+            if outval > outmax:
+                outval = outmax
+            elif outval < outmin:
+                outval = outmin
+        return outval
 
-    # Convert the left range into a 0-1 range (float)
-    valueScaled = float(value - leftMin) / float(leftSpan)
-
-    # Convert the 0-1 range into a value in the right range.
-    return rightMin + (valueScaled * rightSpan)
+# clamp a value to an output range min-max
+def clampValue(value, outmin, outmax):
+    return max(min(value, outmax), outmin)
 
 # -----------------------------------------------------------------------------------
 # open serial port
@@ -43,21 +54,16 @@ def getTFminiData(client, args):
                 # interpret upper two bytes as one 16bit int
                 low = int(recv[2])
                 high = int(recv[3])
-                distance = low + high * 256
-
-                # cap the distance
-                if distance > max_distance:
-                    distance = max_distance
-                if distance < 0:
-                    distance = 0
+                distance = clampValue(low + high * 256, 0, max_distance)
                 
                 # map the range to 0.0 (far away) and 1.0 (closest)
-                distance = translate(distance, 0, max_distance, 1, 0)
+                distance = mapValue(distance, 0, max_distance, 1, 0)
 
                 # check if difference is large enough
                 if abs(distance - last_distance) >= args.epsilon:
 
-                    #print(distance)
+                    if args.verbose:
+                        print(f"normalized: {distance}")
 
                     # choose a protocol
                     if args.use_udp:
@@ -70,8 +76,6 @@ def getTFminiData(client, args):
 
         time.sleep(args.interval)
 
-
-
 # -----------------------------------------------------------------------------------
 # main
 # parse args
@@ -83,11 +87,12 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='TF Luna Lidar sensor')
     parser.add_argument('-u', '--use_udp', action='store_true',default=False, dest='use_udp', help='whether to use osc or udp')
-    parser.add_argument('-d', '--destination', default='10.10.0.123', dest='destination', help='destination hostname or IP', metavar='HOST')
+    parser.add_argument('-d', '--destination', default='127.0.0.1', dest='destination', help='destination hostname or IP', metavar='HOST')
     parser.add_argument('-p', '--port', type=int, default='5005', dest='port', help='destination port to send to', metavar='PORT')
     parser.add_argument('-i', '--interval', type=float, default=0.1, dest='interval', help='interval in seconds (default: 0.1 sec)', metavar='INTERVAL')
-    parser.add_argument('-e', '--epsilon', type=float, default=0.05, dest='epsilon', help='minimum difference for sending a package', metavar='EPSILON')
-    parser.add_argument('-m', '--max_distance', type=int, default=800, dest='max_distance', help='maximum allowed distance (rest is capped)', metavar='MAX_DISTANCE')
+    parser.add_argument('-e', '--epsilon', type=float, default=0.001, dest='epsilon', help='minimum difference for sending a package', metavar='EPSILON')
+    parser.add_argument('-m', '--max_distance', type=int, default=200, dest='max_distance', help='maximum allowed distance in cm (rest is capped)', metavar='MAX_DISTANCE')
+    args = parser.add_argument('-v', '--verbose', action="store_true", dest="verbose", help="enable verbose printing")
     args = parser.parse_args()
     print(vars(args))
 
@@ -111,3 +116,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:   # Ctrl+C
         if ser != None:
             ser.close()
+
