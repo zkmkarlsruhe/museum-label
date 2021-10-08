@@ -16,7 +16,7 @@ if [ $isInFile -eq 0 ]; then
 fi
 isInFile=$(cat /boot/config.txt | grep -c "dtoverlay=pi3-disable-bt")
 if [ $isInFile -eq 0 ]; then
-   echo "dtoverlay=pi3-miniuart-bt" | sudo tee -a /boot/config.txt
+   echo "dtoverlay=pi3-disable-bt" | sudo tee -a /boot/config.txt
 fi
 
 # write to new cmdline.txt
