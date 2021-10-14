@@ -4,7 +4,7 @@
 
 CHROME=/usr/bin/chromium-browser
 
-HOST=10.10.0.137
+HOST=${HOST:-10.10.0.123} # allow override from commandline
 DIR=digital-displays/textlabel
 URL=http://${HOST}/${DIR}/?host=${HOST}
 
@@ -49,6 +49,7 @@ case $CMD in
     $CHROME --kiosk --noerrdialogs --disable-restore-session-state $URL
     ;;
   stop)
+    pkill -o chromium
     ;;
 esac
 
