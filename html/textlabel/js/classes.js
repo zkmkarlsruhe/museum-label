@@ -34,19 +34,11 @@ export class Prompt {
 
   // constructor with data object in following layout:
   // {
-  //    lang: { keys: ["en", "de", ...] }, <- two letter iso lang keys, ie. "en", "de", etc
-  //    locales: {
-  //      en: { <- localized state texts and lang names for each lang by key
-  //        state: { wait: "please wait", listen: "listening", ...},
-  //        lang: { names: ["English", "German", ...] }
-  //      },
-  //      de: {
-  //        state: { wait: "bitte warten", listen: "anhören", ...},
-  //        lang: { names: ["Englisch", "Deutsch", ...] }
-  //      },
-  //      ...
+  //    lang: {
+  //      keys: ["en", "de", ...], <- two-letter ISO lang keys, ie. "en", "de", etc
+  //      names: ["English", "Deutsch", ...] <- localized names
   //    }
-  //  }
+  // }
   constructor(data) {
     this.id = document.getElementById("prompt")
     this.text = document.getElementById("prompt-text")
@@ -54,34 +46,21 @@ export class Prompt {
     this.state = "wait" // current state
   }
 
-  // set text based on state, remove <lang> markers
+  // set text based on state
   setState(state) {
     let html = ""
-    for(let key of this.data.lang.keys) {
-      const locale = this.data.locales[key]
-      let line = locale.state[state]
-      if(line === undefined) {continue}
-      line = line.replace("<lang>", "")
-      html += "<p>" + line + "</p>\n"
-    }
+    html = state
     this.state = state
     this.text.innerHTML = html
   }
 
-  // set text for current state, replace <lang> with localized lang name
-  setLang(index) {
+  // set current state text with language by ISO 639-1 two-letter language key,
+  // ie. "en", "de", etc
+  setLang(key) {
     let html = ""
-    for(let key of this.data.lang.keys) {
-      const locale = this.data.locales[key]
-      const names = locale.lang.names
-      let line = locale.state[this.state]
-      if(line === undefined || locale.lang === undefined) {continue}
-      if(index < 0 || index >= names.length) {continue}
-      const name = names[index]
-      if(name === undefined) {continue}
-      line = line.replace("<lang>", name)
-      html += "<p>" + line + "</p>\n"
-    }
+    var index = this.data.lang.keys.indexOf(key)
+    if(index < 0) {index = 0}
+    html = this.state + "<br>" + this.data.lang.names[index]
     this.text.innerHTML = html
   }
 

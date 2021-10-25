@@ -43,12 +43,17 @@ body {
 /* ------ prompt ----- */
 
 #prompt {
+  position: fixed;
+  top: 1rem;
+  right: 5%;
   z-index: 2;
+  text-align: right;
 }
 
 #prompt-text {
-  width: 90%;
   line-height: 1.25em;
+  color: red;
+  background-color: white;
 }
 
 /* ----- label ----- */
@@ -87,10 +92,10 @@ body {
 
 /* ----- animation ----- */
 
-.transition-1s {
+/*.transition-1s {
   transition: 1s;
   transition-timing-function: ease-in-out;
-}
+}*/
 
 .transition-500ms {
   transition: 500ms;

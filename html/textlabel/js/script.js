@@ -10,8 +10,8 @@ let port = 8081
 // parse url vars
 let vars = util.getURLVars()
 if("debug" in vars) {
-  util.debug = util.parseBool(vars.debug)
-  console.log(`var debug ${debug}`)
+  util.setDebug(util.parseBool(vars.debug))
+  console.log(`var debug ${util.debug}`)
 }
 if("host" in vars) {
   host = vars.host
@@ -31,22 +31,7 @@ const timing = {
   fade: { // fade times in ms
     prompt: 250,
     label: 250
-  },
-  show: {
-    label: 5000 // how long to wait to show label after success
   }
-}
-
-// transition timers
-const timer = {
-  label: new Timer(function() {
-    // transition from prompt to label
-    util.fadeOutId(prompt.id, () => {
-      prompt.clear()
-      showLabel()
-    }, timing.fade.prompt)
-    util.debugPrint("show label")
-  }, timing.show.label)
 }
 
 // ----- main -----
@@ -63,25 +48,29 @@ const receiver = new OSCReceiver(host, port, function(message) {
     let state = message.args[0].value
     util.debugPrint("set state " + state)
     if(state == "wait") {
+      hideLabel()
       showVideo()
       clear()
     }
     else {  
       hideVideo()
+      showLabel()
       setState(state)
       if(state == "timeout") {
         // show en label
-        setLang(TEXT.lang.keys.indexOf("en"))
+        setLang("en")
       }
     }
-    hideLabel()
   }
   else if(message.address == "/lang") {
     if(message.args.length == 0 ||
       (message.args[0].type != "f" && message.args[0].type != "i")) {return}
+    if(prompt.state == "wait") {return}
     let index = message.args[0].value
-    util.debugPrint("set lang " + index)
-    setLang(index)
+    let key = TEXT.lang.keys[index]
+    if(key < 0) {key = 0}
+    util.debugPrint("set lang " + index + " " + key)
+    setLang(key)
   }
 })
 
@@ -106,6 +95,10 @@ window.addEventListener("load", () => {
   }
 })
 
+// show de label on start
+label.setLang("de")
+hideLabel()
+
 // ----- transitions -----
 
 function showVideo() {
@@ -123,19 +116,17 @@ function setState(state) {
     prompt.setState(state)
     util.fadeInId(prompt.id, null, timing.fade.prompt)
   }, timing.fade.prompt)
-  timer.label.stop()
 }
 
-function setLang(index) {
-  let key = TEXT.lang.keys[index]
+function setLang(key) {
   util.fadeOutId(prompt.id, () => {
-    prompt.setLang(index)
+    prompt.setLang(key)
     util.fadeInId(prompt.id, null, timing.fade.prompt)
   }, timing.fade.prompt)
   util.fadeOutId(label.id, () => {
     label.setLang(key)
+    util.fadeInId(label.id, null, timing.fade.label)
   }, timing.fade.label)
-  timer.label.start()
 }
 
 function clear() {

@@ -1,7 +1,12 @@
 
 // ----- util -----
 
-export let debug = false
+export var debug = false
+
+// set debug state
+export function setDebug(enable) {
+  debug = enable
+}
 
 // only print if debug is set
 export function debugPrint(msg) {
