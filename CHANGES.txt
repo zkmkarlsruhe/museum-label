@@ -1,3 +1,20 @@
+0.4.0: 2021 TBD
+
+prototype 2
+
+* added changelog
+
+* textlabel:
+  - now show label while handling state changes
+  - fixed set debug var error
+  - added noise.json file with symbol text
+  - removed localized prompt text in favor of simple state and lang display
+
+* controller:
+  - updated logic to restart listening after detection success or failure
+  - activity timeout is now used if there is no audio activity when listening
+  - fail state now sends detected noise lang message
+
 0.3.0: 2021 Oct 14
 
 prototype 1
