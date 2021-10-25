@@ -48,6 +48,9 @@ class Lang:
         self.index = index
         self.name = name
 
+    def reset_noise():
+        self.tries = 0
+
     def is_noise(self):
         return (self.index == 0 or self.name == "noise")
 
@@ -93,32 +96,33 @@ class Logic:
 
     def state_set_wait(self):
         if not self._state_set(State.WAIT): return
+        self.osc_send_listen(0)
+        self.listenTimer.cancel()
         self.activityTimer.cancel()
 
     def state_set_listen(self):
         if not self._state_set(State.LISTEN): return
         self.osc_send_listen(1)
-        self.activityTimer.cancel()
-        self.listenTimer.start()
+        self.activityTimer.start()
 
     def state_set_detect(self):
         if not self._state_set(State.DETECT): return
-        self.listenTimer.start()
+        self.activityTimer.start()
 
     def state_set_success(self):
         if not self._state_set(State.SUCCESS): return
-        self.listenTimer.cancel()
+        self.activityTimer.cancel()
+        self.listenTimer.start()
 
     def state_set_fail(self):
         if not self._state_set(State.FAIL): return
-        self.listenTimer.cancel()
-        self.activityTimer.start()
+        self.activityTimer.cancel()
+        self.listenTimer.start()
 
     def state_set_timeout(self):
         if not self._state_set(State.TIMEOUT): return
-        self.osc_send_listen(0)
-        self.listenTimer.cancel()
-        self.activityTimer.start()
+        self.osc_send_listen(0) # stop listening entirely before retstarting
+        self.listenTimer.start()
 
     # ----- sending osc -----
 
@@ -147,15 +151,13 @@ class Logic:
             print(f"{address}: {args}")
         if len(args) == 1 and isnumber(args[0]):
             self.proximity.update(args[0])
-            if self.state != State.WAIT and self.state != State.SUCCESS:
-                self.proximity.cancel()
 
     def osc_receive_detecting(self, address, *args):
         if self.verbose:
             print(f"{address}: {args}")
         if len(args) == 1 and isnumber(args[0]):
             print(f"detecting {args[0]}")
-            if self.state != State.LISTEN and self.state != State.DETECT:
+            if self.state == State.WAIT:
                 return
             if args[0] == True:
                 self.state_set_detect()
@@ -163,7 +165,7 @@ class Logic:
     def osc_receive_lang(self, address, *args):
         if self.verbose:
             print(f"{address}: {args}")
-        if self.state != State.DETECT:
+        if self.state == State.WAIT:
             return
         if len(args) == 3 and isnumber(args[0]) and isstring(args[1]):
             self.lang.set(args[0], args[1])
@@ -171,38 +173,32 @@ class Logic:
             if self.lang.is_noise():
                 self.lang.tries += 1
                 if self.lang.tries >= Lang.maxTries:
-                    self.lang.tries = 0
                     self.state_set_fail()
-                    return
                 else:
                     if self.verbose:
                         print(f"detection tries {self.lang.tries}")
                     self.osc_send_listen(1)
+                    return
             else:
                 self.state_set_success()
-                self.osc_send_lang(address, args)
+            self.osc_send_lang(address, args)
+            self.lang.reset_noise()
 
     # ----- timeout callbacks -----
 
     def timeout_proximity(self):
         if self.proximity.is_close():
             if self.state == State.WAIT:
+                # person walks up
                 self.state_set_listen()
         else:
-            if self.state == State.SUCCESS:
-                # person leaves, keep text label for a while
-                self.activityTimer.start()
-            else:
-                self.state_set_wait()
+            # person left
+            self.state_set_wait()
 
+    # restart listening
     def timeout_listen(self):
-        if self.lang.tries > 0:
-            self.state_set_timeout()
-        else:
-            self.state_set_wait()
+        self.state_set_listen()
 
+    # listening timeout out
     def timeout_activity(self):
-        if self.proximity.is_close():
-            self.state_set_listen()
-        else:
-            self.state_set_wait()
+        self.state_set_timeout()
