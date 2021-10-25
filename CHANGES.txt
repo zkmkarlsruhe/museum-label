@@ -1,0 +1,32 @@
+0.3.0: 2021 Oct 14
+
+prototype 1
+
+* added textlabel html client which integrates prompt & demo2
+* added tfluna sensor script from ZKM MuTech
+* added chromium textlabel start script
+* added test system run script to start LanguageIdentifier, baton relay server,
+  and controller
+* added controller makefile setup, dependencies list, and run wrapper script
+* added pd lid system OSC message test sender
+
+* leave detected langauge textlabel on success and only wait after person leaves
+* updated html clients with additional model 2 languages and responsive design
+* various bugfixes and updates
+
+0.2.0: 2021 Aug 17
+
+prototype 1 system demo
+
+* added python logic controller
+* added html prompt client
+* added proximity sensor simulator
+
+* repo cleanups and reorganization
+
+0.1.0: 2021 Jul 02
+
+hack / brainstorm session
+
+* added initial websocket client demos
+* added RPI setup files and tfluna scripts from ZKM MuTech
