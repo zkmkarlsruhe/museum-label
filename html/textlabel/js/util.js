@@ -3,7 +3,7 @@
 
 // ----- util -----
 
-export var debug = false
+export let debug = false
 
 // set debug state
 export function setDebug(enable) {
