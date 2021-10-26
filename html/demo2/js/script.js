@@ -1,6 +1,32 @@
+/* Demo 2: Digital Text Label
+   Paul Bethge ZKM | Hertz-Lab 2021
+   Dan Wilcox  ZKM | Hertz-Lab 2021 */
 
-// ----- main -----
+// ref: https://github.com/colinbdclark/osc.js/
 
+// osc host & port
+// note: use IP address or DNS name when connecting external devices
+let host = "localhost"
+let port = 8081
+
+// ----- load -----
+
+// parse url vars
+let vars = getURLVars()
+if("host" in vars) {
+  host = vars.host
+  console.log(`var host ${host}`)
+}
+if("port" in vars) {
+  let n = parseInt(vars.port)
+  if( n >= 1024) {
+    port = n
+    console.log(`var port ${port}`)
+  }
+}
+vars = null
+
+// page load
 window.addEventListener("load", () => {
   oscPort.open()
   loadLang("de")
@@ -10,7 +36,7 @@ window.addEventListener("load", () => {
 
 // ref: https://github.com/colinbdclark/osc.js/
 var oscPort = new osc.WebSocketPort({
-  url: "ws://localhost:8081",
+  url: "ws://"+host+":"+port,
   metadata: true
 })
 
@@ -102,4 +128,19 @@ function fadeInId(id, completion, duration) {
     return window.setTimeout(completion, duration)
   }
   return null
+}
+
+// returns URL variables as key/value pairs:
+// ?foo=bar&baz=123 -> {foo: "bar", baz: 123}
+function getURLVars() {
+  let vars = {}
+  let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+    vars[key] = value
+  })
+  return vars
+}
+
+// returns string as a bool
+function parseBool(s) {
+  return (s === "true" || s === "1")
 }

@@ -1,3 +1,6 @@
+/* Digital Text Label
+   Dan Wilcox ZKM | Hertz-Lab 2021 */
+
 import TEXT from "./text.js"
 import {Video, Prompt, Label, OSCReceiver, Timer} from "./classes.js"
 import * as util from "./util.js"
@@ -6,6 +9,16 @@ import * as util from "./util.js"
 // note: use IP address or DNS name when connecting external devices
 let host = "localhost"
 let port = 8081
+
+// transition timing
+const timing = {
+  fade: { // fade times in ms
+    prompt: 250,
+    label: 250
+  }
+}
+
+// ----- main -----
 
 // parse url vars
 let vars = util.getURLVars()
@@ -18,23 +31,13 @@ if("host" in vars) {
   console.log(`var host ${host}`)
 }
 if("port" in vars) {
-  let n = parseInt(vars.level)
+  let n = parseInt(vars.port)
   if( n >= 1024) {
     port = n
     console.log(`var port ${port}`)
   }
 }
 vars = null
-
-// transition timing
-const timing = {
-  fade: { // fade times in ms
-    prompt: 250,
-    label: 250
-  }
-}
-
-// ----- main -----
 
 const video = new Video()
 const prompt = new Prompt(TEXT)
@@ -74,6 +77,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
   }
 })
 
+// page load
 window.addEventListener("load", () => {
   receiver.start()
 

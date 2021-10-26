@@ -1,3 +1,5 @@
+/* Digital Text Label
+   Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 // ----- video -----
 

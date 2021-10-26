@@ -1,3 +1,6 @@
+/* Interaction Prompt
+   Dan Wilcox ZKM | Hertz-Lab 2021 */
+
 const text = {
   lang: {
     keys: ["noise", "zh", "en", "fr", "de", "it", "ru", "es"],

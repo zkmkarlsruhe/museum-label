@@ -1,32 +1,71 @@
+/* Demo 0: Detected Lang
+   Dan Wilcox ZKM | Hertz-Lab 2021 */
+
 // ref: https://github.com/colinbdclark/osc.js/
 
-// OSC
-
-// use localhost when only connecting internally
+// osc host & port
+// note: use IP address or DNS name when connecting external devices
 let host = "localhost"
+let port = 8081
 
-// use the server machine's IP address when connecting external devices
-//let host = "10.10.0.159"
+// ----- load -----
+
+// parse url vars
+let vars = getURLVars()
+if("host" in vars) {
+  host = vars.host
+  console.log(`var host ${host}`)
+}
+if("port" in vars) {
+  let n = parseInt(vars.port)
+  if( n >= 1024) {
+    port = n
+    console.log(`var port ${port}`)
+  }
+}
+vars = null
+
+// page load
+window.addEventListener("load", () => {
+  oscPort.open()
+})
+
+// ----- OSC -----
 
 var oscPort = new osc.WebSocketPort({
-    url: "ws://"+host+":8081",
-    metadata: true
+  url: "ws://"+host+":"+port,
+  metadata: true
 })
 
 oscPort.on("message", function (message) {
-    console.log("received osc: ", message)
-    if(message.address == "/detecting") {
-      if(message.args[0].value == 0) {
-        document.getElementById("detected").style.display = "none"
-      }
-      else {
-        document.getElementById("detected").style.display = "inline"
-      }
+  console.log("received osc: ", message)
+  if(message.address == "/detecting") {
+    if(message.args[0].value == 0) {
+      document.getElementById("detected").style.display = "none"
     }
-    else if(message.address == "/lang") {
-      document.getElementById("langid").innerHTML = message.args[0].value
-      document.getElementById("langname").innerHTML = message.args[1].value
+    else {
+      document.getElementById("detected").style.display = "inline"
     }
+  }
+  else if(message.address == "/lang") {
+    document.getElementById("langid").innerHTML = message.args[0].value
+    document.getElementById("langname").innerHTML = message.args[1].value
+  }
 })
 
-oscPort.open()
+// ----- util -----
+
+// returns URL variables as key/value pairs:
+// ?foo=bar&baz=123 -> {foo: "bar", baz: 123}
+function getURLVars() {
+  let vars = {}
+  let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+    vars[key] = value
+  })
+  return vars
+}
+
+// returns string as a bool
+function parseBool(s) {
+  return (s === "true" || s === "1")
+}
