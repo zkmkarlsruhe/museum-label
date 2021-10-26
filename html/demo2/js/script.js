@@ -9,6 +9,13 @@
 let host = "localhost"
 let port = 8081
 
+// transition timing
+const timing = {
+  fade: { // fade times in ms
+    label: 250
+  }
+}
+
 // ----- load -----
 
 // parse url vars
@@ -85,8 +92,8 @@ function loadLang(key) {
         label.artist.innerHTML = json.artist
         label.material.innerHTML = json.material
         label.description.innerHTML = json.description
-        fadeInId(label.id, null, 500)
-      }, 500)
+        fadeInId(label.id, null, timing.fade.label)
+      }, timing.fade.label)
     }
   }
   request.open("GET", path, true)

@@ -46,7 +46,7 @@ body {
 
 /* ----- animation ----- */
 
-.transition-500ms {
-  transition: 500ms;
+.transition-250ms {
+  transition: 250ms;
   transition-timing-function: ease-in-out;
 }
