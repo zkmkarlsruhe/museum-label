@@ -1,6 +1,8 @@
 /* Digital Text Label
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
+import * as util from "./util.js"
+
 // ----- video -----
 
 // video background layer with overlay
@@ -9,7 +11,14 @@ export class Video {
   constructor() {
     this.id = document.getElementById("video")
     this.overlay = document.getElementById("video-overlay")
-    this.setOpacity(100)
+
+    // fade out overlay after video frame is loaded
+    let self = this
+    this.id.onloadeddata = function() {
+      window.setTimeout(() => {
+        util.fadeOutId(self.overlay, null, 500)
+      }, 500)
+    }
   }
 
   // start video playback (if not playing already)
