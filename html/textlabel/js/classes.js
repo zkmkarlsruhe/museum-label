@@ -3,21 +3,60 @@
 
 import * as util from "./util.js"
 
+// ----- base -----
+
+// base class which fades in/out an id (either by name or reference)
+// id *must* have css transition set for opacity fade to work:
+//
+// css:
+// .transition-500ms {
+//   transition: 500ms;
+//   transition-timing-function: ease-in-out;
+// }
+//
+// html:
+// <div id="myid" class=".transition-500ms">...</div>
+//
+// js:
+// let myid = BaseFades("myid", 500)
+// myid.fadeOut()
+//
+class BaseFades {
+
+  // constructor whith id to fade and fade time in ms
+  constructor(id, fade) {
+    this.id = id
+    this.fade = fade
+  }
+
+  // fade out, calls optional callback function on completion
+  fadeOut(callback) {
+    util.fadeOutId(this.id, callback, this.fade)
+  }
+
+  // fade out, calls optional callback function on completion
+  fadeIn(callback) {
+    util.fadeInId(this.id, callback, this.fade)
+  }
+
+}
+
 // ----- video -----
 
 // video background layer with overlay
-export class Video {
+export class Video extends BaseFades {
 
-  constructor() {
-    this.id = document.getElementById("video")
+  // constructor with fade time in ms
+  constructor(fade) {
+    super(document.getElementById("video"), fade)
     this.overlay = document.getElementById("video-overlay")
 
     // fade out overlay after video frame is loaded
     let self = this
     this.id.onloadeddata = function() {
       window.setTimeout(() => {
-        util.fadeOutId(self.overlay, null, 500)
-      }, 500)
+        util.fadeOutId(self.overlay, null, self.fade)
+      }, self.fade)
     }
   }
 
@@ -36,22 +75,35 @@ export class Video {
     this.overlay.style.opacity = (100 - opacity) + "%"
   }
 
+  // override
+  fadeOut(callback) {
+    this.setOpacity(0)
+    this.pause()
+  }
+
+  // override
+  fadeIn(callback) {
+    this.play()
+    this.setOpacity(100)
+  }
+
 }
 
 // ----- prompt -----
 
 // interaction prompt text layer
-export class Prompt {
+export class Prompt extends BaseFades {
 
-  // constructor with data object in following layout:
+  // constructor with data object & fade time in ms
+  // data object should be in the following layout:
   // {
   //    lang: {
   //      keys: ["en", "de", ...], <- two-letter ISO lang keys, ie. "en", "de", etc
   //      names: ["English", "Deutsch", ...] <- localized names
   //    }
   // }
-  constructor(data) {
-    this.id = document.getElementById("prompt")
+  constructor(data, fade) {
+    super(document.getElementById("prompt"), fade)
     this.text = document.getElementById("prompt-text")
     this.data = data
     this.state = "wait" // current state
@@ -75,7 +127,6 @@ export class Prompt {
     this.text.innerHTML = html
   }
 
-
   // clear text
   clear() {
     this.state = "wait"
@@ -87,16 +138,19 @@ export class Prompt {
 // ----- label -----
 
 // digital artwork text label
-export class Label {
+export class Label extends BaseFades {
 
-  // constructor with path to localized work text json files
-  constructor(jsondir) {
-    this.id = document.getElementById("label")
+  // constructor with path to localized work text json files & fade time in ms
+  constructor(jsondir, fade) {
+    super(document.getElementById("label"), fade)
     this.title = document.getElementById("label-title")
     this.artist = document.getElementById("label-artist")
     this.material = document.getElementById("label-material")
     this.description = document.getElementById("label-description")
     this.dir = jsondir
+
+    // start hidden to avoid showing initial label fade out
+    this.fadeOut(() => {util.showId(this.id)})
   }
 
   // load text by ISO 639-1 two-letter language key, ie. "en", "de", etc
@@ -171,17 +225,20 @@ export class OSCReceiver {
 // timer convenience wrapper
 export class Timer {
 
+  // constructor with callback function and delay in ms
   constructor(callback, delay) {
     this.callback = callback
     this.delay = delay
     this.timer = null
   }
 
+  // (re)start timer
   start() {
     stop()
     this.timer = window.setTimeout(this._timeout.bind(this), this.delay)
   }
 
+  // stop currently running timer
   stop() {
     if(this.timer) {
       window.clearTimeout(this.timer)
@@ -189,10 +246,12 @@ export class Timer {
     }
   }
 
+  // returns true if the timer is running
   isRunning() {
     return this.timer === null
   }
 
+  // internal callback, do not use directly
   _timeout() {
     this.callback()
     this.timer = null

@@ -2,21 +2,13 @@
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 import TEXT from "./text.js"
-import {Video, Prompt, Label, OSCReceiver, Timer} from "./classes.js"
+import {Video, Prompt, Label, OSCReceiver} from "./classes.js"
 import * as util from "./util.js"
 
 // osc host & port
 // note: use IP address or DNS name when connecting external devices
 let host = "localhost"
 let port = 8081
-
-// transition timing
-const timing = {
-  fade: { // fade times in ms
-    prompt: 250,
-    label: 250
-  }
-}
 
 // ----- main -----
 
@@ -39,9 +31,9 @@ if("port" in vars) {
 }
 vars = null
 
-const video = new Video()
-const prompt = new Prompt(TEXT)
-const label = new Label("assets/label")
+const video = new Video(500)
+const prompt = new Prompt(TEXT, 250)
+const label = new Label("assets/label", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
     console.log("received osc: ", message)
@@ -51,13 +43,13 @@ const receiver = new OSCReceiver(host, port, function(message) {
     let state = message.args[0].value
     util.debugPrint("set state " + state)
     if(state == "wait") {
-      hideLabel()
-      showVideo()
+      label.fadeOut()
+      video.fadeIn()
       clear()
     }
     else {  
-      hideVideo()
-      showLabel()
+      video.fadeOut()
+      label.fadeIn()
       setState(state)
       if(state == "timeout") {
         // show en label
@@ -85,65 +77,45 @@ window.addEventListener("load", () => {
   document.onkeyup = (event) => {
     if(event.keyCode >= 49 && event.keyCode <= 55) { // 1-7
       let index = event.keyCode - 48
-      hideVideo()
+      let key = TEXT.lang.keys[index]
+      if(key < 0) {key = 0}
+      video.fadeOut()
       if(prompt.state != "success") {
         setState("success")
       }
-      setLang(index)
+      setLang(key)
     }
     else if(event.keyCode == 48) { // 0
-      showVideo()
-      hideLabel()
+      video.fadeIn()
+      label.fadeOut()
       clear()
     }
   }
 })
 
-// show de label on start, starts hidden to avoid showing label fade out
+// show de label on start
 label.setLang("de")
-hideLabel()
-util.showId(label.id)
 
 // ----- transitions -----
 
-function showVideo() {
-  video.play()
-  video.setOpacity(100)
-}
-
-function hideVideo() {
-  video.setOpacity(0)
-  video.pause()
-}
-
 function setState(state) {
-  util.fadeOutId(prompt.id, () => {
+  prompt.fadeOut(() => {
     prompt.setState(state)
-    util.fadeInId(prompt.id, null, timing.fade.prompt)
-  }, timing.fade.prompt)
+    prompt.fadeIn()
+  })
 }
 
 function setLang(key) {
-  util.fadeOutId(prompt.id, () => {
+  prompt.fadeOut(() => {
     prompt.setLang(key)
-    util.fadeInId(prompt.id, null, timing.fade.prompt)
-  }, timing.fade.prompt)
-  util.fadeOutId(label.id, () => {
+    prompt.fadeIn()
+  })
+  label.fadeOut(() => {
     label.setLang(key)
-    util.fadeInId(label.id, null, timing.fade.label)
-  }, timing.fade.label)
+    label.fadeIn()
+  })
 }
 
 function clear() {
-  util.fadeOutId(prompt.id, () => {
-    prompt.clear()
-  }, timing.fade.prompt)
-}
-
-function showLabel() {
-  util.fadeInId(label.id, null, timing.fade.label)
-}
-
-function hideLabel() {
-  util.fadeOutId(label.id, null, timing.fade.label)
+  prompt.fadeOut(() => {prompt.clear()})
 }
