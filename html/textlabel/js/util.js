@@ -17,6 +17,22 @@ export function debugPrint(msg) {
   }
 }
 
+// hide an id by name or reference
+export function hideId(id) {
+  if(typeof id == "string") {
+    id = document.getElementById(id)
+  }
+  id.classList.add("hidden")
+}
+
+// show an id by name or reference
+export function showId(id) {
+  if(typeof id == "string") {
+    id = document.getElementById(id)
+  }
+  id.classList.remove("hidden")
+}
+
 // fade out id with optional completion function fired after duration seconds
 // duration defaults to 1s if not set, returns timer token or null
 export function fadeOutId(id, completion, duration) {

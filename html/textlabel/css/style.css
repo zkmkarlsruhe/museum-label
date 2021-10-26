@@ -138,6 +138,10 @@ body {
   user-select: none;
 }
 
+.hidden {
+  display: none;
+}
+
 /* ----- SCALING ----- */
 
 /* Sumo Devices, Huge Screens */

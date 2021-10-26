@@ -99,9 +99,10 @@ window.addEventListener("load", () => {
   }
 })
 
-// show de label on start
+// show de label on start, starts hidden to avoid showing label fade out
 label.setLang("de")
 hideLabel()
+util.showId(label.id)
 
 // ----- transitions -----
 
