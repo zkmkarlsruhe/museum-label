@@ -4,7 +4,7 @@
 
 CHROME=/usr/bin/chromium-browser
 
-HOST=${HOST:-10.10.0.123} # allow override from commandline
+HOST=${HOST:-127.0.0.1} # allow override from commandline
 DIR=digital-displays/textlabel
 URL=http://${HOST}/${DIR}/?host=${HOST}
 
