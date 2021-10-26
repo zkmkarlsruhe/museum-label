@@ -3,7 +3,7 @@
 
 import TEXT from "./text.js"
 
-let debug = true
+let debug = false
 let currentState = "wait"
 
 // osc host & port
@@ -19,6 +19,13 @@ let video = {
 let text = {
   id: document.getElementById("text"),
   text: document.getElementById("text-text")
+}
+
+// transition timing
+const timing = {
+  fade: { // fade times in ms
+    label: 250
+  }
 }
 
 // ----- load -----
@@ -71,8 +78,8 @@ oscPort.on("message", function (message) {
       videoPause()
       fadeOutId(text.id, () => {
         textSetState(state)
-        fadeInId(text.id)
-      })
+        fadeInId(text.id, null, timing.fade.label)
+      }, timing.fade.label)
     }
     currentState = state
   }
@@ -83,8 +90,8 @@ oscPort.on("message", function (message) {
     let index = message.args[0].value
     fadeOutId(text.id, () => {
       textSetState("success", index)
-      fadeInId(text.id)
-    })
+      fadeInId(text.id, null, timing.fade.label)
+    }, timing.fade.label)
   }
 })
 
@@ -149,7 +156,7 @@ function fadeOutId(id, completion, duration) {
   if(typeof id == "string") {
     id = document.getElementById(id)
   }
-  id.style.opacity = id.style.getPropertyValue("--initial-opacity")
+  id.style.opacity = "0%" //id.style.getPropertyValue("--initial-opacity")
   id.style.pointerEvents = "none"
   if(typeof completion == "function") {
     if(typeof duration != "number" || duration < 0) {

@@ -52,8 +52,18 @@ body {
 
 /* ----- animation ----- */
 
-.transition-1s {
+/*.transition-1s {
   transition: 1s;
+  transition-timing-function: ease-in-out;
+}*/
+
+.transition-500ms {
+  transition: 500ms;
+  transition-timing-function: ease-in-out;
+}
+
+.transition-250ms {
+  transition: 250ms;
   transition-timing-function: ease-in-out;
 }
 
