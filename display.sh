@@ -33,7 +33,7 @@ VERBOSE=""
 # check argument and exit with error if not set
 # $1 argument name in error print
 # $2 argument
-function checkarg {
+checkarg() {
   local arg=$2
   local failed=false
   if [ "$arg" = "" ] ; then
