@@ -1,7 +1,7 @@
 #! /bin/sh
 #
-# run script to start basic system for testing,
-# quit LanguageIdentifier app to shutdown everything
+# run script to start server-side system,
+# quit LanguageIdentifier app to shut everything down
 #
 # Copyright (c) 2021 ZKM | Hertz-Lab
 # Dan Wilcox <dan.wilcox@zkm.de>
@@ -78,8 +78,8 @@ function getpid() {
 
 HELP="USAGE: $(basename $0) [OPTIONS]
 
-  run to start basic localhost system for testing,
-  quit LanguageIdentifier app to shutdown everything
+  run server-side language identification & logic,
+  quit LanguageIdentifier app to shut everything down
 
 Options:
   -h,--help              display this help message
