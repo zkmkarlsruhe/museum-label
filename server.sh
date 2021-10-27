@@ -48,7 +48,7 @@ esac
 # check argument and exit with error if not set
 # $1 argument name in error print
 # $2 argument
-function checkarg() {
+function checkarg {
   local arg=$2
   local failed=false
   if [ "$arg" = "" ] ; then
@@ -64,7 +64,7 @@ function checkarg() {
 
 # get the pid by script name, ie. getpidof controller.py -> 16243
 # $1 script or process name
-function getpid() {
+function getpid {
   if [ $PLATFORM = darwin ] ; then
     # pidof is not part of BSD and Darwin is BSD-based
     echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
