@@ -75,7 +75,7 @@ case $CMD in
   start)
     URL=http://${HOST}/${DIR}/?host=${HOST}
     echo "opening $URL"
-    $CHROME --kiosk --noerrdialogs --disable-restore-session-state $URL
+    $CHROME --kiosk --noerrdialogs --disable-restore-session-state $URL 2> /dev/null
     ;;
   stop)
     pkill -o chromium

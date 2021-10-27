@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# run script to start server-side system,
+# macOS/Linux run script to start server-side system,
 # quit LanguageIdentifier app to shut everything down
 #
 # Copyright (c) 2021 ZKM | Hertz-Lab

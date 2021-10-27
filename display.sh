@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# run script to start display client-side system,
+# RPI Linux run script to start display client-side system,
 # quit LanguageIdentifier app to shut everything down
 #
 # Copyright (c) 2021 ZKM | Hertz-Lab
@@ -50,13 +50,8 @@ checkarg() {
 # get the pid by script name, ie. getpidof controller.py -> 16243
 # $1 script or process name
 getpid() {
-  if [ $PLATFORM = darwin ] ; then
-    # pidof is not part of BSD and Darwin is BSD-based
-    echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
-  else
-    # pidof doesn't seem to return pids of python scripts by name
-    echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
-  fi
+  # pidof doesn't seem to return pids of python scripts by name
+  echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
 }
 
 ##### parse command line arguments
@@ -112,11 +107,11 @@ cd $(dirname $0)
 # start sensor
 $SENSOR $VERBOSE --max_distance 250 -e 0.001 -d $HOST &
 sleep 1
-SENSOR_PID=$(getpid tfluna.py)
+SENSOR_PID=$(getpid mini.py)
 echo "sensor: $SENSOR_PID"
 
 # run label & wait
 $LABEL --host $HOST --port $PORT start
 
-# stop
-kill -INT $SENSOR_PID
+# stop, no -INT as script doesn't currently handle INT signal
+kill $SENSOR_PID
