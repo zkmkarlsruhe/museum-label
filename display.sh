@@ -47,6 +47,18 @@ checkarg() {
   fi
 }
 
+# get the pid by script name, ie. getpidof controller.py -> 16243
+# $1 script or process name
+getpid() {
+  if [ $PLATFORM = darwin ] ; then
+    # pidof is not part of BSD and Darwin is BSD-based
+    echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
+  else
+    # pidof doesn't seem to return pids of python scripts by name
+    echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
+  fi
+}
+
 ##### parse command line arguments
 
 HELP="USAGE: $(basename $0) [OPTIONS]
@@ -100,7 +112,7 @@ cd $(dirname $0)
 # start sensor
 $SENSOR $VERBOSE --max_distance 250 -e 0.001 -d $HOST &
 sleep 1
-SENSOR_PID=$(pidof tfluna.py)
+SENSOR_PID=$(getpid tfluna.py)
 echo "sensor: $SENSOR_PID"
 
 # run label & wait

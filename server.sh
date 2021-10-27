@@ -69,8 +69,8 @@ getpid() {
     # pidof is not part of BSD and Darwin is BSD-based
     echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
   else
-    # assume pidof is available...
-    echo $(pidof "$1")
+    # pidof doesn't seem to return pids of python scripts by name
+    echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
   fi
 }
 
