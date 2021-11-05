@@ -1,0 +1,30 @@
+/* Text Animation
+   Dan Wilcox ZKM | Hertz-Lab 2021 */
+
+@font-face {
+  font-family: "UniversNextPro-Bold";
+  src:
+    local("UniversNextPro-Bold"),
+    url("../media/fonts/UniversNextPro-Bold.ttf");
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+
+  font-family: "UniversNextPro-Bold", "Helvetica", sans-serif;
+  color: black;
+
+  background-color: white;
+
+  /* no accidental drag select */
+  user-select: none;
+
+  /* no scroll bounce */
+  position: fixed;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+}
