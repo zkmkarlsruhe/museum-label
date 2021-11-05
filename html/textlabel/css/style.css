@@ -1,7 +1,19 @@
 /* Digital Text Label
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
+@font-face {
+  font-family: "UniversNextPro-Bold";
+  src:
+    local("UniversNextPro-Bold"),
+    url("../media/fonts/UniversNextPro-Bold.ttf");
+}
+
 /* ----- main ----- */
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
 
 html {
   /* stop scroll bounce */
@@ -23,22 +35,14 @@ body {
   background-color: white;
 }
 
-/* ----- video ----- */
-
-#video {
-  position: fixed;
-  top: 0;
-  min-width: 100%;
-  min-height: 100%;
-  z-index: 0;
+canvas {
   display: block;
-  margin-left: 50vw;
-  transform: translate(-50%);
 }
 
-#video-overlay {
+/* ----- p5 canvas ----- */
+
+#sketch {
   z-index: 0;
-  background-color: white;
   opacity: 100%;
 }
 

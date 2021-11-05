@@ -12,8 +12,10 @@
   <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-  <video id="video" src="assets/videoblocks-listen-hear-understand-cycle-training-education.mp4" loop playsinline autoplay muted nocontrols></video>
-  <div id="video-overlay" class="overlay transition-500ms"></div>
+  <div id="sketch" class="transition-500ms">
+      <!-- p5 canvas -->
+  </div>
+  <div id="p5_loading"><!-- dummy --></div>
   <main class="noselect">
     <div id="label" class="overlay transition-250ms hidden">
       <div id="label-text">
@@ -33,6 +35,8 @@
     </div>
   </main>
   <script src="js/osc/osc-browser.min.js" type="text/javascript"></script>
+  <script src="js/p5/p5.js"></script>
+  <script src="js/animation.js"></script>
   <script src="js/script.js" type="module" charset="utf-8"></script>
 </body>
 </html>

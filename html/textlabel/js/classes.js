@@ -41,54 +41,6 @@ class BaseFades {
 
 }
 
-// ----- video -----
-
-// video background layer with overlay
-export class Video extends BaseFades {
-
-  // constructor with fade time in ms
-  constructor(fade) {
-    super(document.getElementById("video"), fade)
-    this.overlay = document.getElementById("video-overlay")
-
-    // fade out overlay after video frame is loaded
-    let self = this
-    this.id.onloadeddata = function() {
-      window.setTimeout(() => {
-        util.fadeOutId(self.overlay, null, self.fade)
-      }, self.fade)
-    }
-  }
-
-  // start video playback (if not playing already)
-  play() {
-    this.id.play()
-  }
-
-  // stop video playback
-  pause() {
-    this.id.pause()
-  }
-
-  // set opacity in percent 0 - 100
-  setOpacity(opacity) {
-    this.overlay.style.opacity = (100 - opacity) + "%"
-  }
-
-  // override
-  fadeOut(callback) {
-    this.setOpacity(0)
-    this.pause()
-  }
-
-  // override
-  fadeIn(callback) {
-    this.play()
-    this.setOpacity(100)
-  }
-
-}
-
 // ----- prompt -----
 
 // interaction prompt text layer

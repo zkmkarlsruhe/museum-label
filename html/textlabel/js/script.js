@@ -2,7 +2,7 @@
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 import TEXT from "./text.js"
-import {Video, Prompt, Label, OSCReceiver} from "./classes.js"
+import {Prompt, Label, OSCReceiver} from "./classes.js"
 import * as util from "./util.js"
 
 // osc host & port
@@ -31,7 +31,6 @@ if("port" in vars) {
 }
 vars = null
 
-const video = new Video(500)
 const prompt = new Prompt(TEXT, 250)
 const label = new Label("assets/label", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
@@ -44,11 +43,11 @@ const receiver = new OSCReceiver(host, port, function(message) {
     util.debugPrint("set state " + state)
     if(state == "wait") {
       label.fadeOut()
-      video.fadeIn()
+      sketch.fadeIn()
       clear()
     }
-    else {  
-      video.fadeOut()
+    else {
+      sketch.fadeOut()
       label.fadeIn()
       setState(state)
       if(state == "timeout") {
@@ -79,14 +78,14 @@ window.addEventListener("load", () => {
       let index = event.keyCode - 48
       let key = TEXT.lang.keys[index]
       if(key < 0) {key = 0}
-      video.fadeOut()
+      sketch.fadeOut()
       if(prompt.state != "success") {
         setState("success")
       }
       setLang(key)
     }
     else if(event.keyCode == 48) { // 0
-      video.fadeIn()
+      sketch.fadeIn()
       label.fadeOut()
       clear()
     }
@@ -118,4 +117,13 @@ function setLang(key) {
 
 function clear() {
   prompt.fadeOut(() => {prompt.clear()})
+}
+
+sketch.fadeOut = () => {
+  util.fadeOutId("sketch", () => {sketch.noLoop()}, 500)
+}
+
+sketch.fadeIn = () => {
+  sketch.loop()
+  util.fadeInId("sketch", null, 500)
 }
