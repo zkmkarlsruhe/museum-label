@@ -83,6 +83,9 @@ class Logic:
     def __del__(self):
         self.osc_send_listen(0)
         self._state_set(State.WAIT)
+        self.proximity.cancel()
+        self.listenTimer.cancel()
+        self.activityTimer.cancel()
 
     # set new state, returns False if already current state
     def _state_set(self, state):
