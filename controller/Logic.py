@@ -48,7 +48,7 @@ class Lang:
         self.index = index
         self.name = name
 
-    def reset_noise():
+    def reset_noise(self):
         self.tries = 0
 
     def is_noise(self):
