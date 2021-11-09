@@ -2,13 +2,23 @@
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 import TEXT from "./text.js"
-import {Prompt, Label, OSCReceiver} from "./classes.js"
+import {Prompt, Status, Label, OSCReceiver, Timer} from "./classes.js"
 import * as util from "./util.js"
 
 // osc host & port
 // note: use IP address or DNS name when connecting external devices
 let host = "localhost"
 let port = 8081
+
+let timer = {
+  prompt: new Timer(() => {
+    prompt.fadeOut()
+    intro = false
+  }, 2500)
+}
+
+// show intro prompt? otherwise prefer smaller status icons
+let intro = true
 
 // ----- main -----
 
@@ -32,6 +42,7 @@ if("port" in vars) {
 vars = null
 
 const prompt = new Prompt(TEXT, 250)
+const status = new Status(TEXT, 250)
 const label = new Label("assets/label", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
@@ -45,14 +56,28 @@ const receiver = new OSCReceiver(host, port, function(message) {
       label.fadeOut()
       sketch.fadeIn()
       clear()
+      intro = true
     }
     else {
       sketch.fadeOut()
       label.fadeIn()
-      setState(state)
+      if(intro) {
+        // wait a bit on transition from animation
+        window.setTimeout(() => {setState(state)}, 750)
+      }
+      else {
+        setState(state)
+      }
       if(state == "timeout") {
         // show en label
-        setLang("en")
+        label.fadeOut(() => {
+          label.setLang("en")
+          label.fadeIn()
+        })
+      }
+      if(intro && (state == "fail" || state == "timeout")) {
+        // fade out and end intro mode
+        timer.prompt.start()
       }
     }
   }
@@ -98,17 +123,37 @@ label.setLang("de")
 // ----- transitions -----
 
 function setState(state) {
-  prompt.fadeOut(() => {
-    prompt.setState(state)
-    prompt.fadeIn()
-  })
+  timer.prompt.stop()
+  if(intro) {
+    prompt.fadeOut(() => {
+      prompt.setState(state)
+      prompt.fadeIn()
+    })
+  }
+  else {
+    prompt.fadeOut()
+    status.fadeOut(() => {
+      status.setState(state)
+      status.fadeIn()
+    })
+  }
 }
 
 function setLang(key) {
-  prompt.fadeOut(() => {
-    prompt.setLang(key)
-    prompt.fadeIn()
-  })
+  timer.prompt.stop()
+  if(intro) {
+    prompt.fadeOut(() => {
+      prompt.setLang(key)
+      prompt.fadeIn(() => {timer.prompt.start()})
+    })
+  }
+  else {
+    prompt.fadeOut()
+    status.fadeOut(() => {
+      status.setLang(prompt.state, key)
+      status.fadeIn()
+    })
+  }
   label.fadeOut(() => {
     label.setLang(key)
     label.fadeIn()
@@ -117,6 +162,8 @@ function setLang(key) {
 
 function clear() {
   prompt.fadeOut(() => {prompt.clear()})
+  status.fadeOut(() => {status.clear()})
+  timer.prompt.stop()
 }
 
 sketch.fadeOut = () => {

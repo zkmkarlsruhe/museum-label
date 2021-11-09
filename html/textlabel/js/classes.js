@@ -59,12 +59,32 @@ export class Prompt extends BaseFades {
     this.text = document.getElementById("prompt-text")
     this.data = data
     this.state = "wait" // current state
+
+    // start hidden to avoid showing empty label
+    this.fadeOut(() => {util.showId(this.id)})
   }
 
   // set text based on state
   setState(state) {
     let html = ""
-    html = state
+    switch(state) {
+      case "wait": break;
+      case "listen":
+        html = "<div class='icon icon-large speak'></div>"
+        break;
+      case "detect":
+        html = "<div class='icon icon-large record'></div>"
+        break;
+      case "success":
+        break;
+      case "fail":
+        html = "<div class='icon icon-large question'></div>"
+        break;
+      case "timeout":
+        html = "<div class='icon icon-large timeout'></div>"
+        break;
+      default: break;
+    }
     this.state = state
     this.text.innerHTML = html
   }
@@ -75,13 +95,76 @@ export class Prompt extends BaseFades {
     let html = ""
     var index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
-    html = this.state + "<br>" + this.data.lang.names[index]
+    html = this.data.lang.names[index]
     this.text.innerHTML = html
   }
 
   // clear text
   clear() {
     this.state = "wait"
+    this.text.innerHTML = ""
+  }
+
+}
+
+// ----- status -----
+
+// interaction state status text layer
+export class Status extends BaseFades {
+
+  // constructor with data object & fade time in ms
+  // data object should be in the following layout:
+  // {
+  //    lang: {
+  //      keys: ["en", "de", ...], <- two-letter ISO lang keys, ie. "en", "de", etc
+  //      names: ["English", "Deutsch", ...] <- localized names
+  //    }
+  // }
+  constructor(data, fade) {
+    super(document.getElementById("status"), fade)
+    this.text = document.getElementById("status-text")
+    this.data = data
+  }
+
+  // set text based on state
+  setState(state) {
+    let html = ""
+    if(this.icons) {
+      html = this.iconForState(state)
+    }
+    switch(state) {
+      case "wait": break;
+      case "listen":
+        html = "<div class='icon icon-small icon-background speak'></div>"
+        break;
+      case "detect":
+        html = "<div class='icon icon-small icon-background record'></div>"
+        break;
+      case "success":
+        break;
+      case "fail":
+        html ="<div class='icon icon-small icon-background question'></div>"
+        break;
+      case "timeout":
+        html = "<div class='icon icon-small icon-background timeout'></div>"
+        break;
+      default: break;
+    }
+    this.text.innerHTML = html
+  }
+
+  // set current state text with language by ISO 639-1 two-letter language key,
+  // ie. "en", "de", etc
+  setLang(state, key) {
+    let html = ""
+    var index = this.data.lang.keys.indexOf(key)
+    if(index < 0) {index = 0}
+    html = this.data.lang.names[index]
+    this.text.innerHTML = html
+  }
+
+  // clear text
+  clear() {
     this.text.innerHTML = ""
   }
 

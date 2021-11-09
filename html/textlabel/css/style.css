@@ -49,6 +49,22 @@ canvas {
 /* ------ prompt ----- */
 
 #prompt {
+  z-index: 2;
+  text-align: center;
+}
+
+#prompt-text {
+  padding: 0.1em 0.25em;
+  font-size: 3em;
+  line-height: 1.25em;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 25px;
+}
+
+/* ------ status ----- */
+
+#status {
   position: fixed;
   top: 1rem;
   right: 5%;
@@ -56,10 +72,9 @@ canvas {
   text-align: right;
 }
 
-#prompt-text {
+#status-text {
   line-height: 1.25em;
-  color: red;
-  background-color: white;
+  /*color: red;*/
 }
 
 /* ----- label ----- */
@@ -111,6 +126,49 @@ canvas {
 .transition-250ms {
   transition: 250ms;
   transition-timing-function: ease-in-out;
+}
+
+/* ----- icons ----- */
+
+.icon {
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.icon-small {
+  height: 2em;
+  width: 2em;
+}
+
+.icon-large {
+  height: 3em;
+  width: 3em;
+}
+
+.icon-background {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+}
+
+.im {
+  background-image: url("../media/images/im.svg");
+}
+
+.speak {
+  background-image: url("../media/images/speak.svg");
+}
+
+.record {
+  background-image: url("../media/images/record.svg");
+}
+
+.question {
+  background-image: url("../media/images/question.svg");
+}
+
+.timeout {
+  background-image: url("../media/images/timeout.svg");
 }
 
 /* ----- general ----- */
