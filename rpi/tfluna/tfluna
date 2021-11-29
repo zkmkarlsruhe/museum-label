@@ -13,7 +13,8 @@
 # Museum“ generously funded by the German Federal Cultural Foundation.
 
 DIR="$(dirname $0)"
+SCRIPT=tfluna.py
 
-source "$DIR"/venv-tfluna/bin/activate
-"$DIR"/tfluna.py $@
+. "$DIR"/venv/bin/activate
+"$DIR"/$SCRIPT $@
 deactivate

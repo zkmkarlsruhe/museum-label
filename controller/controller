@@ -13,7 +13,8 @@
 # Museum“ generously funded by the German Federal Cultural Foundation.
 
 DIR="$(dirname $0)"
+SCRIPT=controller.py
 
-source "$DIR"/venv-controller/bin/activate
-"$DIR"/controller.py $@
+. "$DIR"/venv/bin/activate
+"$DIR"/$SCRIPT $@
 deactivate
