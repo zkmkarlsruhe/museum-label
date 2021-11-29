@@ -18,8 +18,8 @@ The LID display logic controller acts as an OSC (Open Sound Control) server whic
 Dependencies
 ------------
 
-  * Python 3
-  * [python-osc library](https://github.com/attwad/python-osc)
+* Python 3
+* [python-osc library](https://github.com/attwad/python-osc)
 
 Setup
 -----
@@ -53,7 +53,7 @@ The Python script can be called directly without the wrapper script, but require
 
 Aactivate the virtual environment before the first run in a new commandline session:
 
-    source venv-controller/bin/activate
+    source venv/bin/activate
 
 Use:
 
