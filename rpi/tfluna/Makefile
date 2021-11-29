@@ -10,9 +10,9 @@
 # This code has been developed at ZKM | Hertz-Lab as part of „The Intelligent
 # Museum“ generously funded by the German Federal Cultural Foundation.
 
-NAME = controller
+NAME = tfluna
 
-VENV = venv
+VENV = venv-$(NAME)
 VBIN = $(VENV)/bin
 
 PYTHON := python3
