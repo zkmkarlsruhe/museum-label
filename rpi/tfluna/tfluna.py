@@ -120,7 +120,7 @@ class TFLuna:
 
     def __init__(self, dev, rate=115200, verbose=True):
         self.serial = serial.Serial(dev, rate)
-        self.prev_distance = -1 # previous distance in cm
+        self.prev_distance = 0  # previous distance in cm
         self.max_distance = 200 # distance threshold in cm
         self.epsilon = 0.01     # change threshold
         self.interval = 0.1     # sleep idle time in s
@@ -129,7 +129,7 @@ class TFLuna:
         self.senders = []
         self.verbose = verbose
         if self.verbose:
-            print(f"tf luna: created {dev} {rate}")
+            print(f"tfluna: created {dev} {rate}")
 
     # add a distance sender which implements a send(distance) method
     def add_sender(sender):
@@ -139,19 +139,27 @@ class TFLuna:
     def open(self):
         if not self.serial.is_open:
             self.serial.open()
+            if self.verbose:
+                print("tfluna: open")
 
     # close serial port
     def close(self):
         if self.serial.is_open:
             self.serial.close()
+            if self.verbose:
+                print("tfluna: close")
 
     # start synchronous run loop
     def start(self):
         self.is_running = True
+        if self.verbose:
+            print("tfluna: start")
         while self.is_running:
             self.update()
             time.sleep(self.interval)
         self.is_running = False
+        if self.verbose:
+            print("tfuna: stop")
 
     # stop synchronous run loop
     def stop(self):
