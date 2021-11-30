@@ -26,26 +26,29 @@ import argparse
 
 parser = argparse.ArgumentParser(description="TF Luna LIDAR sensor")
 parser.add_argument(
-    "--dev", dest="dev", metavar="DEV"
-    default="/dev/ttyAMA0", help="serial port dev (default: \"/dev/ttyAMA0\")")
+    "--dev", dest="dev", metavar="DEV",
+    default="/dev/ttyAMA0", help="serial port dev (default \"/dev/ttyAMA0\")")
 parser.add_argument(
     "-u", "--use_udp", action="store_true", dest="use_udp",
     default=False, help="whether to use osc or udp")
 parser.add_argument(
-    "-d", "--destination", dest="destination", metavar="HOST"
+    "-d", "--destination", dest="destination", metavar="HOST",
     default="127.0.0.1", help="destination hostname or IP address")
 parser.add_argument(
     "-p", "--port", type=int, dest="port", metavar="PORT",
     default="5005", help="destination port to send to")
 parser.add_argument(
     "-i", "--interval", type=float, dest="interval", metavar="INTERVAL",
-    default=0.1,  help="interval in seconds (default: 0.1 sec)")
+    default=0.1,  help="interval in seconds (default 0.1 sec)")
 parser.add_argument(
     "-e", "--epsilon", type=float, dest="epsilon", metavar="EPSILON",
     default=0.001, help="minimum difference for sending a message")
 parser.add_argument(
     "-m", "--max_distance", type=int, dest="max_distance", metavar="MAX_DISTANCE",
     default=200, help="maximum allowed distance in cm (rest is clipped)")
+args = parser.add_argument(
+    "-n", "--normalize", action="store_true", dest="normalize",
+    help="send normalized values? 0 max distance - 1 close (default false)")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -79,7 +82,7 @@ def clamp_value(value, outmin, outmax):
 
 class UDPSender:
 
-    def __init__(self, addr verbose=True):
+    def __init__(self, addr, verbose=True):
         import socket
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -158,7 +161,7 @@ class TFLuna:
     def update(self):
         count = self.serial.in_waiting
         if count > 4:
-            recv self.serial.read(4)
+            recv = self.serial.read(4)
             self.serial.reset_input_buffer()
 
             # check if input is valid
@@ -175,9 +178,9 @@ class TFLuna:
                     distance = map_value(distance, 0, self.max_distance, 1, 0)
 
                 # send if difference from prev value is large enough
-                if abs(distance - prev_distance) >= self.epsilon:
+                if abs(distance - self.prev_distance) >= self.epsilon:
                     if self.verbose:
-                        print(f"normalized: {distance}")
+                        print(f"{distance}")
                     for sender in self.senders:
                         sender.send(distance)
                     self.prev_distance = distance
@@ -185,7 +188,7 @@ class TFLuna:
 ##### signal
 
 # signal handler for nice exit
-def sigint_handler():
+def sigint_handler(signum, frame):
     tfluna.stop()
 
 ##### main
@@ -206,13 +209,15 @@ if __name__ == '__main__':
 
     # sensor
     tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
+    tfluna.max_distance = args.max_distance
+    tfluna.epsilon = args.epsilon
+    tfluna.interval = args.interval
+    tfluna.normalize = args.normalize
 
     # start
     signal.signal(signal.SIGINT, sigint_handler)
     try:
         tfluna.open()
         tfluna.start()
-    except KeyboardInterrupt: # Ctrl+C
-        tfluna.stop()
     finally:
         tfluna.close()
