@@ -26,7 +26,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="TF Luna LIDAR sensor")
 parser.add_argument(
-    "--dev", dest="dev", metavar="DEV",
+    "dev", metavar="DEV",
     default="/dev/ttyAMA0", help="serial port dev (default \"/dev/ttyAMA0\")")
 parser.add_argument(
     "-u", "--use_udp", action="store_true", dest="use_udp",
