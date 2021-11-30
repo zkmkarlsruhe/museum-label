@@ -1,5 +1,5 @@
 [Unit]
-Description=TF Mini Systemd Service Unit
+Description=TF Luna Systemd Service Unit
 After=network.target
 
 [Service]
