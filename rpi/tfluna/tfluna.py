@@ -206,6 +206,13 @@ class TFLuna:
                 for sender in self.senders:
                     sender.send(distance)
 
+    # print current settings
+    def print(self):
+        print(f"tfluna: max distance {self.max_distance}")
+        print(f"tfluna: epsilon {self.epsilon}")
+        print(f"tfluna: interval {self.interval}")
+        print(f"tfluna: normalize {self.normalize}")
+
 ##### signal
 
 # signal handler for nice exit
@@ -218,8 +225,6 @@ if __name__ == '__main__':
 
     # parse
     args = parser.parse_args()
-    if args.verbose:
-        print(vars(args))
 
     # sender(s)
     sender = None
@@ -250,6 +255,8 @@ if __name__ == '__main__':
     tfluna.interval = args.interval
     tfluna.normalize = args.normalize
     tfluna.add_sender(sender)
+    if args.verbose:
+        tfluna.print()
 
     # start
     signal.signal(signal.SIGINT, sigint_handler)
