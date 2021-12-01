@@ -132,6 +132,7 @@ export class Status extends BaseFades {
     if(this.icons) {
       html = this.iconForState(state)
     }
+    util.showId(this.text)
     switch(state) {
       case "wait": break;
       case "listen":
@@ -141,6 +142,7 @@ export class Status extends BaseFades {
         html = "<div class='icon icon-small icon-background record'></div>"
         break;
       case "success":
+        util.hideId(this.text)
         break;
       case "fail":
         html ="<div class='icon icon-small icon-background question'></div>"

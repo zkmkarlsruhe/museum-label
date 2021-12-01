@@ -1,4 +1,6 @@
-SNAME=tfmini
+#! /bin/sh
+
+SNAME=tfluna
 
 rm $SNAME.service
 

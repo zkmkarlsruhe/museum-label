@@ -31,11 +31,17 @@ Sends TF Luna LIDAR proximity distance measurements over OSC (default) or UDP.
 
 Distance format is cm integer or normalized float (inverted, 1 near to 0 far).
 
-Message format
-  OSC: \"/tfluna\" distance
-  UDP: \"tfluna\" distance
+Message format: message [id] distance
 
-The default "tfluna" message can be overridden via --message.
+  Ex. OSC: "/tfluna" distance
+
+  Ex. UDP: "tfluna" distance
+
+The default "tfluna" message can be overridden via --message. An additional
+device identifier can be added with --id:
+
+  $ --message /proximity --id 2
+  OSC: "/proximity" 2 distance
 ''', formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
     "dev", type=str, nargs="?", metavar="DEV",
@@ -64,6 +70,9 @@ args = parser.add_argument(
 args = parser.add_argument(
     "--message", type=str, nargs="+", dest="message", metavar="MESSAGE",
     default=None, help="set OSC message address or UDP message text")
+args = parser.add_argument(
+    "--id", type=int, dest="devid", metavar="DEVID",
+    default=None, help="set device identifier to include in message: message id distance")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -105,8 +114,11 @@ class UDPSender:
         self.message = "distance" # message text
 
     # send distance value
-    def send(self, distance):
-        message = (self.message + " " + str(distance)).encode()
+    def send(self, distance, devid=None):
+        message = self.message
+        if devid != None:
+            message = " " + str(devid)
+        message = (message + " " + str(distance)).encode()
         self.client.sendto(message, self.addr)
 
     # print settings
@@ -127,8 +139,11 @@ class OSCSender:
         self.address = "/distance" # OSC address
 
     # send distance value
-    def send(self, distance):
-        self.client.send_message(self.address, distance)
+    def send(self, distance, devid=None):
+        if devid == None:
+            self.client.send_message(self.address, distance)
+        else:
+            self.client.send_message(self.address, devid, distance)
 
     # print settings
     def print(self):
@@ -140,9 +155,10 @@ class OSCSender:
 
 class TFLuna:
 
-    # init with dev path/name and optional baud rate or verbosity
-    def __init__(self, dev, rate=115200, verbose=True):
+    # init with dev path/name and optional baud rate, device identifier, or verbosity
+    def __init__(self, dev, rate=115200, devid=None, verbose=True):
         self.serial = serial.Serial(dev, rate)
+        self.devid = devid      # optional device identifier, unrelated to serial dev
         self.prev_distance = 0  # previous distance in cm
         self.max_distance = 200 # distance threshold in cm
         self.epsilon = 2        # change threshold in cm
@@ -154,7 +170,8 @@ class TFLuna:
         if self.verbose:
             print(f"tfluna: created {dev} {rate}")
 
-    # add a distance sender which implements a send(self, distance) method
+    # add a distance sender which implements the following method:
+    # send(self, distance, devid=None)
     def add_sender(self, sender):
         self.senders.append(sender)
 
@@ -217,7 +234,7 @@ class TFLuna:
                 if self.verbose:
                     print(f"tfluna: {distance}")
                 for sender in self.senders:
-                    sender.send(distance)
+                    sender.send(distance, self.devid)
 
     # print settings
     def print(self):

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # grab the PARTUUID from the old cmdline.txt
 PARTUUID=$(grep -E -o 'root=[^ ]*' /boot/cmdline.txt | head -1)" "
