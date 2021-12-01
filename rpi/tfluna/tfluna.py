@@ -222,9 +222,9 @@ if __name__ == '__main__':
     # sender(s)
     sender = None
     if args.udp:
-        sender = UDPSender((args.destination, args.port), args.verbose)
+        sender = UDPSender(addr=(args.destination, args.port), verbose=args.verbose)
     else:
-        sender = OSCSender((args.destination, args.port), args.verbose)
+        sender = OSCSender(addr=(args.destination, args.port), verbose=args.verbose)
 
     # sensor
     tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
