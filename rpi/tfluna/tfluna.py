@@ -232,6 +232,7 @@ if __name__ == '__main__':
     tfluna.epsilon = args.epsilon
     tfluna.interval = args.interval
     tfluna.normalize = args.normalize
+    tfluna.add_sender(sender)
 
     # start
     signal.signal(signal.SIGINT, sigint_handler)
