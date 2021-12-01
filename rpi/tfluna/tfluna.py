@@ -230,7 +230,7 @@ if __name__ == '__main__':
         else:
             sender.message = " ".join(args.message)
         if args.verbose:
-            print(f"udp sender: {addr}")
+            print(f"udp sender: {args.destination} {args.port}")
             print(f"udp sender: sending {sender.message}")
     else:
         sender = OSCSender(addr=(args.destination, args.port))
@@ -239,7 +239,7 @@ if __name__ == '__main__':
         else:
             sender.address = " ".join(args.message)
         if args.verbose:
-            print(f"osc sender: {addr}")
+            print(f"osc sender: {args.destination} {args.port}")
             print(f"osc sender: sending {sender.address}")
 
 
