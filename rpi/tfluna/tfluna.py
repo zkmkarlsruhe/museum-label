@@ -100,9 +100,9 @@ class UDPSender:
         if self.verbose:
             print(f"udp sender: created {addr}")
 
-    def send(distance):
+    def send(self, distance):
         message = ("proximity " + str(distance)).encode()
-        self.client.sendto(message, addr)
+        self.client.sendto(message, self.addr)
         if self.verbose:
             print(f"udp sender: sent {message}")
 
@@ -117,10 +117,10 @@ class OSCSender:
         if self.verbose:
             print(f"osc sender: created {addr}")
 
-    def send(distance):
-        client.send_message("/proximity", distance)
+    def send(self, distance):
+        self.client.send_message("/proximity", distance)
         if self.verbose:
-            print(f"osc sender: sent {message}")
+            print(f"osc sender: sent /proximity {distance}")
 
 ### TFLuna
 
@@ -141,7 +141,7 @@ class TFLuna:
 
     # add a distance sender which implements a send(distance) method
     def add_sender(self, sender):
-        self.senders.push_back(sender)
+        self.senders.append(sender)
 
     # open serial port for reading
     def open(self):
