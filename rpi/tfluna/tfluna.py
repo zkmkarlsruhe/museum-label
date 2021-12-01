@@ -38,7 +38,7 @@ Message format
 Note: The default "proximity" message can be overridden via --message.
 ''', formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
-    "dev", nargs="?", metavar="DEV",
+    "dev", type=str, nargs="?", metavar="DEV",
     default="/dev/ttyAMA0", help="serial port device, default: dev/ttyAMA0")
 parser.add_argument(
     "-u", "--udp", action="store_true", dest="udp",
@@ -51,7 +51,7 @@ parser.add_argument(
     default="5005", help="destination port to send to, default: 5005")
 parser.add_argument(
     "-i", "--interval", type=float, dest="interval", metavar="INTERVAL",
-    default=0.1,  help="read interval in seconds, default: 0.1")
+    default=0.1, help="read interval in seconds, default: 0.1")
 parser.add_argument(
     "-e", "--epsilon", type=int, dest="epsilon", metavar="EPSILON",
     default=1, help="min distance change in cm to send a message, default: 2")
@@ -62,7 +62,7 @@ args = parser.add_argument(
     "-n", "--normalize", action="store_true", dest="normalize",
     help="send normalized values instead of cm: 1 near to 0 far (max distance)")
 args = parser.add_argument(
-    "--message", dest="message", metavar="MESSAGE",
+    "--message", type=str, nargs="+", dest="message", metavar="MESSAGE",
     default="", help="set OSC message address or UDP message text")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
@@ -232,14 +232,14 @@ if __name__ == '__main__':
         sender = UDPSender(addr=(args.destination, args.port), verbose=args.verbose)
         if args.message == "":
             sender.message = "tfluna"
-        else
-            sender.message = args.message
+        else:
+            sender.message = args.message.join(" ")
     else:
         sender = OSCSender(addr=(args.destination, args.port), verbose=args.verbose)
         if args.message == "":
-            sender.message = "/tfluna"
-        else
-            sender.message = args.message
+            sender.address = "/tfluna"
+        else:
+            sender.address = args.message.join(" ")
 
     # sensor
     tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
