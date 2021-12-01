@@ -4,7 +4,7 @@
 # Daniel Heiss <heiss@zkm.de>
 # Marc Schütze <mschuetze@zkm.de>
 #
-# Copyright (c) 2021 KM | Hertz-Labor
+# Copyright (c) 2021 ZKM | Hertz-Labor
 # Dan Wilcox <dan.wilcox@zkm.de>
 # Paul Bethge <bethge@zkm.de>
 #
@@ -21,34 +21,44 @@ import time
 import sys
 import signal
 import argparse
+import socket
+from pythonosc import udp_client
 
 ##### parser
 
-parser = argparse.ArgumentParser(description="TF Luna LIDAR sensor")
+parser = argparse.ArgumentParser(description='''
+Sends TF Luna LIDAR proximity distance measurements over OSC (default) or UDP.
+
+Distance format is cm integer or normalized float (inverted, 1 near to 0 far).
+
+Message format
+  OSC: \"/proximity\" distance
+  UDP: \"proximity\" distance
+''', formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
-    "dev", metavar="DEV",
-    default="/dev/ttyAMA0", help="serial port dev (default \"/dev/ttyAMA0\")")
+    "dev", nargs="?", metavar="DEV",
+    default="/dev/ttyAMA0", help="serial port device, default: dev/ttyAMA0")
 parser.add_argument(
-    "-u", "--use_udp", action="store_true", dest="use_udp",
-    default=False, help="whether to use osc or udp")
+    "-u", "--udp", action="store_true", dest="udp",
+    default=False, help="send raw UDP message instead of OSC")
 parser.add_argument(
     "-d", "--destination", dest="destination", metavar="HOST",
-    default="127.0.0.1", help="destination hostname or IP address")
+    default="127.0.0.1", help="destination hostname or IP address, default: 127.0.0.1")
 parser.add_argument(
     "-p", "--port", type=int, dest="port", metavar="PORT",
-    default="5005", help="destination port to send to")
+    default="5005", help="destination port to send to, default: 5005")
 parser.add_argument(
     "-i", "--interval", type=float, dest="interval", metavar="INTERVAL",
-    default=0.1,  help="interval in seconds (default 0.1 sec)")
+    default=0.1,  help="read interval in seconds, default: 0.1")
 parser.add_argument(
-    "-e", "--epsilon", type=float, dest="epsilon", metavar="EPSILON",
-    default=0.001, help="minimum difference for sending a message")
+    "-e", "--epsilon", type=int, dest="epsilon", metavar="EPSILON",
+    default=1, help="min distance change in cm to send a message, default: 2")
 parser.add_argument(
-    "-m", "--max_distance", type=int, dest="max_distance", metavar="MAX_DISTANCE",
-    default=200, help="maximum allowed distance in cm (rest is clipped)")
+    "-m", "--max-distance", type=int, dest="max_distance", metavar="MAX_DISTANCE",
+    default=200, help="max allowed distance in cm, rest is clipped")
 args = parser.add_argument(
     "-n", "--normalize", action="store_true", dest="normalize",
-    help="send normalized values? 0 max distance - 1 close (default false)")
+    help="send normalized values instead of cm: 1 near to 0 far (max distance)")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -83,7 +93,6 @@ def clamp_value(value, outmin, outmax):
 class UDPSender:
 
     def __init__(self, addr, verbose=True):
-        import socket
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.addr = addr # address pair tuple: (host, port)
@@ -92,7 +101,7 @@ class UDPSender:
             print(f"udp sender: created {addr}")
 
     def send(distance):
-        message = str(distance).encode()
+        message = ("proximity " + str(distance)).encode()
         self.client.sendto(message, addr)
         if self.verbose:
             print(f"udp sender: sent {message}")
@@ -102,7 +111,6 @@ class UDPSender:
 class OSCSender:
 
     def __init__(self, addr, verbose=True):
-        from pythonosc import udp_client
         host,port = addr
         self.client = udp_client.SimpleUDPClient(host, port)
         self.verbose = verbose
@@ -122,7 +130,7 @@ class TFLuna:
         self.serial = serial.Serial(dev, rate)
         self.prev_distance = 0  # previous distance in cm
         self.max_distance = 200 # distance threshold in cm
-        self.epsilon = 0.01     # change threshold
+        self.epsilon = 2        # change threshold in cm
         self.interval = 0.1     # sleep idle time in s
         self.normalize = False  # normalize measured distance?
         self.is_running = True
@@ -210,7 +218,7 @@ if __name__ == '__main__':
 
     # sender(s)
     sender = None
-    if args.use_udp:
+    if args.udp:
         sender = UDPSender((args.destination, args.port), args.verbose)
     else:
         sender = OSCSender((args.destination, args.port), args.verbose)
