@@ -72,7 +72,7 @@ args = parser.add_argument(
     default=None, help="set OSC message address or UDP message text")
 args = parser.add_argument(
     "--id", type=int, dest="devid", metavar="DEVID",
-    default=None, help="set device identifier to include in message: message id distance")
+    default=None, help="set device identifier to include in message")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -117,7 +117,7 @@ class UDPSender:
     def send(self, distance, devid=None):
         message = self.message
         if devid != None:
-            message = " " + str(devid)
+            message = message + " " + str(devid)
         message = (message + " " + str(distance)).encode()
         self.client.sendto(message, self.addr)
 
@@ -143,7 +143,7 @@ class OSCSender:
         if devid == None:
             self.client.send_message(self.address, distance)
         else:
-            self.client.send_message(self.address, devid, distance)
+            self.client.send_message(self.address, [devid, distance])
 
     # print settings
     def print(self):
@@ -158,12 +158,12 @@ class TFLuna:
     # init with dev path/name and optional baud rate, device identifier, or verbosity
     def __init__(self, dev, rate=115200, devid=None, verbose=True):
         self.serial = serial.Serial(dev, rate)
-        self.devid = devid      # optional device identifier, unrelated to serial dev
         self.prev_distance = 0  # previous distance in cm
         self.max_distance = 200 # distance threshold in cm
         self.epsilon = 2        # change threshold in cm
         self.interval = 0.1     # sleep idle time in s
         self.normalize = False  # normalize measured distance?
+        self.devid = devid      # optional device identifier, unrelated to serial dev
         self.is_running = True
         self.senders = []
         self.verbose = verbose
@@ -242,6 +242,7 @@ class TFLuna:
         print(f"tfluna: epsilon {self.epsilon}")
         print(f"tfluna: interval {self.interval}")
         print(f"tfluna: normalize {self.normalize}")
+        print(f"tfluna: device id {self.devid}")
 
 ##### signal
 
@@ -262,6 +263,7 @@ if __name__ == '__main__':
     tfluna.epsilon = args.epsilon
     tfluna.interval = args.interval
     tfluna.normalize = args.normalize
+    tfluna.devid = args.devid
     if args.verbose:
         tfluna.print()
 
