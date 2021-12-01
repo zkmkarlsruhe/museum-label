@@ -189,17 +189,20 @@ class TFLuna:
                 high = int(recv[3])
                 distance = clamp_value(low + high * 256, 0, self.max_distance)
             
-                # map the range to 0.0 (far away) and 1.0 (closest)
+                # ignore if difference from prev value is too small
+                if abs(distance - self.prev_distance) < self.epsilon:
+                    return
+
+                # map to normalized range? 0 far to 1 near
                 if self.normalize:
                     distance = map_value(distance, 0, self.max_distance, 1, 0)
 
-                # send if difference from prev value is large enough
-                if abs(distance - self.prev_distance) >= self.epsilon:
-                    if self.verbose:
-                        print(f"{distance}")
-                    for sender in self.senders:
-                        sender.send(distance)
-                    self.prev_distance = distance
+                # send
+                if self.verbose:
+                    print(f"{distance}")
+                for sender in self.senders:
+                    sender.send(distance)
+                self.prev_distance = distance
 
 ##### signal
 
