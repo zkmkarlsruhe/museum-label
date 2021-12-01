@@ -32,8 +32,10 @@ Sends TF Luna LIDAR proximity distance measurements over OSC (default) or UDP.
 Distance format is cm integer or normalized float (inverted, 1 near to 0 far).
 
 Message format
-  OSC: \"/proximity\" distance
-  UDP: \"proximity\" distance
+  OSC: \"/tfluna\" distance
+  UDP: \"tfluna\" distance
+
+Note: The default "proximity" message can be overridden via --message.
 ''', formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
     "dev", nargs="?", metavar="DEV",
@@ -59,6 +61,9 @@ parser.add_argument(
 args = parser.add_argument(
     "-n", "--normalize", action="store_true", dest="normalize",
     help="send normalized values instead of cm: 1 near to 0 far (max distance)")
+args = parser.add_argument(
+    "--message", dest="message", metavar="MESSAGE",
+    default="", help="set OSC message address or UDP message text")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -96,12 +101,13 @@ class UDPSender:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.addr = addr # address pair tuple: (host, port)
+        self.message = "distance" # message text
         self.verbose = verbose
         if self.verbose:
             print(f"udp sender: created {addr}")
 
     def send(self, distance):
-        message = ("proximity " + str(distance)).encode()
+        message = (self.message + " " + str(distance)).encode()
         self.client.sendto(message, self.addr)
         if self.verbose:
             print(f"udp sender: sent {message}")
@@ -113,14 +119,15 @@ class OSCSender:
     def __init__(self, addr, verbose=True):
         host,port = addr
         self.client = udp_client.SimpleUDPClient(host, port)
+        self.address = "/distance" # OSC address
         self.verbose = verbose
         if self.verbose:
             print(f"osc sender: created {addr}")
 
     def send(self, distance):
-        self.client.send_message("/proximity", distance)
+        self.client.send_message(self.address, distance)
         if self.verbose:
-            print(f"osc sender: sent /proximity {distance}")
+            print(f"osc sender: sent {self.address} {distance}")
 
 ### TFLuna
 
@@ -139,7 +146,7 @@ class TFLuna:
         if self.verbose:
             print(f"tfluna: created {dev} {rate}")
 
-    # add a distance sender which implements a send(distance) method
+    # add a distance sender which implements a send(self, distance) method
     def add_sender(self, sender):
         self.senders.append(sender)
 
@@ -223,8 +230,16 @@ if __name__ == '__main__':
     sender = None
     if args.udp:
         sender = UDPSender(addr=(args.destination, args.port), verbose=args.verbose)
+        if args.message == "":
+            sender.message = "tfluna"
+        else
+            sender.message = args.message
     else:
         sender = OSCSender(addr=(args.destination, args.port), verbose=args.verbose)
+        if args.message == "":
+            sender.message = "/tfluna"
+        else
+            sender.message = args.message
 
     # sensor
     tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
