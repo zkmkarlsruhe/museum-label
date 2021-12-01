@@ -63,7 +63,7 @@ args = parser.add_argument(
     help="send normalized values instead of cm: 1 near to 0 far (max distance)")
 args = parser.add_argument(
     "--message", type=str, nargs="+", dest="message", metavar="MESSAGE",
-    default="", help="set OSC message address or UDP message text")
+    default=None, help="set OSC message address or UDP message text")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -230,16 +230,16 @@ if __name__ == '__main__':
     sender = None
     if args.udp:
         sender = UDPSender(addr=(args.destination, args.port), verbose=args.verbose)
-        if args.message == "":
+        if args.message == None:
             sender.message = "tfluna"
         else:
-            sender.message = args.message.join(" ")
+            sender.message = " ".join(args.message)
     else:
         sender = OSCSender(addr=(args.destination, args.port), verbose=args.verbose)
-        if args.message == "":
+        if args.message == None:
             sender.address = "/tfluna"
         else:
-            sender.address = args.message.join(" ")
+            sender.address = " ".join(args.message)
 
     # sensor
     tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
