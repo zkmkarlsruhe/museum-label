@@ -35,7 +35,7 @@ Message format
   OSC: \"/tfluna\" distance
   UDP: \"tfluna\" distance
 
-Note: The default "proximity" message can be overridden via --message.
+The default "tfluna" message can be overridden via --message.
 ''', formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
     "dev", type=str, nargs="?", metavar="DEV",
@@ -97,42 +97,37 @@ def clamp_value(value, outmin, outmax):
 
 class UDPSender:
 
-    def __init__(self, addr, verbose=True):
+    # init with address pair: (host, port)
+    def __init__(self, addr):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.addr = addr # address pair tuple: (host, port)
+        self.addr = addr
         self.message = "distance" # message text
-        self.verbose = verbose
-        if self.verbose:
-            print(f"udp sender: created {addr}")
 
+    # send distance value
     def send(self, distance):
         message = (self.message + " " + str(distance)).encode()
         self.client.sendto(message, self.addr)
-        if self.verbose:
-            print(f"udp sender: sent {message}")
 
 ### OSC
 
 class OSCSender:
 
-    def __init__(self, addr, verbose=True):
+    # init with address pair: (host, port)
+    def __init__(self, addr):
         host,port = addr
         self.client = udp_client.SimpleUDPClient(host, port)
         self.address = "/distance" # OSC address
-        self.verbose = verbose
-        if self.verbose:
-            print(f"osc sender: created {addr}")
 
+    # send distance value
     def send(self, distance):
         self.client.send_message(self.address, distance)
-        if self.verbose:
-            print(f"osc sender: sent {self.address} {distance}")
 
 ### TFLuna
 
 class TFLuna:
 
+    # init with dev path/name and optional baud rate or verbosity
     def __init__(self, dev, rate=115200, verbose=True):
         self.serial = serial.Serial(dev, rate)
         self.prev_distance = 0  # previous distance in cm
@@ -207,7 +202,7 @@ class TFLuna:
 
                 # send
                 if self.verbose:
-                    print(f"{distance}")
+                    print(f"tfluna: {distance}")
                 for sender in self.senders:
                     sender.send(distance)
 
@@ -229,17 +224,24 @@ if __name__ == '__main__':
     # sender(s)
     sender = None
     if args.udp:
-        sender = UDPSender(addr=(args.destination, args.port), verbose=args.verbose)
+        sender = UDPSender(addr=(args.destination, args.port))
         if args.message == None:
             sender.message = "tfluna"
         else:
             sender.message = " ".join(args.message)
+        if args.verbose:
+            print(f"udp sender: {addr}")
+            print(f"udp sender: sending {sender.message}")
     else:
-        sender = OSCSender(addr=(args.destination, args.port), verbose=args.verbose)
+        sender = OSCSender(addr=(args.destination, args.port))
         if args.message == None:
             sender.address = "/tfluna"
         else:
             sender.address = " ".join(args.message)
+        if args.verbose:
+            print(f"osc sender: {addr}")
+            print(f"osc sender: sending {sender.address}")
+
 
     # sensor
     tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
