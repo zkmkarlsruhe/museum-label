@@ -192,6 +192,7 @@ class TFLuna:
                 # ignore if difference from prev value is too small
                 if abs(distance - self.prev_distance) < self.epsilon:
                     return
+                self.prev_distance = distance
 
                 # map to normalized range? 0 far to 1 near
                 if self.normalize:
@@ -202,7 +203,6 @@ class TFLuna:
                     print(f"{distance}")
                 for sender in self.senders:
                     sender.send(distance)
-                self.prev_distance = distance
 
 ##### signal
 
