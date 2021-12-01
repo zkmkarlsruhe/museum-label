@@ -109,6 +109,12 @@ class UDPSender:
         message = (self.message + " " + str(distance)).encode()
         self.client.sendto(message, self.addr)
 
+    # print settings
+    def print(self):
+        host,port = self.addr
+        print(f"udp sender: {host} {port}")
+        print(f"udp sender: sending {self.message}")
+
 ### OSC
 
 class OSCSender:
@@ -117,11 +123,18 @@ class OSCSender:
     def __init__(self, addr):
         host,port = addr
         self.client = udp_client.SimpleUDPClient(host, port)
+        self.addr = addr
         self.address = "/distance" # OSC address
 
     # send distance value
     def send(self, distance):
         self.client.send_message(self.address, distance)
+
+    # print settings
+    def print(self):
+        host,port = self.addr
+        print(f"osc sender: {host} {port}")
+        print(f"osc sender: sending {self.address}")
 
 ### TFLuna
 
@@ -206,7 +219,7 @@ class TFLuna:
                 for sender in self.senders:
                     sender.send(distance)
 
-    # print current settings
+    # print settings
     def print(self):
         print(f"tfluna: max distance {self.max_distance}")
         print(f"tfluna: epsilon {self.epsilon}")
@@ -226,6 +239,15 @@ if __name__ == '__main__':
     # parse
     args = parser.parse_args()
 
+    # sensor
+    tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
+    tfluna.max_distance = args.max_distance
+    tfluna.epsilon = args.epsilon
+    tfluna.interval = args.interval
+    tfluna.normalize = args.normalize
+    if args.verbose:
+        tfluna.print()
+
     # sender(s)
     sender = None
     if args.udp:
@@ -234,29 +256,15 @@ if __name__ == '__main__':
             sender.message = "tfluna"
         else:
             sender.message = " ".join(args.message)
-        if args.verbose:
-            print(f"udp sender: {args.destination} {args.port}")
-            print(f"udp sender: sending {sender.message}")
     else:
         sender = OSCSender(addr=(args.destination, args.port))
         if args.message == None:
             sender.address = "/tfluna"
         else:
             sender.address = " ".join(args.message)
-        if args.verbose:
-            print(f"osc sender: {args.destination} {args.port}")
-            print(f"osc sender: sending {sender.address}")
-
-
-    # sensor
-    tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
-    tfluna.max_distance = args.max_distance
-    tfluna.epsilon = args.epsilon
-    tfluna.interval = args.interval
-    tfluna.normalize = args.normalize
     tfluna.add_sender(sender)
     if args.verbose:
-        tfluna.print()
+        sender.print()
 
     # start
     signal.signal(signal.SIGINT, sigint_handler)
