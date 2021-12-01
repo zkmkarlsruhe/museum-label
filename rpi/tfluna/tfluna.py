@@ -140,7 +140,7 @@ class TFLuna:
             print(f"tfluna: created {dev} {rate}")
 
     # add a distance sender which implements a send(distance) method
-    def add_sender(sender):
+    def add_sender(self, sender):
         self.senders.push_back(sender)
 
     # open serial port for reading
