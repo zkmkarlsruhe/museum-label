@@ -190,8 +190,8 @@ class TBSender:
             req = requests.post(self.url, json=payload)
             if req.status_code != 200:
                 print(f"tb sender: send error {req.status_code}")
-        except e:
-            print(f"tb sender: send error: {e.what}")
+        except Exception as e:
+            print(f"tb sender: send error: {e}")
 
     # print settings
     def print(self):
@@ -281,7 +281,7 @@ class TFLuna:
                 if self.verbose:
                     print(f"tfluna: {distance}")
                 for sender in self.senders:
-                    sender.send(self, distance, tfluna)
+                    sender.send(distance, self)
 
     # print settings
     def print(self):
