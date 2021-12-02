@@ -23,11 +23,13 @@ import signal
 import argparse
 import socket
 from pythonosc import udp_client
+import requests
 
 ##### parser
 
 parser = argparse.ArgumentParser(description='''
-Sends TF Luna LIDAR proximity distance measurements over OSC (default) or UDP.
+Sends TF Luna LIDAR proximity distance measurements over OSC (default) or UDP
+and optional "isThere" presence events to a ThingsBoard URL.
 
 Distance format is cm integer or normalized float (inverted, 1 near to 0 far).
 
@@ -37,18 +39,28 @@ Message format: message [id] distance
 
   Ex. UDP: "tfluna" distance
 
-The default "tfluna" message can be overridden via --message. An additional
+The default "tfluna" message can be overridden via --message and an additional
 device identifier can be added with --id:
 
   $ --message /proximity --id 2
   OSC: "/proximity" 2 distance
+
+Optionally, a boolean "isThere" event can be sent to a ThingsBoard URL whenever
+someone moves in front or away from the sensor:
+
+  $ --tb-url http://board.mydomain.com/api/v1/TOKEN/telemetry
+  TB: {"isThere": 0}
+
+The default "isThere" message name can be overridden via --tb-message:
+
+  $ --tb-url http://board.mydomain.com/api/v1/TOKEN/telemetry \\
+    --tb-message proximity
+  TB: {"proximity": 0}
+
 ''', formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
     "dev", type=str, nargs="?", metavar="DEV",
     default="/dev/ttyAMA0", help="serial port device, default: dev/ttyAMA0")
-parser.add_argument(
-    "-u", "--udp", action="store_true", dest="udp",
-    default=False, help="send raw UDP message instead of OSC")
 parser.add_argument(
     "-d", "--destination", dest="destination", metavar="HOST",
     default="127.0.0.1", help="destination hostname or IP address, default: 127.0.0.1")
@@ -67,12 +79,21 @@ parser.add_argument(
 args = parser.add_argument(
     "-n", "--normalize", action="store_true", dest="normalize",
     help="send normalized values instead of cm: 1 near to 0 far (max distance)")
+parser.add_argument(
+    "-u", "--udp", action="store_true", dest="udp",
+    default=False, help="send raw UDP message instead of OSC")
 args = parser.add_argument(
     "--message", type=str, nargs="+", dest="message", metavar="MESSAGE",
     default=None, help="set OSC message address or UDP message text")
 args = parser.add_argument(
     "--id", type=int, dest="devid", metavar="DEVID",
     default=None, help="set device identifier to include in message")
+args = parser.add_argument(
+    "--tb-url", type=str, dest="tb_url", metavar="TB_URL",
+    default=None, help="send \"isThere\" message to a ThingsBoard url")
+args = parser.add_argument(
+    "--tb-message", type=str, nargs="+", dest="tb_message", metavar="TB_MESSAGE",
+    default="isThere", help="set ThingsBoard \"isThere\" message name")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
@@ -114,10 +135,8 @@ class UDPSender:
         self.message = "distance" # message text
 
     # send distance value
-    def send(self, distance, devid=None):
-        message = self.message
-        if devid != None:
-            message = message + " " + str(devid)
+    def send(self, distance, tfluna):
+        message = self.message + " " + str(devid) if tfluna.devid else self.message
         message = (message + " " + str(distance)).encode()
         self.client.sendto(message, self.addr)
 
@@ -139,17 +158,45 @@ class OSCSender:
         self.address = "/distance" # OSC address
 
     # send distance value
-    def send(self, distance, devid=None):
-        if devid == None:
-            self.client.send_message(self.address, distance)
-        else:
-            self.client.send_message(self.address, [devid, distance])
+    def send(self, distance, tfluna):
+        args = [tfluna.devid, distance] if tfluna.devid else distance
+        self.client.send_message(self.address, args)
 
     # print settings
     def print(self):
         host,port = self.addr
         print(f"osc sender: {host} {port}")
         print(f"osc sender: sending {self.address}")
+
+### ThingsBoard
+
+# thread sending otherwise requests.post will block?
+class TBSender:
+
+    # init with thingsboard url (including access token) and message name
+    def __init__(self, url, message):
+        self.url = url
+        self.message = message
+        self.is_there = False # is someone/something there? ie. blocking sensor
+
+    # send event on change
+    def send(self, distance, tfluna):
+        is_there = distance < tfluna.max_distance
+        if is_there == self.is_there:
+            return
+        self.is_there = is_there
+        try:
+            payload = {self.message: self.is_there}
+            req = requests.post(self.url, json=payload)
+            if req.status_code != 200:
+                print(f"tb sender: send error {req.status_code}")
+        except e:
+            print(f"tb sender: send error: {e.what}")
+
+    # print settings
+    def print(self):
+        print(f"tb sender: {self.url}")
+        print(f"tb sender: sending {self.message}")
 
 ### TFLuna
 
@@ -158,12 +205,12 @@ class TFLuna:
     # init with dev path/name and optional baud rate, device identifier, or verbosity
     def __init__(self, dev, rate=115200, devid=None, verbose=True):
         self.serial = serial.Serial(dev, rate)
+        self.devid = devid      # optional device identifier, unrelated to serial dev
         self.prev_distance = 0  # previous distance in cm
         self.max_distance = 200 # distance threshold in cm
         self.epsilon = 2        # change threshold in cm
         self.interval = 0.1     # sleep idle time in s
         self.normalize = False  # normalize measured distance?
-        self.devid = devid      # optional device identifier, unrelated to serial dev
         self.is_running = True
         self.senders = []
         self.verbose = verbose
@@ -171,7 +218,7 @@ class TFLuna:
             print(f"tfluna: created {dev} {rate}")
 
     # add a distance sender which implements the following method:
-    # send(self, distance, devid=None)
+    # send(self, distance, tfluna)
     def add_sender(self, sender):
         self.senders.append(sender)
 
@@ -234,15 +281,15 @@ class TFLuna:
                 if self.verbose:
                     print(f"tfluna: {distance}")
                 for sender in self.senders:
-                    sender.send(distance, self.devid)
+                    sender.send(self, distance, tfluna)
 
     # print settings
     def print(self):
+        print(f"tfluna: device id {self.devid}")
         print(f"tfluna: max distance {self.max_distance}")
         print(f"tfluna: epsilon {self.epsilon}")
         print(f"tfluna: interval {self.interval}")
         print(f"tfluna: normalize {self.normalize}")
-        print(f"tfluna: device id {self.devid}")
 
 ##### signal
 
@@ -258,7 +305,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # sensor
-    tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
+    try:
+        tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
+    except Exception as e:
+        print(e)
+        exit(1)
     tfluna.max_distance = args.max_distance
     tfluna.epsilon = args.epsilon
     tfluna.interval = args.interval
@@ -268,22 +319,26 @@ if __name__ == '__main__':
         tfluna.print()
 
     # sender(s)
-    sender = None
     if args.udp:
         sender = UDPSender(addr=(args.destination, args.port))
         if args.message == None:
             sender.message = "tfluna"
         else:
             sender.message = " ".join(args.message)
+        tfluna.add_sender(sender)
     else:
         sender = OSCSender(addr=(args.destination, args.port))
         if args.message == None:
             sender.address = "/tfluna"
         else:
             sender.address = " ".join(args.message)
-    tfluna.add_sender(sender)
+        tfluna.add_sender(sender)
+    if args.tb_url:
+        sender = TBSender(url=args.tb_url, message="".join(args.tb_message))
+        tfluna.add_sender(sender)
     if args.verbose:
-        sender.print()
+        for sender in tfluna.senders:
+            sender.print()
 
     # start
     signal.signal(signal.SIGINT, sigint_handler)
