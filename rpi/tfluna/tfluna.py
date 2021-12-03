@@ -16,14 +16,12 @@
 # Museum“ generously funded by the German Federal Cultural Foundation.
 # -*- coding: utf-8 -*
 
-import serial
+# import serial
 import time
 import sys
 import signal
 import argparse
-import socket
-from pythonosc import udp_client
-import requests
+import luna
 
 ##### parser
 
@@ -98,199 +96,6 @@ args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")
 
-##### math
-
-# map a value within an input range min-max to an output range
-def map_value(value, inmin, inmax, outmin, outmax):
-    # the following is borrowed from openframeworks ofMath.cpp
-    if abs(inmin - inmax) < 0.0001:
-        return outmin
-    else:
-        outval = ((value - inmin) / (inmax - inmin) * (outmax - outmin) + outmin)
-        if outmax < outmin:
-            if outval < outmax:
-                outval = outmax
-            elif outval > outmin:
-                outval = outmin
-        else:
-            if outval > outmax:
-                outval = outmax
-            elif outval < outmin:
-                outval = outmin
-        return outval
-
-# clamp a value to an output range min-max
-def clamp_value(value, outmin, outmax):
-    return max(min(value, outmax), outmin)
-
-### UDP
-
-class UDPSender:
-
-    # init with address pair: (host, port)
-    def __init__(self, addr):
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-        self.client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.addr = addr
-        self.message = "distance" # message text
-
-    # send distance value
-    def send(self, distance, tfluna):
-        message = self.message + " " + str(devid) if tfluna.devid else self.message
-        message = (message + " " + str(distance)).encode()
-        self.client.sendto(message, self.addr)
-
-    # print settings
-    def print(self):
-        host,port = self.addr
-        print(f"udp sender: {host} {port}")
-        print(f"udp sender: sending {self.message}")
-
-### OSC
-
-class OSCSender:
-
-    # init with address pair: (host, port)
-    def __init__(self, addr):
-        host,port = addr
-        self.client = udp_client.SimpleUDPClient(host, port)
-        self.addr = addr
-        self.address = "/distance" # OSC address
-
-    # send distance value
-    def send(self, distance, tfluna):
-        args = [tfluna.devid, distance] if tfluna.devid else distance
-        self.client.send_message(self.address, args)
-
-    # print settings
-    def print(self):
-        host,port = self.addr
-        print(f"osc sender: {host} {port}")
-        print(f"osc sender: sending {self.address}")
-
-### ThingsBoard
-
-# thread sending otherwise requests.post will block?
-class TBSender:
-
-    # init with thingsboard url (including access token) and message name
-    def __init__(self, url, message):
-        self.url = url
-        self.message = message
-        self.is_there = False # is someone/something there? ie. blocking sensor
-
-    # send event on change
-    def send(self, distance, tfluna):
-        is_there = distance < tfluna.max_distance
-        if is_there == self.is_there:
-            return
-        self.is_there = is_there
-        try:
-            payload = {self.message: self.is_there}
-            req = requests.post(self.url, json=payload)
-            if req.status_code != 200:
-                print(f"tb sender: send error {req.status_code}")
-        except Exception as e:
-            print(f"tb sender: send error: {e}")
-
-    # print settings
-    def print(self):
-        print(f"tb sender: {self.url}")
-        print(f"tb sender: sending {self.message}")
-
-### TFLuna
-
-class TFLuna:
-
-    # init with dev path/name and optional baud rate, device identifier, or verbosity
-    def __init__(self, dev, rate=115200, devid=None, verbose=True):
-        self.serial = serial.Serial(dev, rate)
-        self.devid = devid      # optional device identifier, unrelated to serial dev
-        self.prev_distance = 0  # previous distance in cm
-        self.max_distance = 200 # distance threshold in cm
-        self.epsilon = 2        # change threshold in cm
-        self.interval = 0.1     # sleep idle time in s
-        self.normalize = False  # normalize measured distance?
-        self.is_running = True
-        self.senders = []
-        self.verbose = verbose
-        if self.verbose:
-            print(f"tfluna: created {dev} {rate}")
-
-    # add a distance sender which implements the following method:
-    # send(self, distance, tfluna)
-    def add_sender(self, sender):
-        self.senders.append(sender)
-
-    # open serial port for reading
-    def open(self):
-        if not self.serial.is_open:
-            self.serial.open()
-            if self.verbose:
-                print("tfluna: open")
-
-    # close serial port
-    def close(self):
-        if self.serial.is_open:
-            self.serial.close()
-            if self.verbose:
-                print("tfluna: close")
-
-    # start synchronous run loop
-    def start(self):
-        self.is_running = True
-        if self.verbose:
-            print("tfluna: start")
-        while self.is_running:
-            self.update()
-            time.sleep(self.interval)
-        self.is_running = False
-        if self.verbose:
-            print("tfuna: stop")
-
-    # stop synchronous run loop
-    def stop(self):
-        self.is_running = False
-
-    # read one chunk of data, parse into distance value, and send
-    def update(self):
-        count = self.serial.in_waiting
-        if count > 4:
-            recv = self.serial.read(4)
-            self.serial.reset_input_buffer()
-
-            # check if input is valid
-            if recv[0] == 89 and recv[1] == 89:
-                #print(f"{str(recv[0])} {str(recv[1])} {str(recv[2])} {str(recv[3])}")
-
-                # interpret upper two bytes as one 16 bit int
-                low = int(recv[2])
-                high = int(recv[3])
-                distance = clamp_value(low + high * 256, 0, self.max_distance)
-            
-                # ignore if difference from prev value is too small
-                if abs(distance - self.prev_distance) < self.epsilon:
-                    return
-                self.prev_distance = distance
-
-                # map to normalized range? 0 far to 1 near
-                if self.normalize:
-                    distance = map_value(distance, 0, self.max_distance, 1, 0)
-
-                # send
-                if self.verbose:
-                    print(f"tfluna: {distance}")
-                for sender in self.senders:
-                    sender.send(distance, self)
-
-    # print settings
-    def print(self):
-        print(f"tfluna: device id {self.devid}")
-        print(f"tfluna: max distance {self.max_distance}")
-        print(f"tfluna: epsilon {self.epsilon}")
-        print(f"tfluna: interval {self.interval}")
-        print(f"tfluna: normalize {self.normalize}")
-
 ##### signal
 
 # signal handler for nice exit
@@ -306,7 +111,7 @@ if __name__ == '__main__':
 
     # sensor
     try:
-        tfluna = TFLuna(dev=args.dev, verbose=args.verbose)
+        tfluna = luna.TFLuna(dev=args.dev, verbose=args.verbose)
     except Exception as e:
         print(e)
         exit(1)
@@ -320,21 +125,16 @@ if __name__ == '__main__':
 
     # sender(s)
     if args.udp:
-        sender = UDPSender(addr=(args.destination, args.port))
-        if args.message == None:
-            sender.message = "tfluna"
-        else:
-            sender.message = " ".join(args.message)
+        sender = luna.UDPSender(addr=(args.destination, args.port))
+        sender.message = " ".join(args.message) if args.message else "tfluna" 
         tfluna.add_sender(sender)
     else:
-        sender = OSCSender(addr=(args.destination, args.port))
-        if args.message == None:
-            sender.address = "/tfluna"
-        else:
-            sender.address = " ".join(args.message)
+        sender = luna.OSCSender(addr=(args.destination, args.port))
+        sender.address = " ".join(args.message) if args.message else "/tfluna"
         tfluna.add_sender(sender)
     if args.tb_url:
-        sender = TBSender(url=args.tb_url, message="".join(args.tb_message))
+        sender = luna.TBSender(url=args.tb_url)
+        sender.message = "".join(args.tb_message)
         tfluna.add_sender(sender)
     if args.verbose:
         for sender in tfluna.senders:
