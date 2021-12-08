@@ -104,24 +104,29 @@ while [ "$1" != "" ] ; do
   shift 1
 done
 
-echo "host:    $HOST"
-echo "port:    $PORT"
-echo "wsport:  $WSPORT"
-echo "verbose: $VERBOSE"
+
 
 ##### main
 
 cd $(dirname $0)
 
+if [ "$VERBOSE" != "" ] ; then
+  echo "host:    $HOST"
+  echo "port:    $PORT"
+  echo "wsport:  $WSPORT"
+  echo "verbose: $VERBOSE"
+fi
+
 # start sensor
 $SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message /proximity -n $SENSOR_DEV &
 sleep 1
 SENSOR_PID=$(getpid mini.py)
-echo "sensor: $SENSOR_PID"
+if [ "$VERBOSE" != "" ] ; then
+  echo "sensor: $SENSOR_PID"
+fi
 
 # run label & wait
 $LABEL --host $HOST --port $WSPORT start
 
-# stop, no -INT as script doesn't currently handle INT signal
-kill $SENSOR_PID 2>/dev/null || true
-
+# stop
+kill -INT $SENSOR_PID 2>/dev/null || true

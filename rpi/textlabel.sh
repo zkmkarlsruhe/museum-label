@@ -75,13 +75,14 @@ fi
 case $CMD in
   start)
     URL=http://${HOST}/${DIR}/?host=${HOST}
-    echo "opening $URL"
-    $CHROME --kiosk --noerrdialogs --disable-restore-session-state $URL 2> /dev/null
+    #echo "opening $URL"
+    $CHROME --kiosk --noerrdialogs --disable-restore-session-state --use-gl=egl \
+            $URL 2> /dev/null
     ;;
   stop)
     pkill -o chromium
     ;;
   status)
-    exit $(pdiof chromium && echo "0" || echo "1")
+    exit $(pdiof chromium && echo 0 || echo 1)
     ;;
 esac
