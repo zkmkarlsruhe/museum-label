@@ -120,7 +120,7 @@ fi
 # start sensor
 $SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message /proximity -n $SENSOR_DEV &
 sleep 1
-SENSOR_PID=$(getpid mini.py)
+SENSOR_PID=$(getpid tfluna.py)
 if [ "$VERBOSE" != "" ] ; then
   echo "sensor: $SENSOR_PID"
 fi
@@ -130,3 +130,5 @@ $LABEL --host $HOST --port $WSPORT start
 
 # stop
 kill -INT $SENSOR_PID 2>/dev/null || true
+sleep 1
+
