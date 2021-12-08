@@ -35,6 +35,7 @@ Options:
 Commands:
   start        start digital text label
   stop         stop digital text label
+  status       returns 0 if chromium is running or 1 if not
 "
 
 while [ "$1" != "" ] ; do
@@ -79,5 +80,8 @@ case $CMD in
     ;;
   stop)
     pkill -o chromium
+    ;;
+  status)
+    exit $(pdiof chromium && echo "0" || echo "1")
     ;;
 esac
