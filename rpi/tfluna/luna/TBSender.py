@@ -32,7 +32,7 @@ class TBSender:
             return
         self.is_there = is_there
         try:
-            payload = {self.message: self.is_there}
+            payload = {self.message: int(self.is_there == True)}
             req = requests.post(self.url, json=payload)
             if req.status_code != 200:
                 print(f"tb sender: send error {req.status_code}")
