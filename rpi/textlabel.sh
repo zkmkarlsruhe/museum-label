@@ -25,7 +25,7 @@ DIR=digital-displays/textlabel
 USAGE="$(basename $0) [OPTIONS] COMMAND"
 HELP="USAGE: $USAGE
 
-  control digital textlabel in chromium browser
+  run digital textlabel in chromium browser
 
 Options:
   -h,--help    display this help message
@@ -35,7 +35,8 @@ Options:
 Commands:
   start        start digital text label
   stop         stop digital text label
-  status       returns 0 if chromium is running or 1 if not
+  status       returns 0 if chromium is running or 1 if not:
+               textlabel.sh status && echo \"running\"
 "
 
 while [ "$1" != "" ] ; do
@@ -83,6 +84,7 @@ case $CMD in
     pkill -o chromium
     ;;
   status)
-    exit $(pdiof chromium && echo 0 || echo 1)
+    if pgrep chromium >/dev/null ; then exit 0 ; fi
+    exit 1
     ;;
 esac
