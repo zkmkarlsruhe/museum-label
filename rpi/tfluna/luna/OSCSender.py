@@ -25,12 +25,17 @@ class OSCSender:
         self.address = "/distance" # OSC address
 
     # send distance value
+    # TODO: ignore sending until timeout after a send error?
     def send(self, distance, tfluna):
         args = [tfluna.devid, distance] if tfluna.devid else distance
-        self.client.send_message(self.address, args)
+        try:
+            self.client.send_message(self.address, args)
+        except Exception as e:
+            print(f"osc sender: send error: {e}")
 
     # print settings
     def print(self):
         host,port = self.addr
         print(f"osc sender: {host} {port}")
         print(f"osc sender: sending {self.address}")
+

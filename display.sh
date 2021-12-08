@@ -23,9 +23,11 @@ SENSOR=rpi/tfluna/tfluna
 
 # osc and websocket
 HOST=localhost
-PORT=8081
+PORT=5005
+WSPORT=8081
 
 # sensor
+SENSOR_DEV=/dev/ttyAMA1
 VERBOSE=""
 
 ##### functions
@@ -65,8 +67,9 @@ Options:
   -h,--help         display this help message
   --host STR        osc and websocket host address
                     ie. ws://####:8081, default: $HOST
-  --port INT        osc and websocket host port
-                    ie. ws://localhost:####, default: $PORT
+  --wsport INT      websocket host port
+                    ie. ws://localhost:####, default: $WSPORT
+  --port INT        osc host port, default: $PORT
   -v,--verbose      enable verbose sensor printing
 "
 
@@ -86,6 +89,11 @@ while [ "$1" != "" ] ; do
       checkarg "--port" $1
       PORT=$1
       ;;
+    --wsport)
+      shift 1
+      checkarg "--wsport" $1
+      WSPORT=$1
+      ;;
     -v|--verbose)
       VERBOSE="-v"
       ;;
@@ -98,6 +106,7 @@ done
 
 echo "host:    $HOST"
 echo "port:    $PORT"
+echo "wsport:  $WSPORT"
 echo "verbose: $VERBOSE"
 
 ##### main
@@ -105,13 +114,14 @@ echo "verbose: $VERBOSE"
 cd $(dirname $0)
 
 # start sensor
-$SENSOR $VERBOSE --max_distance 250 -e 0.001 -d $HOST &
+$SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message /proximity -n $SENSOR_DEV &
 sleep 1
 SENSOR_PID=$(getpid mini.py)
 echo "sensor: $SENSOR_PID"
 
 # run label & wait
-$LABEL --host $HOST --port $PORT start
+$LABEL --host $HOST --port $WSPORT start
 
 # stop, no -INT as script doesn't currently handle INT signal
-kill $SENSOR_PID
+kill $SENSOR_PID 2>/dev/null || true
+
