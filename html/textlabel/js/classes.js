@@ -74,7 +74,7 @@ export class Prompt extends BaseFades {
         html = "<div class='icon icon-large speak'></div>"
         break;
       case "detect":
-        html = "<div class='icon icon-large record'></div>"
+        html = "<div class='icon icon-large speak'></div>"
         break;
       case "success":
         util.hideId(this.id) // hide until replaced by lang name
@@ -142,7 +142,7 @@ export class Status extends BaseFades {
         html = "<div class='icon icon-small icon-background speak'></div>"
         break;
       case "detect":
-        html = "<div class='icon icon-small icon-background record'></div>"
+        html = "<div class='icon icon-small icon-background speak'></div>"
         break;
       case "success":
         util.hideId(this.text) // hide until replaced by lang name
