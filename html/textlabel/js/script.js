@@ -125,34 +125,27 @@ label.setLang("de")
 function setState(state) {
   timer.prompt.stop()
   if(intro) {
-    prompt.fadeOut(() => {
-      prompt.setState(state)
-      prompt.fadeIn()
-    })
+    prompt.fadeIn()
+    prompt.setState(state)
   }
   else {
     prompt.fadeOut()
-    status.fadeOut(() => {
-      status.setState(state)
-      status.fadeIn()
-    })
+    status.fadeIn()
+    status.setState(state)
   }
 }
 
 function setLang(key) {
   timer.prompt.stop()
   if(intro) {
-    prompt.fadeOut(() => {
-      prompt.setLang(key)
-      prompt.fadeIn(() => {timer.prompt.start()})
-    })
+    prompt.fadeIn()
+    prompt.setLang(key)
+    timer.prompt.start()
   }
   else {
     prompt.fadeOut()
-    status.fadeOut(() => {
-      status.setLang(prompt.state, key)
-      status.fadeIn()
-    })
+    status.fadeIn()
+    status.setLang(prompt.state, key)
   }
   label.fadeOut(() => {
     label.setLang(key)

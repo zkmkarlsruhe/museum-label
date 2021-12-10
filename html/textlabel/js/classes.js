@@ -67,6 +67,7 @@ export class Prompt extends BaseFades {
   // set text based on state
   setState(state) {
     let html = ""
+    util.showId(this.id)
     switch(state) {
       case "wait": break;
       case "listen":
@@ -76,6 +77,7 @@ export class Prompt extends BaseFades {
         html = "<div class='icon icon-large record'></div>"
         break;
       case "success":
+        util.hideId(this.id) // hide until replaced by lang name
         break;
       case "fail":
         html = "<div class='icon icon-large question'></div>"
@@ -97,6 +99,7 @@ export class Prompt extends BaseFades {
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
     this.text.innerHTML = html
+    util.showId(this.id)
   }
 
   // clear text
@@ -142,7 +145,7 @@ export class Status extends BaseFades {
         html = "<div class='icon icon-small icon-background record'></div>"
         break;
       case "success":
-        util.hideId(this.text)
+        util.hideId(this.text) // hide until replaced by lang name
         break;
       case "fail":
         html ="<div class='icon icon-small icon-background question'></div>"
@@ -163,6 +166,7 @@ export class Status extends BaseFades {
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
     this.text.innerHTML = html
+    util.showId(this.text)
   }
 
   // clear text

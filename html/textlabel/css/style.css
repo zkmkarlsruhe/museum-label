@@ -159,6 +159,22 @@ canvas {
   background-image: url("../media/images/speak.svg");
 }
 
+/*.speak {
+  background-position: 50% 100%;
+  animation: speak-anim 2s infinite;
+  width: 300px;
+  height: 300px;
+}
+
+@keyframes speak-anim {
+   0%   {background-image: url("../media/images/speak/speak-frame1.svg");}
+   20%  {background-image: url("../media/images/speak/speak-frame2.svg");}
+   40%  {background-image: url("../media/images/speak/speak-frame3.svg");}
+   60%  {background-image: url("../media/images/speak/speak-frame4.svg");}
+   80%  {background-image: url("../media/images/speak/speak-frame5.svg");}
+   100% {background-image: url("../media/images/speak/speak-frame1.svg");}
+}*/
+
 .record {
   background-image: url("../media/images/record.svg");
 }
