@@ -97,7 +97,8 @@ export class Prompt extends BaseFades {
     let html = ""
     var index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
-    html = this.data.lang.names[index]
+    let name = this.data.lang.names[index]
+    if(name == "") {return} // ignore empty names
     this.text.innerHTML = html
     util.showId(this.id)
   }
@@ -162,9 +163,10 @@ export class Status extends BaseFades {
   // ie. "en", "de", etc
   setLang(state, key) {
     let html = ""
-    var index = this.data.lang.keys.indexOf(key)
+    let index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
-    html = this.data.lang.names[index]
+    let name = this.data.lang.names[index]
+    if(name == "") {return} // ignore empty names
     this.text.innerHTML = html
     util.showId(this.text)
   }
