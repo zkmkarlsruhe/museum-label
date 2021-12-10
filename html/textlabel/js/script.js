@@ -13,7 +13,6 @@ let port = 8081
 let timer = {
   prompt: new Timer(() => {
     prompt.fadeOut()
-    intro = false
   }, 2500)
 }
 
@@ -77,6 +76,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
       }
       if(intro && (state == "fail" || state == "timeout")) {
         // fade out and end intro mode
+        intro = false
         timer.prompt.start()
       }
     }
@@ -140,6 +140,7 @@ function setLang(key) {
   if(intro) {
     prompt.fadeIn()
     prompt.setLang(key)
+    intro = false
     timer.prompt.start()
   }
   else {
