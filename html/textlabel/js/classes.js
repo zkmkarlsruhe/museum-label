@@ -67,15 +67,17 @@ export class Prompt extends BaseFades {
   // set text based on state
   setState(state) {
     let html = ""
+    util.showId(this.id)
     switch(state) {
       case "wait": break;
       case "listen":
         html = "<div class='icon icon-large speak'></div>"
         break;
       case "detect":
-        html = "<div class='icon icon-large record'></div>"
+        html = "<div class='icon icon-large speak'></div>"
         break;
       case "success":
+        util.hideId(this.id) // hide until replaced by lang name
         break;
       case "fail":
         html = "<div class='icon icon-large question'></div>"
@@ -96,7 +98,9 @@ export class Prompt extends BaseFades {
     var index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
+    if(html == "") {return} // ignore empty names
     this.text.innerHTML = html
+    util.showId(this.id)
   }
 
   // clear text
@@ -139,10 +143,10 @@ export class Status extends BaseFades {
         html = "<div class='icon icon-small icon-background speak'></div>"
         break;
       case "detect":
-        html = "<div class='icon icon-small icon-background record'></div>"
+        html = "<div class='icon icon-small icon-background speak'></div>"
         break;
       case "success":
-        util.hideId(this.text)
+        util.hideId(this.text) // hide until replaced by lang name
         break;
       case "fail":
         html ="<div class='icon icon-small icon-background question'></div>"
@@ -159,10 +163,12 @@ export class Status extends BaseFades {
   // ie. "en", "de", etc
   setLang(state, key) {
     let html = ""
-    var index = this.data.lang.keys.indexOf(key)
+    let index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
+    if(html == "") {return} // ignore empty names
     this.text.innerHTML = html
+    util.showId(this.text)
   }
 
   // clear text

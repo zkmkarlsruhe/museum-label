@@ -13,7 +13,6 @@ let port = 8081
 let timer = {
   prompt: new Timer(() => {
     prompt.fadeOut()
-    intro = false
   }, 2500)
 }
 
@@ -77,6 +76,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
       }
       if(intro && (state == "fail" || state == "timeout")) {
         // fade out and end intro mode
+        intro = false
         timer.prompt.start()
       }
     }
@@ -125,34 +125,28 @@ label.setLang("de")
 function setState(state) {
   timer.prompt.stop()
   if(intro) {
-    prompt.fadeOut(() => {
-      prompt.setState(state)
-      prompt.fadeIn()
-    })
+    prompt.fadeIn()
+    prompt.setState(state)
   }
   else {
     prompt.fadeOut()
-    status.fadeOut(() => {
-      status.setState(state)
-      status.fadeIn()
-    })
+    status.fadeIn()
+    status.setState(state)
   }
 }
 
 function setLang(key) {
   timer.prompt.stop()
   if(intro) {
-    prompt.fadeOut(() => {
-      prompt.setLang(key)
-      prompt.fadeIn(() => {timer.prompt.start()})
-    })
+    prompt.fadeIn()
+    prompt.setLang(key)
+    intro = false
+    timer.prompt.start()
   }
   else {
     prompt.fadeOut()
-    status.fadeOut(() => {
-      status.setLang(prompt.state, key)
-      status.fadeIn()
-    })
+    status.fadeIn()
+    status.setLang(prompt.state, key)
   }
   label.fadeOut(() => {
     label.setLang(key)
