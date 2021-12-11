@@ -143,6 +143,7 @@ done
 cd $(dirname "$0")
 
 echo "===== intelligent text label server ====="
+date
 if [ "$VERBOSE" != "" ] ; then
   echo "host:       $HOST"
   echo "inputdev:   $INPUTDEV"

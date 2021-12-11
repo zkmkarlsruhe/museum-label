@@ -112,6 +112,7 @@ done
 cd $(dirname "$0")
 
 echo "===== intelligent text label display ====="
+date
 if [ "$VERBOSE" != "" ] ; then
   echo "host:    $HOST"
   echo "port:    $PORT"
