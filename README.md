@@ -100,6 +100,12 @@ Exec=/usr/bin/lxterminal -e /home/pi/runitl.sh
 Categories=Utilities
 ~~~
 
+### Enable Screen Sharing
+
+Enable the VNC server on the RPI for remote management:
+
+https://www.jimbobbennett.io/screen-sharing-a-raspberry-pi-from-a-mac/
+
 Server
 ------
 
@@ -116,7 +122,7 @@ First, unload built-in Apache just in case:
 sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
 ~~~
 
-#### Installq
+#### Install
 
 _Assumes user account is "intelligentmuseum"._
 
