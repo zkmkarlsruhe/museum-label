@@ -61,7 +61,6 @@ args = parser.parse_args()
 
 # signal handler for nice exit
 def sigint_handler():
-    print("\ncaught signal, exiting...")
     asyncio.get_running_loop().stop()
 
 ##### main
