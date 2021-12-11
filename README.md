@@ -63,3 +63,132 @@ loaf proximity &
 Open webclient index.html files in a web browser.
 
 The proximity loaf sketch is a proximity sensor simualtor which sends proximity sensor values (normalized 0-1) to the controller server.
+
+Display
+-------
+
+### Autostart scripts
+
+Run non-GUI script at user login using cron: `crontab -e`
+
+~~~
+@reboot /home/pi/script
+~~~
+
+Run GUI script using LXDE autostart:
+
+~~~
+mkdir -p ~/.config/lxsession/LXDE-pi
+echo "@sh /home/pi/script" > ~/.config/lxsession/LXDE-pi/autostart
+~~~
+
+Run script in lxterminal via XDG desktop entry:
+
+~~~
+mkdir -p ~/.config/autostart
+touch ~/.config/autostart/itl.desktop
+~~~
+
+add the following to `~/.config/autostart/itl.desktop` which runs the `runitl.sh` script after the user logs into LXDE:
+
+~~~
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=IntelligentTextLabel
+Exec=/usr/bin/lxterminal -e /home/pi/runitl.sh
+Categories=Utilities
+~~~
+
+Server
+------
+
+### Apache
+
+macOS 11 deprecates Apache and it will be removed in future OS versions, so we install from Homebrew
+
+* https://getgrav.org/blog/macos-bigsur-apache-multiple-php-ver
+* https://wpbeaches.com/installing-configuring-apache-on-macos-using-homebrew/
+
+First, unload built-in Apache just in case:
+
+~~~
+sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
+~~~
+
+#### Installq
+
+_Assumes user account is "intelligentmuseum"._
+
+Install:
+~~~
+brew install httpd
+~~~
+
+Edit `/usr/local/etc/httpd/httpd.conf` and change:
+
+~~~
+Listen 80
+~~~
+
+uncomment:
+
+~~~
+LoadModule rewrite_module libexec/apache2/mod_rewrite.so
+~~~
+
+change the user & group:
+
+~~~
+User intelligentmuseum
+Group staff
+~~~
+
+and add:
+
+~~~
+ServerName localhost
+~~~
+
+and change the server document directory:
+
+~~~
+DocumentRoot "/Users/intelligentmuseum/Sites"
+<Directory "/Users/intelligentmuseum/Sites">
+...
+    AllowOverride All
+~~~
+
+uncomment:
+
+~~~
+# Fancy directory listings
+Include /opt/homebrew/etc/httpd/extra/httpd-autoindex.conf
+~~~
+
+and add the following to the end:
+
+~~~
+# Fancy Indexing
+<IfModule mod_autoindex.c>
+IndexOptions FancyIndexing IconHeight=24 IconWidth=24
+</IfModule>
+~~~
+
+Last, make user `Sites` directory for webserver root:
+
+    mkdir -p ~/Sites
+
+### Apache control
+
+Starting:
+
+    brew services start httpd
+
+Stopping:
+
+    brew services stop httpd
+
+Restart apache after making any changes:
+
+    brew services restart httpd
