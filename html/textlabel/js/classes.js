@@ -269,16 +269,37 @@ export class OSCReceiver {
       metadata: true
     })
     this.receiver.on("message", callback)
+    this.receiver.on("error", function(error) {
+      console.error("OSCReceiver: ", error.message)
+    })
+    this.receiver.on("ready", function() {
+      console.log("OSCReceiver: ready")
+    })
+    this.receiver.on("open", function() {
+      console.log("OSCReceiver: open")
+    })
+    this.receiver.on("close", function() {
+      console.log("OSCReceiver: close")
+    })
   }
 
   // start receiving on the websocket
   start() {
-    this.receiver.open()
+    try {
+      this.receiver.open()
+    }
+    catch (error) {
+      console.error("OSCReceiver stop:", error.message)
+    }
   }
 
   // atop receiving on the websocket
   stop() {
     this.receiver.close()
+  }
+
+  reconnect() {
+    
   }
 
 }
