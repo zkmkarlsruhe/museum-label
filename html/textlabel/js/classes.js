@@ -183,41 +183,55 @@ export class Status extends BaseFades {
 // digital artwork text label
 export class Label extends BaseFades {
 
-  // constructor with path to localized work text json files & fade time in ms
-  constructor(jsondir, fade) {
+  // constructor with path to localized work text files & fade time in ms
+  // type denotes file type and data handling:
+  //  * json: dict with title, artist, material, and description keys
+  //  * html: html to insert
+  // json file format example:
+  // {
+  //   "artist": "Jan Mustermann",
+  //   "title": "Musterwerk",
+  //   "material": "interactive skulpture",
+  //   "year": "20xx",
+  //   "description": "description of work"
+  // }
+  constructor(dir, type, fade) {
     super(document.getElementById("label"), fade)
-    this.title = document.getElementById("label-title")
-    this.artist = document.getElementById("label-artist")
-    this.material = document.getElementById("label-material")
-    this.description = document.getElementById("label-description")
-    this.dir = jsondir
+    this.text = document.getElementById("label-text")
+    this.dir = dir
+    this.type = type
+    if(this.type == "json") {
+      this.title = document.getElementById("label-title")
+      this.artist = document.getElementById("label-artist")
+      this.year = document.getElementById("label-year")
+      this.material = document.getElementById("label-material")
+      this.description = document.getElementById("label-description")
+    }
 
     // start hidden to avoid showing initial label fade out
     this.fadeOut(() => {util.showId(this.id)})
   }
 
   // load text by ISO 639-1 two-letter language key, ie. "en", "de", etc
-  // localized text files are named via key, ex. "en.json", and have format:
-  // {
-  //   "artist": "Jan Mustermann",
-  //   "title": "Musterwerk",
-  //   "material": "interactive skulpture",
-  //   "format": "wood, metal, electonics...",
-  //   "year": "20xx",
-  //   "description": "description of work"
-  // }
+  // localized text files are named via key, ex. "en.json" or "de.html"
   setLang(key) {
     this.clear()
-    const path = this.dir + "/" + key + ".json"
+    const path = this.dir + "/" + key + "." + this.type
     let self = this
     let request = new XMLHttpRequest()
     request.onreadystatechange = function() {
       if(this.readyState == 4 && this.status == 200) {
-        let json = JSON.parse(this.responseText)
-        self.title.innerHTML = json.title
-        self.artist.innerHTML = json.artist
-        self.material.innerHTML = json.material
-        self.description.innerHTML = json.description
+        if(self.type == "json") {
+          let json = JSON.parse(this.responseText)
+          self.artist.innerHTML = json.artist
+          self.title.innerHTML = json.title
+          self.year.innerHTML = json.year
+          self.material.innerHTML = json.material
+          self.description.innerHTML = json.description
+        }
+        else {
+          self.text.innerHTML = this.responseText
+        }
       }
     }
     request.open("GET", path, true)
@@ -226,10 +240,16 @@ export class Label extends BaseFades {
 
   // clear text
   clear() {
-    this.title.innerHTML = ""
-    this.artist.innerHTML = ""
-    this.material.innerHTML = ""
-    this.description.innerHTML = ""
+    if(this.type == "json") {
+      this.artist.innerHTML = ""
+      this.title.innerHTML = ""
+      this.year.innerHTML = ""
+      this.material.innerHTML = ""
+      this.description.innerHTML = ""
+    }
+    else {
+      this.text.innerHTML = ""
+    }
   }
 
 }

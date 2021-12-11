@@ -42,7 +42,7 @@ vars = null
 
 const prompt = new Prompt(TEXT, 250)
 const status = new Status(TEXT, 250)
-const label = new Label("assets/label", 250)
+const label = new Label("assets/test", "json", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
     console.log("received osc: ", message)

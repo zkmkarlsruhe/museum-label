@@ -82,13 +82,16 @@ canvas {
 #label {
   z-index: 1;
   opacity: 100%;
-  font-size: 3.75vmin;
+  font-size: 2.75vmin;
 }
 
 #label-text {
   width: 90%;
   margin-left: 5%;
+  margin-bottom: 1.5em;
 }
+
+/* key-specific divs for json data */
 
 .meta-info {
   margin: 1em 0;
@@ -107,9 +110,7 @@ canvas {
   line-height: 1.25em;
 }
 
-#label-material {
-  margin-bottom: 1.5em;
-}
+#label-material {}
 
 /* ----- animation ----- */
 
