@@ -79,7 +79,7 @@ parser.add_argument(
     "-u", "--udp", action="store_true", dest="udp",
     default=False, help="send raw UDP message instead of OSC")
 args = parser.add_argument(
-    "--message", type=str, nargs="+", dest="message", metavar="MESSAGE",
+    "--message", type=str, nargs=1, dest="message", metavar="MESSAGE",
     default=None, help="set OSC message address or UDP message text")
 args = parser.add_argument(
     "--id", type=int, dest="devid", metavar="DEVID",
@@ -88,7 +88,7 @@ args = parser.add_argument(
     "--tb-url", type=str, dest="tb_url", metavar="TB_URL",
     default=None, help="send \"isThere\" message to a ThingsBoard url")
 args = parser.add_argument(
-    "--tb-message", type=str, nargs="+", dest="tb_message", metavar="TB_MESSAGE",
+    "--tb-message", type=str, nargs=1, dest="tb_message", metavar="TB_MESSAGE",
     default="isThere", help="set ThingsBoard \"isThere\" message name")
 args = parser.add_argument(
     "-v", "--verbose", action="store_true", dest="verbose",
@@ -133,6 +133,7 @@ if __name__ == '__main__':
     if args.tb_url:
         sender = luna.TBSender(url=args.tb_url)
         sender.message = "".join(args.tb_message)
+        sender.verbose = args.verbose
         tfluna.add_sender(sender)
     if args.verbose:
         for sender in tfluna.senders:

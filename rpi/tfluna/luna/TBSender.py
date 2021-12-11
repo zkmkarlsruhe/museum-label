@@ -24,6 +24,7 @@ class TBSender:
         self.url = url
         self.message = "isThere" # message name
         self.is_there = False # is someone/something there? ie. blocking sensor
+        self.verbose = False
 
     # send event on change
     def send(self, distance, tfluna):
@@ -31,6 +32,8 @@ class TBSender:
         if is_there == self.is_there:
             return
         self.is_there = is_there
+        if self.verbose:
+            print(f"tb sender: {self.message} {self.is_there}")
         try:
             payload = {self.message: int(self.is_there == True)}
             req = requests.post(self.url, json=payload)

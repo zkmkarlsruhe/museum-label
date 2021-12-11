@@ -58,7 +58,7 @@ getpid() {
 
 ##### parse command line arguments
 
-HELP="USAGE: $(basename $0) [OPTIONS]
+HELP="USAGE: $(basename $0) [OPTIONS] [ARGS]
 
   run to client-side sensor and display,
   quit Chromium to shut everything down
@@ -71,6 +71,9 @@ Options:
                     ie. ws://localhost:####, default: $WSPORT
   --port INT        osc host port, default: $PORT
   -v,--verbose      enable verbose sensor printing
+
+Arguments:
+  Additional arguments are passed to the tfluna sensor script
 "
 
 while [ "$1" != "" ] ; do
@@ -104,8 +107,6 @@ while [ "$1" != "" ] ; do
   shift 1
 done
 
-
-
 ##### main
 
 cd $(dirname $0)
@@ -115,10 +116,10 @@ if [ "$VERBOSE" != "" ] ; then
   echo "port:    $PORT"
   echo "wsport:  $WSPORT"
   echo "verbose: $VERBOSE"
+  echo "sensor args $@ "
 fi
 
-# start sensor
-$SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message /proximity -n $SENSOR_DEV &
+$SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV &
 sleep 1
 SENSOR_PID=$(getpid tfluna.py)
 if [ "$VERBOSE" != "" ] ; then
