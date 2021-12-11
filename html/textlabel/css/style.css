@@ -82,7 +82,7 @@ canvas {
 #label {
   z-index: 1;
   opacity: 100%;
-  font-size: 2.75vmin;
+  font-size: 2.5vmin;
 }
 
 #label-text {
@@ -91,7 +91,7 @@ canvas {
   margin-bottom: 1.5em;
 }
 
-/* key-specific divs for json data */
+/* key-specific div styling for json data */
 
 .meta-info {
   margin: 1em 0;
@@ -111,6 +111,17 @@ canvas {
 }
 
 #label-material {}
+
+/* styling for html data */
+
+/* try to valign title with status-text */
+#label-text h1 {
+  margin-top: 0.5em;
+}
+
+#label-text p {
+  line-height: 1.25em;
+}
 
 /* ----- animation ----- */
 
