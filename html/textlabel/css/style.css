@@ -82,7 +82,7 @@ canvas {
 #label {
   z-index: 1;
   opacity: 100%;
-  font-size: 2.5vmin;
+  font-size: 5vmin;
 }
 
 #label-text {
@@ -120,7 +120,7 @@ canvas {
 }
 
 #label-text p {
-  line-height: 1.25em;
+  line-height: 2.25em;
 }
 
 /* ----- animation ----- */
