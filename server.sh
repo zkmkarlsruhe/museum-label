@@ -20,7 +20,7 @@ set -e
 
 BATON=../baton/baton
 CTLR=./controller/controller
-LID=../LanguageIdentifier/lid
+LANGID=../LanguageIdentifier/langid
 
 # LanguageIdentifier
 CONFIDENCE=0.5
@@ -28,8 +28,8 @@ THRESHOLD=10
 INPUTDEV=0
 INPUTCHAN=1
 
-# osc and websocket recv address
-RECVADDR=localhost
+# osc and websocket host address
+HOST=localhost
 
 # controller
 VERBOSE=""
@@ -83,13 +83,13 @@ HELP="USAGE: $(basename $0) [OPTIONS]
 
 Options:
   -h,--help              display this help message
-  -c,--confidence FLOAT  langid min confidence 0 - 1, default $CONFIDENCE
-  -t,--threshold INT     langid volume threshold 0 - 100, default $THRESHOLD
+  --host STR             controller osc and websocket host address
+                         ie. ws://####:8081, default: $HOST
   -l,--list              list audio input devices and exit
   --inputdev INT         audio input device number, default $INPUTDEV
   --inputchan INT        audio input device channel, default $INPUTCHAN
-  --recvaddr STR         controller osc and websocket receive address
-                         ie. ws://####:8081, default: $RECVADDR
+  -c,--confidence FLOAT  langid min confidence 0 - 1, default $CONFIDENCE
+  -t,--threshold INT     langid volume threshold 0 - 100, default $THRESHOLD
   -v,--verbose           enable verbose controller printing
 "
 
@@ -123,10 +123,10 @@ while [ "$1" != "" ] ; do
       checkarg "--inputchan" $1
       INPUTCHAN=$1
       ;;
-    --recvaddr)
+    --host)
       shift 1
-      checkarg "--recvaddr" $1
-      RECVADDR=$1
+      checkarg "--host" $1
+      HOST=$1
       ;;
     -v|--verbose)
       VERBOSE="-v"
@@ -138,32 +138,45 @@ while [ "$1" != "" ] ; do
   shift 1
 done
 
-echo "confidence: $CONFIDENCE"
-echo "threshold:  $THRESHOLD"
-echo "inputdev:   $INPUTDEV"
-echo "inputchan:  $INPUTCHAN"
-echo "recvaddr:   $RECVADDR"
-echo "verbose:    $VERBOSE"
-
 ##### main
 
+cd $(dirname "$0")
+
+echo "===== intelligent text label server ====="
+if [ "$VERBOSE" != "" ] ; then
+  echo "host:       $HOST"
+  echo "inputdev:   $INPUTDEV"
+  echo "inputchan:  $INPUTCHAN"
+  echo "confidence: $CONFIDENCE"
+  echo "threshold:  $THRESHOLD"
+  echo "verbose:    true"
+fi
+
 # start baton
-$BATON --wshost $RECVADDR &
+echo "===== baton"
+$BATON --wshost $HOST &
 sleep 1
 BATON_PID=$(getpid baton.py)
-echo "baton: $BATON_PID"
+if [ "$VERBOSE" != "" ] ; then
+  echo "baton: $BATON_PID"
+fi
 
 # start controller
-$CTLR --recvaddr $RECVADDR $VERBOSE &
+echo "===== controller"
+$CTLR --recvaddr $HOST $VERBOSE &
 sleep 1
 CTLR_PID=$(getpid controller.py)
-echo "controller: $BATON_PID"
+if [ "$VERBOSE" != "" ] ; then
+  echo "controller: $BATON_PID"
+fi
 
 # run lid & wait
-$LID --inputdev $INPUTDEV --inputchan $INPUTCHAN \
-    -s "$RECVADDR:5005" -c $CONFIDENCE -t $THRESHOLD \
-    --nolisten --autostop
+echo "===== langid"
+$LANGID --inputdev $INPUTDEV --inputchan $INPUTCHAN \
+        -s "$HOST:5005" -c $CONFIDENCE -t $THRESHOLD \
+        --nolisten --autostop
 
 # stop
-kill -INT $CTLR_PID
-kill -INT $BATON_PID
+echo "===== stopping server"
+kill -INT $CTLR_PID 2>/dev/null || true
+kill -INT $BATON_PID 2>/dev/null || true

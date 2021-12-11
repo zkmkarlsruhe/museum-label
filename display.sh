@@ -109,8 +109,9 @@ done
 
 ##### main
 
-cd $(dirname $0)
+cd $(dirname "$0")
 
+echo "===== intelligent text label display ====="
 if [ "$VERBOSE" != "" ] ; then
   echo "host:    $HOST"
   echo "port:    $PORT"
@@ -119,6 +120,7 @@ if [ "$VERBOSE" != "" ] ; then
   echo "sensor args $@ "
 fi
 
+echo "===== sensor"
 $SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV &
 sleep 1
 SENSOR_PID=$(getpid tfluna.py)
@@ -127,9 +129,10 @@ if [ "$VERBOSE" != "" ] ; then
 fi
 
 # run label & wait
+echo "===== label"
 $LABEL --host $HOST --port $WSPORT start
 
 # stop
+echo "===== stopping display"
 kill -INT $SENSOR_PID 2>/dev/null || true
 sleep 1
-
