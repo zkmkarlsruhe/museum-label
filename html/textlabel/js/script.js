@@ -85,6 +85,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
     if(message.args.length == 0 ||
       (message.args[0].type != "f" && message.args[0].type != "i")) {return}
     if(prompt.state == "wait") {return}
+    sketch.fadeOut()
     let index = message.args[0].value
     let key = TEXT.lang.keys[index]
     if(key < 0) {key = 0}
