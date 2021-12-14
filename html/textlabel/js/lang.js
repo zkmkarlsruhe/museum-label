@@ -2,11 +2,11 @@
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 // supported languages
-const text = {
+const lang = {
   lang: {
     keys: ["noise", "zh", "en", "fr", "de", "it", "ru", "es"],
-    names: ["", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "Русский", "Español"]
+    names: ["???", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "Русский", "Español"]
   }
 }
 
-export default text
+export default lang

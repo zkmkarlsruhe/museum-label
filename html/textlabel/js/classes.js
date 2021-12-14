@@ -39,6 +39,16 @@ class BaseFades {
     util.fadeInId(this.id, callback, this.fade)
   }
 
+  // hide immediately
+  hide() {
+    util.hideId(this.id)
+  }
+
+  // show imediately
+  show() {
+    util.showId(this.id)
+  }
+
 }
 
 // ----- prompt -----
@@ -66,7 +76,7 @@ export class Prompt extends BaseFades {
   // set text based on state
   setState(state) {
     let html = ""
-    util.showId(this.id)
+    this.show()
     switch(state) {
       case "wait": break;
       case "listen":
@@ -75,7 +85,7 @@ export class Prompt extends BaseFades {
       case "detect":
         return;
       case "success":
-        util.hideId(this.id) // hide until replaced by lang name
+        this.hide() // hide until replaced by lang name
         break;
       case "fail":
         html = "<div class='icon icon-large question'></div>"
@@ -188,6 +198,22 @@ export class Status extends BaseFades {
 
 }
 
+// ----- confidence -----
+
+// simple confidence value display
+export class Confidence extends BaseFades {
+
+  constructor() {
+    super(document.getElementById("confidence"), 0)
+  }
+
+  /// set current confidence value in percent
+  set(value) {
+    this.id.innerHTML = value + "%"
+  }
+
+}
+
 // ----- label -----
 
 // digital artwork text label
@@ -290,7 +316,10 @@ export class OSCReceiver {
     this.receiver.on("message", this.callback)
     this.receiver.on("error", function(error) {
       // close until next reconnect
-      this.receiver.close();
+      if(this.receiver) {
+        this.receiver.close();
+        this.receiver = null
+      }
     })
     this.receiver.open()
     this.timer = window.setInterval(()=> {

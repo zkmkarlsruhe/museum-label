@@ -2,7 +2,7 @@
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 import LANG from "./LANG.js"
-import {Prompt, Status, Label, OSCReceiver, Timer} from "./classes.js"
+import {Prompt, Status, Confidence, Label, OSCReceiver, Timer} from "./classes.js"
 import * as util from "./util.js"
 
 // osc host & port
@@ -10,11 +10,13 @@ import * as util from "./util.js"
 let host = "localhost"
 let port = 8081
 
-// show intro prompt? otherwise prefer smaller status icons
+// intro control
 let intro = {
-  enabled: true,
+  enabled: true, // show intro?
   timer: new Timer(() => {
+    // done with intro
     prompt.fadeOut()
+    confidence.show()
   }, 5000)
 }
 
@@ -22,6 +24,8 @@ let current = {
   state: "wait",
   lang: ""
 }
+
+//util.setDebug(true)
 
 // ----- main -----
 
@@ -46,6 +50,7 @@ vars = null
 
 const prompt = new Prompt(LANG, 250)
 const status = new Status(LANG, 250)
+const confidence = new Confidence()
 const label = new Label("assets/label", "html", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
@@ -76,15 +81,19 @@ const receiver = new OSCReceiver(host, port, function(message) {
     }
   }
   else if(message.address == "/lang") {
-    if(message.args.length == 0 ||
-      (message.args[0].type != "f" && message.args[0].type != "i")) {return}
+    if(message.args.length < 2 ||
+     (message.args[0].type != "f" && message.args[0].type != "i")) {return}
     if(current.state == "wait") {return}
     sketch.fadeOut()
     let index = message.args[0].value
     let key = LANG.lang.keys[index]
     if(key < 0) {key = 0}
-    util.debugPrint("set lang " + index + " " + key)
-    setLang(key)
+    let con = 50
+    if(message.args.length > 2 && message.args[2].type == "f") {
+      con = Math.round(message.args[2].value * 100)
+    }
+    util.debugPrint("set lang " + index + " " + key + " " + con)
+    setLang(key, con)
   }
 })
 //receiver.onclose = () => {clear()}
@@ -95,16 +104,17 @@ window.addEventListener("load", () => {
 
   // debug key commands
   document.onkeyup = (event) => {
-    if(event.keyCode >= 49 && event.keyCode <= 55) { // 1-7
+    if(event.keyCode >= 48 && event.keyCode <= 55) { // 0-7
       let index = event.keyCode - 48
       let key = LANG.lang.keys[index]
       if(key < 0) {key = 0}
       if(current.state != "success") {
         setup("success")
       }
-      setLang(key)
+      setLang(key, 100)
+      confidence.show()
     }
-    else if(event.keyCode == 48) { // 0
+    else if(event.key == "w") {
       clear()
     }
   }
@@ -128,7 +138,7 @@ function setState(state) {
   }
 }
 
-function setLang(key) {
+function setLang(key, con) {
   intro.timer.stop()
   if(intro.enabled) {
     prompt.fadeIn()
@@ -140,6 +150,7 @@ function setLang(key) {
     prompt.fadeOut()
     status.fadeIn()
   }
+  confidence.set(con)
   status.setLang(current.state, key)
   if(key == current.lang) {return}
   label.fadeOut(() => {
@@ -148,6 +159,7 @@ function setLang(key) {
   })
 }
 
+// fade out animation and set up everything
 function setup(state) {
   sketch.fadeOut()
   label.fadeIn()
@@ -161,8 +173,10 @@ function setup(state) {
   }
 }
 
+// clear everything and fade to animation
 function clear() {
   intro.timer.stop()
+  confidence.hide()
   prompt.fadeOut(() => {prompt.clear()})
   status.fadeOut(() => {status.clear()})
   label.fadeOut()
@@ -171,11 +185,24 @@ function clear() {
   current.state = "wait"
 }
 
+// fade out and stop updating
 sketch.fadeOut = () => {
-  util.fadeOutId("sketch", () => {sketch.noLoop()}, 500)
+  if(sketch.fade) {
+    window.clearTimeout(sketch.fade)
+    sketch.fade = null
+  }
+  sketch.fade = util.fadeOutId("sketch", () => {
+    sketch.noLoop()
+  }, 500)
 }
 
+
+// start updating and fade in
 sketch.fadeIn = () => {
+  if(sketch.fade) {
+    window.clearTimeout(sketch.fade)
+    sketch.fade = null
+  }
   sketch.loop()
   util.fadeInId("sketch", null, 500)
 }
