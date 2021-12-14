@@ -24,6 +24,7 @@ class TBSender:
         self.message = "isThere" # message name
         self.is_there = False # is someone/something there? ie. blocking sensor
         self.verbose = False
+        self.pool = None
         if(threading):
             self.pool = ThreadPoolExecutor(16) # worker thread pool
 
@@ -37,7 +38,7 @@ class TBSender:
             print(f"tb sender: {self.message} {self.is_there}")
         payload = {self.message: int(self.is_there == True)}
         if self.pool:
-            self.pool.submit(self._dosend, (payload))
+            self.pool.submit(self._post, (payload))
         else:
             self._post(payload)
 

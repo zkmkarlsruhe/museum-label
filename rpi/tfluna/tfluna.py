@@ -131,7 +131,7 @@ if __name__ == '__main__':
         sender.address = " ".join(args.message) if args.message else "/tfluna"
         tfluna.add_sender(sender)
     if args.tb_url:
-        sender = luna.TBSender(url=args.tb_url)
+        sender = luna.TBSender(url=args.tb_url, threading=True)
         sender.message = "".join(args.tb_message)
         sender.verbose = args.verbose
         tfluna.add_sender(sender)
