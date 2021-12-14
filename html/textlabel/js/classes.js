@@ -264,21 +264,53 @@ export class OSCReceiver {
   constructor(host, port, callback) {
     this.host = host
     this.port = port
+    this.callback = callback
+    this.onclose = null // reconnect close event callback
+    this.onopen = null // reconnect open event callback
+    this.receiver = null
+    this.timer = null
+  }
+
+  // open the websocket
+  open() {
     this.receiver = new osc.WebSocketPort({
       url: "ws://" + this.host + ":" + this.port,
       metadata: true
     })
-    this.receiver.on("message", callback)
-  }
-
-  // start receiving on the websocket
-  start() {
+    this.receiver.on("message", this.callback)
+    this.receiver.on("error", function(error) {
+      // close until next reconnect
+      this.receiver.close();
+    })
     this.receiver.open()
+    this.timer = window.setInterval(()=> {
+      // check every 5 seconds and try to reconnect
+      if(!this.isOpen()) {
+        this.close()
+        if(this.onclose) {this.onclose()}
+        this.open();
+        if(this.onopen) {this.onopen()}
+      }
+    }, 5000)
   }
 
-  // atop receiving on the websocket
-  stop() {
-    this.receiver.close()
+  // close the websocket
+  close() {
+    if(this.timer) {
+      window.clearTimeout(this.timer)
+      this.timer = null
+    }
+    if(this.receiver) {
+      this.receiver.close()
+      this.receiver = null
+    }
+  }
+
+  // returns true if the websocket is open
+  isOpen() {
+    if(!this.receiver) {return false}
+    return !(this.receiver.socket === undefined ||
+      (this.receiver.socket && this.receiver.socket.readyState === 3))
   }
 
 }

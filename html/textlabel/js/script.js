@@ -52,8 +52,6 @@ const receiver = new OSCReceiver(host, port, function(message) {
     let state = message.args[0].value
     util.debugPrint("set state " + state)
     if(state == "wait") {
-      label.fadeOut()
-      sketch.fadeIn()
       clear()
       intro = true
     }
@@ -93,10 +91,11 @@ const receiver = new OSCReceiver(host, port, function(message) {
     setLang(key)
   }
 })
+receiver.onclose = () => {clear()}
 
 // page load
 window.addEventListener("load", () => {
-  receiver.start()
+  receiver.open()
 
   // debug key commands
   document.onkeyup = (event) => {
@@ -111,8 +110,6 @@ window.addEventListener("load", () => {
       setLang(key)
     }
     else if(event.keyCode == 48) { // 0
-      sketch.fadeIn()
-      label.fadeOut()
       clear()
     }
   }
@@ -156,9 +153,11 @@ function setLang(key) {
 }
 
 function clear() {
+  timer.prompt.stop()
   prompt.fadeOut(() => {prompt.clear()})
   status.fadeOut(() => {status.clear()})
-  timer.prompt.stop()
+  label.fadeOut()
+  sketch.fadeIn()
 }
 
 sketch.fadeOut = () => {
