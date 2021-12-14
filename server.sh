@@ -18,9 +18,9 @@ set -e
 
 ##### variables
 
-BATON=../baton/baton
-CTLR=./controller/controller
-LANGID=../LanguageIdentifier/langid
+BATON=baton/baton
+CTLR=controller/controller
+LANGID=LanguageIdentifier/langid
 
 # LanguageIdentifier
 CONFIDENCE=0.5

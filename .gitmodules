@@ -1,0 +1,6 @@
+[submodule "langid"]
+	path = LanguageIdentifier
+	url = https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/LanguageIdentifier.git
+[submodule "baton"]
+	path = baton
+	url = https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/baton.git
