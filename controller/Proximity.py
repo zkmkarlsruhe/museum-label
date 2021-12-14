@@ -18,7 +18,8 @@ class Proximity:
     def __init__(self, callback, timeoutenter=0.5, timeoutexit=5, threshold=0.5, verbose=False):
         self.value = 0                   # current value 0-1
         self.threshold = threshold       # activation threshold
-        self.timer = None                # debounce timer
+        self.timerenter = None           # enter debounce timer
+        self.timerexit = None            # exit debounce timer
         self.timeoutenter = timeoutenter # enter timeout in seconds
         self.timeoutexit = timeoutexit   # exit timeout in seconds
         self.callback = callback
@@ -26,25 +27,32 @@ class Proximity:
 
     # update sensor value, starts debounce timer if above threshold
     def update(self, value):
-        if self.timer is None:
-            if value >= self.threshold:
-                self.timer = SimpleTimer(self.timeoutexit, self._timeout)
+        if value >= self.threshold:
+            # enter?
+            if self.timerenter is None:
+                self.timerenter = SimpleTimer(self.timeoutenter, self._timeout)
                 if self.verbose:
-                    print("Proximity: started exit timer")
-            else:
-                self.timer = SimpleTimer(self.timeoutenter, self._timeout)
+                    print("Proximity: started enter timer")
+        else:
+            # exit?
+            if self.timerexit is None:
+                self.timerexit = SimpleTimer(self.timeoutenter, self._timeout)
                 if self.verbose:
                     print("Proximity: started enter timer")
         self.value = value
 
-    # cancel debounce timer
+    # cancel debounce timers
     def cancel(self):
-        if self.timer is None:
-            return
-        self.timer.cancel()
-        self.timer = None
-        if self.verbose:
-            print("Proximity: timer cancelled")
+        if self.timerenter:
+            self.timerenter.cancel()
+            self.timerenter = None
+            if self.verbose:
+                print("Proximity: enter timer cancelled")
+        if self.timerexit:
+            self.timerexit.cancel()
+            self.timerexit = None
+            if self.verbose:
+                print("Proximity: exit timer cancelled")
 
     # returns True if proximity is "close"
     def is_close(self):
@@ -53,5 +61,8 @@ class Proximity:
     def _timeout(self):
         if self.verbose:
             print("Proximity: timeout reached, value {self.value}")
-        self.timer = None
+        if self.timerenter:
+            self.timerenter = None
+        if self.timerexit:
+            self.timerexit = None
         self.callback()
