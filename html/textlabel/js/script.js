@@ -204,5 +204,5 @@ sketch.fadeIn = () => {
     sketch.fade = null
   }
   sketch.loop()
-  util.fadeInId("sketch", null, 500)
+  sketch.fade = util.fadeInId("sketch", null, 500)
 }
