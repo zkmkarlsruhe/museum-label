@@ -1,7 +1,7 @@
 controller
 ==========
 
-Language indentification displays logic controller.
+AI-assisted museum label display logic controller.
 
 This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum). 
 
@@ -13,7 +13,7 @@ BSD Simplified License.
 Description
 -----------
 
-The LID display logic controller acts as an OSC (Open Sound Control) server which implements a state machine to control interaction.
+The museum label display logic controller acts as an OSC (Open Sound Control) server which implements a state machine to control interaction.
 
 Dependencies
 ------------

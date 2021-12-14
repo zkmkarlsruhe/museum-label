@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # RPI Linux run script to start display client-side system,
-# quit LanguageIdentifier app to shut everything down
+# quit chromium to shut everything down
 #
 # Copyright (c) 2021 ZKM | Hertz-Lab
 # Dan Wilcox <dan.wilcox@zkm.de>
@@ -60,8 +60,8 @@ getpid() {
 
 HELP="USAGE: $(basename $0) [OPTIONS] [ARGS]
 
-  run to client-side sensor and display,
-  quit Chromium to shut everything down
+  run to museum label client-side sensor and display,
+  quit chromium to shut everything down
 
 Options:
   -h,--help         display this help message
@@ -111,7 +111,7 @@ done
 
 cd $(dirname "$0")
 
-echo "===== intelligent text label display ====="
+echo "===== museum label display ====="
 date
 if [ "$VERBOSE" != "" ] ; then
   echo "host:    $HOST"

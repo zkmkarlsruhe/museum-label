@@ -78,7 +78,7 @@ getpid() {
 
 HELP="USAGE: $(basename $0) [OPTIONS]
 
-  run server-side language identification & logic,
+  run museum label server-side language identification & logic,
   quit LanguageIdentifier app to shut everything down
 
 Options:
@@ -142,7 +142,7 @@ done
 
 cd $(dirname "$0")
 
-echo "===== intelligent text label server ====="
+echo "===== museum label server ====="
 date
 if [ "$VERBOSE" != "" ] ; then
   echo "host:       $HOST"
