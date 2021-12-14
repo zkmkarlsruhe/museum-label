@@ -18,7 +18,7 @@ CHROME=/usr/bin/chromium-browser
 
 HOST=localhost
 PORT=8081
-DIR=digital-displays/textlabel
+DIR=museum-label/textlabel
 
 ##### parse command line arguments
 

@@ -1,34 +1,24 @@
-Digitalized Museum Information
-==============================
+AI-assited Museum Label
+=======================
 
-With this prototype we want to digitize the information flow for the visitors using simple displays.
-There are a lot of use cases for such displays.
+Auto-adaptive, AI-supported museum label with language identification
 
-Use Cases
----------
+This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum). 
 
-* smart, multi-lingual exhibit information: make exhibit information accesible in most common languages.
-* general information: inform about upcoming events or display a heatmap of the current visitor flow
-* simple text: make information more available by translating them into simple text
+Please raise issues, ask questions, throw in ideas or submit code, as this repository is intended to be an open platform to collaboratively improve language identification.
 
-### Low Level Decisions
+Copyright (c) 2021 ZKM | Karlsruhe.  
+Copyright (c) 2021 Paul Bethge.  
+Copyright (c) 2021 Dan Wilcox.  
 
-* Those Peripheral Displays (PD) require a wireless, low-bandwidth, secure communication protocol.
-* To keep things as modular as possible the PDs should not have any logic. 
-* PDs should act as consumers with a one-sided connection.
-* They are controlled by a producer that determines which text to display.
+BSD Simplified License.
 
-### People we miss out on
-
-* people with seeing disabilities
-* people who can not read
+_The following are bare bone notes which will be updated soon._
 
 Implementations
 ---------------
 
 ### LID digitial display system
-
-_These are bare bone notes which will be updated soon._
 
 Basic interaction:
 
