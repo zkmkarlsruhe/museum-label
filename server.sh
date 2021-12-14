@@ -171,11 +171,11 @@ if [ "$VERBOSE" != "" ] ; then
   echo "controller: $BATON_PID"
 fi
 
-# run lid & wait
+# run langid & wait
 echo "===== langid"
 $LANGID --inputdev $INPUTDEV --inputchan $INPUTCHAN \
         -s "$HOST:5005" -c $CONFIDENCE -t $THRESHOLD \
-        --nolisten --autostop
+        --nolisten --autostop -e `pwd`/scripts/sendlangs.sh
 
 # stop
 echo "===== stopping server"
