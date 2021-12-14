@@ -207,6 +207,7 @@ export class Label extends BaseFades {
       this.material = document.getElementById("label-material")
       this.description = document.getElementById("label-description")
     }
+    this.lang = "" // current language key
 
     // start hidden to avoid showing initial label fade out
     this.fadeOut(() => {util.showId(this.id)})
@@ -216,6 +217,7 @@ export class Label extends BaseFades {
   // localized text files are named via key, ex. "en.json" or "de.html"
   setLang(key) {
     this.clear()
+    this.lang = key
     const path = this.dir + "/" + key + "." + this.type
     let self = this
     let request = new XMLHttpRequest()
@@ -250,6 +252,7 @@ export class Label extends BaseFades {
     else {
       this.text.innerHTML = ""
     }
+    this.lang = ""
   }
 
 }

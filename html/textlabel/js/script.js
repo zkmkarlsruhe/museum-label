@@ -10,14 +10,13 @@ import * as util from "./util.js"
 let host = "localhost"
 let port = 8081
 
-let timer = {
-  prompt: new Timer(() => {
-    prompt.fadeOut()
-  }, 2500)
-}
-
 // show intro prompt? otherwise prefer smaller status icons
-let intro = true
+let intro = {
+  enabled: true,
+  timer: new Timer(() => {
+    prompt.fadeOut()
+  }, 5000)
+}
 
 // ----- main -----
 
@@ -53,18 +52,9 @@ const receiver = new OSCReceiver(host, port, function(message) {
     util.debugPrint("set state " + state)
     if(state == "wait") {
       clear()
-      intro = true
     }
     else {
-      sketch.fadeOut()
-      label.fadeIn()
-      if(intro) {
-        // wait a bit on transition from animation
-        window.setTimeout(() => {setState(state)}, 750)
-      }
-      else {
-        setState(state)
-      }
+      setup(state)
       if(state == "timeout") {
         // show en label
         label.fadeOut(() => {
@@ -72,10 +62,10 @@ const receiver = new OSCReceiver(host, port, function(message) {
           label.fadeIn()
         })
       }
-      if(intro && (state == "fail" || state == "timeout")) {
+      if(intro.enabled && (state == "fail" || state == "timeout")) {
         // fade out and end intro mode
-        intro = false
-        timer.prompt.start()
+        intro.enabled = false
+        intro.timer.start()
       }
     }
   }
@@ -91,7 +81,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
     setLang(key)
   }
 })
-receiver.onclose = () => {clear()}
+//receiver.onclose = () => {clear()}
 
 // page load
 window.addEventListener("load", () => {
@@ -103,9 +93,8 @@ window.addEventListener("load", () => {
       let index = event.keyCode - 48
       let key = TEXT.lang.keys[index]
       if(key < 0) {key = 0}
-      sketch.fadeOut()
       if(prompt.state != "success") {
-        setState("success")
+        setup("success")
       }
       setLang(key)
     }
@@ -121,8 +110,8 @@ label.setLang("de")
 // ----- transitions -----
 
 function setState(state) {
-  timer.prompt.stop()
-  if(intro) {
+  intro.timer.stop()
+  if(intro.enabled) {
     prompt.fadeIn()
     prompt.setState(state)
   }
@@ -134,30 +123,45 @@ function setState(state) {
 }
 
 function setLang(key) {
-  timer.prompt.stop()
-  if(intro) {
+  intro.timer.stop()
+  if(intro.enabled) {
     prompt.fadeIn()
     prompt.setLang(key)
-    intro = false
-    timer.prompt.start()
+    intro.enabled = false
+    intro.timer.start()
   }
   else {
     prompt.fadeOut()
     status.fadeIn()
     status.setLang(prompt.state, key)
   }
+  if(key == label.lang) {return}
   label.fadeOut(() => {
     label.setLang(key)
     label.fadeIn()
   })
 }
 
+function setup(state) {
+  sketch.fadeOut()
+  label.fadeIn()
+  if(intro.enabled) {
+    // wait a bit on transition from animation
+    //window.setTimeout(() => {setState(state)}, 750)
+    setState(state)
+  }
+  else {
+    setState(state)
+  }
+}
+
 function clear() {
-  timer.prompt.stop()
+  intro.timer.stop()
   prompt.fadeOut(() => {prompt.clear()})
   status.fadeOut(() => {status.clear()})
   label.fadeOut()
   sketch.fadeIn()
+  intro.enabled = true
 }
 
 sketch.fadeOut = () => {
