@@ -59,7 +59,7 @@ canvas {
   line-height: 1.25em;
   color: white;
   background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 25px;
+  /*border-radius: 25px;*/
 }
 
 /* ------ status ----- */
@@ -160,7 +160,7 @@ canvas {
 
 .icon-background {
   background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 12px;
+  /*border-radius: 12px;*/
 }
 
 .im {
