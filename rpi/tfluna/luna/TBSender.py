@@ -15,6 +15,7 @@
 # TODO: thread sending otherwise requests.post will block?
 
 import requests
+from concurrent.futures import ThreadPoolExecutor
 
 # ThingsBoard message sender
 class TBSender:
@@ -24,6 +25,7 @@ class TBSender:
         self.url = url
         self.message = "isThere" # message name
         self.is_there = False # is someone/something there? ie. blocking sensor
+        this.pool = ThreadPoolExecutor(16)
         self.verbose = False
 
     # send event on change
@@ -34,15 +36,27 @@ class TBSender:
         self.is_there = is_there
         if self.verbose:
             print(f"tb sender: {self.message} {self.is_there}")
+        payload = {self.message: int(self.is_there == True)}
+        this.pool.submit(this._dosend, (self, payload))
+        # try:
+        #     payload = {self.message: int(self.is_there == True)}
+        #     req = requests.post(self.url, json=payload)
+        #     if req.status_code != 200:
+        #         print(f"tb sender: send error {req.status_code}")
+        # except Exception as e:
+        #     print(f"tb sender: send error: {e}")
+
+    # print settings
+    def print(self):
+        print(f"tb sender: {self.url}")
+        print(f"tb sender: sending {self.message}")
+
+    # send the actual request
+    def _dosend(self, payload):
         try:
-            payload = {self.message: int(self.is_there == True)}
             req = requests.post(self.url, json=payload)
             if req.status_code != 200:
                 print(f"tb sender: send error {req.status_code}")
         except Exception as e:
             print(f"tb sender: send error: {e}")
 
-    # print settings
-    def print(self):
-        print(f"tb sender: {self.url}")
-        print(f"tb sender: sending {self.message}")
