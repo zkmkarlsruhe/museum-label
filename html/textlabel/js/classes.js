@@ -70,11 +70,10 @@ export class Prompt extends BaseFades {
     switch(state) {
       case "wait": break;
       case "listen":
-        html = "<div class='icon icon-large speak'></div>"
+        html = "<div class='icon icon-large lang'></div>"
         break;
       case "detect":
-        html = "<div class='icon icon-large speak'></div>"
-        break;
+        return;
       case "success":
         util.hideId(this.id) // hide until replaced by lang name
         break;
@@ -125,31 +124,43 @@ export class Status extends BaseFades {
     super(document.getElementById("status"), fade)
     this.text = document.getElementById("status-text")
     this.data = data
+    this.recordtimer = new Timer(() => {
+      if(util.isIdHidden("record")) {
+        util.showId("record")
+      }
+      else {
+        util.hideId("record")
+      }
+    }, 1000)
   }
 
   // set text based on state
   setState(state) {
     let html = ""
-    if(this.icons) {
-      html = this.iconForState(state)
-    }
     util.showId(this.text)
     switch(state) {
       case "wait": break;
       case "listen":
-        html = "<div class='icon icon-small icon-background speak'></div>"
+        this.recordtimer.stop()
+        if(!document.getElementById("record")) {
+          return
+        }
         break;
       case "detect":
-        html = "<div class='icon icon-small icon-background speak'></div>"
+        html = "<div id=\"record\" class='icon icon-small status-icon record-black'></div>"
+        this.recordtimer.repeat()
         break;
       case "success":
+        this.recordtimer.stop()
         util.hideId(this.text) // hide until replaced by lang name
         break;
       case "fail":
-        html ="<div class='icon icon-small icon-background question'></div>"
+        this.recordtimer.stop()
+        html ="<div class='icon icon-small status-icon question-black'></div>"
         break;
       case "timeout":
-        html = "<div class='icon icon-small icon-background timeout'></div>"
+        this.recordtimer.stop()
+        html = "<div class='icon icon-small status-icon timeout-black'></div>"
         break;
       default: break;
     }
@@ -159,6 +170,7 @@ export class Status extends BaseFades {
   // set current state text with language by ISO 639-1 two-letter language key,
   // ie. "en", "de", etc
   setLang(state, key) {
+    this.recordtimer.stop()
     let html = ""
     let index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
@@ -170,6 +182,7 @@ export class Status extends BaseFades {
 
   // clear text
   clear() {
+    this.recordtimer.stop()
     this.text.innerHTML = ""
   }
 
@@ -322,20 +335,35 @@ export class Timer {
     this.callback = callback
     this.delay = delay
     this.timer = null
+    this.type = null
   }
 
   // (re)start timer
   start() {
     stop()
+    this.type = "oneshot"
     this.timer = window.setTimeout(this._timeout.bind(this), this.delay)
+  }
+
+  // (re)start repeating timer
+  repeat() {
+    stop()
+    this.type = "repeat"
+    this.timer = window.setInterval(this._timeout.bind(this), this.delay)
   }
 
   // stop currently running timer
   stop() {
     if(this.timer) {
-      window.clearTimeout(this.timer)
+      if(this.type == "oneshot") {
+        window.clearTimeout(this.timer)
+      }
+      else if(this.type == "repeat") {
+        window.clearInterval(this.timer)
+      }
       this.timer = null
     }
+    this.type = null
   }
 
   // returns true if the timer is running
@@ -346,7 +374,9 @@ export class Timer {
   // internal callback, do not use directly
   _timeout() {
     this.callback()
-    this.timer = null
+    if(this.type == "oneshot") {
+      this.timer = null
+    }
   }
 
 }

@@ -66,15 +66,21 @@ canvas {
 
 #status {
   position: fixed;
-  top: 1rem;
+  top: 0.75em;
   right: 5%;
   z-index: 2;
   text-align: right;
 }
 
 #status-text {
-  line-height: 1.25em;
+  /*line-height: 1.25em;*/
   /*color: red;*/
+}
+
+.status-icon {
+  position: absolute;
+  top: -0.5em;
+  right: -0.5em
 }
 
 /* ----- label ----- */
@@ -98,7 +104,7 @@ canvas {
 }
 
 #label-title {
-  font-size: 4.25vmin;
+  font-size: 5vmin;
   font-weight: bold;
 }
 
@@ -116,7 +122,7 @@ canvas {
 
 /* try to valign title with status-text */
 #label-text h1 {
-  margin-top: 0.5em;
+  margin-top: 0.45em;
 }
 
 #label-text p {
@@ -171,32 +177,32 @@ canvas {
   background-image: url("../media/images/speak.svg");
 }
 
-/*.speak {
-  background-position: 50% 100%;
-  animation: speak-anim 2s infinite;
-  width: 300px;
-  height: 300px;
+.lang {
+  background-image: url("../media/images/lang.svg");
 }
 
-@keyframes speak-anim {
-   0%   {background-image: url("../media/images/speak/speak-frame1.svg");}
-   20%  {background-image: url("../media/images/speak/speak-frame2.svg");}
-   40%  {background-image: url("../media/images/speak/speak-frame3.svg");}
-   60%  {background-image: url("../media/images/speak/speak-frame4.svg");}
-   80%  {background-image: url("../media/images/speak/speak-frame5.svg");}
-   100% {background-image: url("../media/images/speak/speak-frame1.svg");}
-}*/
+.lang-black {
+  background-image: url("../media/images/lang-black.svg");
+}
 
-.record {
-  background-image: url("../media/images/record.svg");
+.record-black {
+  background-image: url("../media/images/record-black.svg");
 }
 
 .question {
   background-image: url("../media/images/question.svg");
 }
 
+.question-black {
+  background-image: url("../media/images/question-black.svg");
+}
+
 .timeout {
   background-image: url("../media/images/timeout.svg");
+}
+
+.timeout-black {
+  background-image: url("../media/images/timeout-black.svg");
 }
 
 /* ----- general ----- */

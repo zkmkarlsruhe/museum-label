@@ -139,8 +139,8 @@ function setLang(key) {
   else {
     prompt.fadeOut()
     status.fadeIn()
-    status.setLang(current.state, key)
   }
+  status.setLang(current.state, key)
   if(key == current.lang) {return}
   label.fadeOut(() => {
     label.setLang(key)

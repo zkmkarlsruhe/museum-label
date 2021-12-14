@@ -33,6 +33,14 @@ export function showId(id) {
   id.classList.remove("hidden")
 }
 
+// returns true if id is hidden
+export function isIdHidden(id) {
+  if(typeof id == "string") {
+    id = document.getElementById(id)
+  }
+  return id.classList.contains("hidden")
+}
+
 // fade out id with optional completion function fired after duration seconds
 // duration defaults to 1s if not set, returns timer token or null
 export function fadeOutId(id, completion, duration) {
