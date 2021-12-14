@@ -164,11 +164,11 @@ fi
 
 # start controller
 echo "===== controller"
-$CTLR --recvaddr $HOST -l 1 $VERBOSE &
+$CTLR --recvaddr $HOST $VERBOSE &
 sleep 1
 CTLR_PID=$(getpid controller.py)
 if [ "$VERBOSE" != "" ] ; then
-  echo "controller: $BATON_PID"
+  echo "controller: $CTLR_PID"
 fi
 
 # run langid & wait

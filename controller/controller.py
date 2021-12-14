@@ -49,7 +49,7 @@ parser.add_argument(
 
 parser.add_argument(
     "-l,--listen-timeout", action="store", dest="ltimeout",
-    default=5, type=int, help="listen restart timeout in s, default: 5")
+    default=1, type=int, help="listen restart timeout in s, default: 1")
 
 parser.add_argument("-v", "--verbose", action="store_true", dest="verbose",
     help="enable verbose printing")

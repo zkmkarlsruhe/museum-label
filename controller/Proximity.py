@@ -10,25 +10,31 @@
 
 from Timer import SimpleTimer
 
-# proximity sensor with debounce timer
+# proximity sensor with enter/exit debounce timer
 class Proximity:
 
     # create with callback to invoke,
-    # optionally set debounce timeout in s, threshold 0-1, and/or verbose printing
-    def __init__(self, callback, timeout=2, threshold=0.5, verbose=False):
-        self.value = 0             # current value 0-1
-        self.threshold = threshold # activation threshold
-        self.timer = None          # debounce timer
-        self.timeout = timeout     # debounce timeout in seconds
+    # optionally set debounce timeouts in s, threshold 0-1, and/or verbose printing
+    def __init__(self, callback, timeoutenter=0.5, timeoutexit=5, threshold=0.5, verbose=False):
+        self.value = 0                   # current value 0-1
+        self.threshold = threshold       # activation threshold
+        self.timer = None                # debounce timer
+        self.timeoutenter = timeoutenter # enter timeout in seconds
+        self.timeoutexit = timeoutexit   # exit timeout in seconds
         self.callback = callback
         self.verbose = verbose
 
     # update sensor value, starts debounce timer if above threshold
     def update(self, value):
-        if value >= self.threshold and self.timer is None:
-            self.timer = SimpleTimer(self.timeout, self._timeout)
-            if self.verbose:
-                print("Proximity: started timer")
+        if self.timer is None:
+            if value >= self.threshold:
+                self.timer = SimpleTimer(self.timeoutexit, self._timeout)
+                if self.verbose:
+                    print("Proximity: started exit timer")
+            else:
+                self.timer = SimpleTimer(self.timeoutenter, self._timeout)
+                if self.verbose:
+                    print("Proximity: started enter timer")
         self.value = value
 
     # cancel debounce timer
