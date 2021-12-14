@@ -1,7 +1,7 @@
 /* Digital Text Label
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
-import TEXT from "./text.js"
+import LANG from "./LANG.js"
 import {Prompt, Status, Label, OSCReceiver, Timer} from "./classes.js"
 import * as util from "./util.js"
 
@@ -44,8 +44,8 @@ if("port" in vars) {
 }
 vars = null
 
-const prompt = new Prompt(TEXT, 250)
-const status = new Status(TEXT, 250)
+const prompt = new Prompt(LANG, 250)
+const status = new Status(LANG, 250)
 const label = new Label("assets/label", "html", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
@@ -81,7 +81,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
     if(current.state == "wait") {return}
     sketch.fadeOut()
     let index = message.args[0].value
-    let key = TEXT.lang.keys[index]
+    let key = LANG.lang.keys[index]
     if(key < 0) {key = 0}
     util.debugPrint("set lang " + index + " " + key)
     setLang(key)
@@ -97,7 +97,7 @@ window.addEventListener("load", () => {
   document.onkeyup = (event) => {
     if(event.keyCode >= 49 && event.keyCode <= 55) { // 1-7
       let index = event.keyCode - 48
-      let key = TEXT.lang.keys[index]
+      let key = LANG.lang.keys[index]
       if(key < 0) {key = 0}
       if(current.state != "success") {
         setup("success")
