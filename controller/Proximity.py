@@ -27,7 +27,7 @@ class Proximity:
 
     # update sensor value, starts debounce timer if above threshold
     def update(self, value):
-        if value >= self.threshold:
+        if value < self.threshold:
             # enter?
             if self.timerenter is None:
                 self.timerenter = SimpleTimer(self.timeoutenter, self._timeout)
