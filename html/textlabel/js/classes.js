@@ -58,7 +58,6 @@ export class Prompt extends BaseFades {
     super(document.getElementById("prompt"), fade)
     this.text = document.getElementById("prompt-text")
     this.data = data
-    this.state = "wait" // current state
 
     // start hidden to avoid showing empty label
     this.fadeOut(() => {util.showId(this.id)})
@@ -87,7 +86,6 @@ export class Prompt extends BaseFades {
         break;
       default: break;
     }
-    this.state = state
     this.text.innerHTML = html
   }
 
@@ -105,7 +103,6 @@ export class Prompt extends BaseFades {
 
   // clear text
   clear() {
-    this.state = "wait"
     this.text.innerHTML = ""
   }
 
@@ -207,7 +204,6 @@ export class Label extends BaseFades {
       this.material = document.getElementById("label-material")
       this.description = document.getElementById("label-description")
     }
-    this.lang = "" // current language key
 
     // start hidden to avoid showing initial label fade out
     this.fadeOut(() => {util.showId(this.id)})
@@ -217,7 +213,6 @@ export class Label extends BaseFades {
   // localized text files are named via key, ex. "en.json" or "de.html"
   setLang(key) {
     this.clear()
-    this.lang = key
     const path = this.dir + "/" + key + "." + this.type
     let self = this
     let request = new XMLHttpRequest()
@@ -252,7 +247,6 @@ export class Label extends BaseFades {
     else {
       this.text.innerHTML = ""
     }
-    this.lang = ""
   }
 
 }

@@ -18,6 +18,11 @@ let intro = {
   }, 5000)
 }
 
+let current = {
+  state: "wait",
+  lang: ""
+}
+
 // ----- main -----
 
 // parse url vars
@@ -54,6 +59,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
       clear()
     }
     else {
+      current.state = state
       setup(state)
       if(state == "timeout") {
         // show en label
@@ -72,7 +78,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
   else if(message.address == "/lang") {
     if(message.args.length == 0 ||
       (message.args[0].type != "f" && message.args[0].type != "i")) {return}
-    if(prompt.state == "wait") {return}
+    if(current.state == "wait") {return}
     sketch.fadeOut()
     let index = message.args[0].value
     let key = TEXT.lang.keys[index]
@@ -93,7 +99,7 @@ window.addEventListener("load", () => {
       let index = event.keyCode - 48
       let key = TEXT.lang.keys[index]
       if(key < 0) {key = 0}
-      if(prompt.state != "success") {
+      if(current.state != "success") {
         setup("success")
       }
       setLang(key)
@@ -133,9 +139,9 @@ function setLang(key) {
   else {
     prompt.fadeOut()
     status.fadeIn()
-    status.setLang(prompt.state, key)
+    status.setLang(current.state, key)
   }
-  if(key == label.lang) {return}
+  if(key == current.lang) {return}
   label.fadeOut(() => {
     label.setLang(key)
     label.fadeIn()
@@ -162,6 +168,7 @@ function clear() {
   label.fadeOut()
   sketch.fadeIn()
   intro.enabled = true
+  current.state = "wait"
 }
 
 sketch.fadeOut = () => {

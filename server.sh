@@ -29,7 +29,7 @@ INPUTDEV=0
 INPUTCHAN=1
 
 # osc and websocket host address
-HOST=localhost
+HOST=127.0.0.1
 
 # controller
 VERBOSE=""
