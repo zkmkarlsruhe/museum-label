@@ -19,7 +19,7 @@ from concurrent.futures import ThreadPoolExecutor
 class TBSender:
 
     # init with thingsboard url (including access token) and optional threading
-    def __init__(self, url, threading=false):
+    def __init__(self, url, threading=False):
         self.url = url
         self.message = "isThere" # message name
         self.is_there = False # is someone/something there? ie. blocking sensor
