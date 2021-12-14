@@ -191,8 +191,10 @@ sketch.fadeOut = () => {
     window.clearTimeout(sketch.fade)
     sketch.fade = null
   }
+  if(sketch.isHidden) {return}
   sketch.fade = util.fadeOutId("sketch", () => {
     sketch.noLoop()
+    sketch.isHidden = true
   }, 500)
 }
 
@@ -203,6 +205,9 @@ sketch.fadeIn = () => {
     window.clearTimeout(sketch.fade)
     sketch.fade = null
   }
+  if(!sketch.isHidden) {return}
   sketch.loop()
-  sketch.fade = util.fadeInId("sketch", null, 500)
+  sketch.fade = util.fadeInId("sketch", () => {
+    sketch.isHidden = false
+  }, 500)
 }
