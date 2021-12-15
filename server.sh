@@ -164,7 +164,7 @@ fi
 
 # start controller
 echo "===== controller"
-$CTLR --recvaddr $HOST $VERBOSE &
+$CTLR --recvaddr $HOST $VERBOSE $@ &
 sleep 1
 CTLR_PID=$(getpid controller.py)
 if [ "$VERBOSE" != "" ] ; then
