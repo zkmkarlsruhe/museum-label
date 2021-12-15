@@ -38,6 +38,8 @@
 #X obj 33 670 s \$0-oscout;
 #X obj 87 105 pack s 9999;
 #X text 183 604 proximity message;
+#X msg 266 42 9999;
+#X msg 314 42 5005;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 4 0 0 0;
@@ -66,3 +68,5 @@
 #X connect 32 0 24 0;
 #X connect 33 0 35 1;
 #X connect 35 0 31 0;
+#X connect 37 0 33 0;
+#X connect 38 0 33 0;
