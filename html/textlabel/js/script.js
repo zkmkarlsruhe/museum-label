@@ -90,7 +90,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
     if(key < 0) {key = 0}
     let con = 50
     if(message.args.length > 2 && message.args[2].type == "f") {
-      con = Math.round(message.args[2].value * 100)
+      con = Math.round(message.args[2].value)
     }
     util.debugPrint("set lang " + index + " " + key + " " + con)
     setLang(key, con)
