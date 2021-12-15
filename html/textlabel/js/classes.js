@@ -8,11 +8,11 @@ function confidenceString(confidence) {
   if(confidence >= 99) {
     return "!"
   }
-  else if(confidence < 80) {
-    return "?"
-  }
-  else if(confidence < 70) {
+  if(confidence < 70) {
     return "?!"
+  }
+  if(confidence < 80) {
+    return "?"
   }
   return ""
 }
@@ -114,7 +114,7 @@ export class Prompt extends BaseFades {
 
   // set current state text with language by ISO 639-1 two-letter language key,
   // ie. "en", "de", etc
-  setLang(key) {
+  setLang(key, con) {
     let html = ""
     var index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}

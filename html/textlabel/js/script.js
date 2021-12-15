@@ -69,7 +69,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
       if(state == "timeout") {
         // show en label
         label.fadeOut(() => {
-          label.setLang("en", 100)
+          label.setLang("en")
           label.fadeIn()
         })
       }
@@ -121,7 +121,7 @@ window.addEventListener("load", () => {
 })
 
 // show de label on start
-label.setLang("de", 90)
+label.setLang("de")
 
 // ----- transitions -----
 
@@ -142,7 +142,7 @@ function setLang(key, con) {
   intro.timer.stop()
   if(intro.enabled) {
     prompt.fadeIn()
-    prompt.setLang(key)
+    prompt.setLang(key, con)
     intro.enabled = false
     intro.timer.start()
   }
