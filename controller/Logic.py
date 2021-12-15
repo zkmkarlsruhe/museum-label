@@ -81,11 +81,11 @@ class Logic:
 
     # stop detection on exit
     def __del__(self):
-        self.osc_send_listen(0)
-        self._state_set(State.WAIT)
         self.proximity.cancel()
         self.listenTimer.cancel()
         self.activityTimer.cancel()
+        self.osc_send_listen(0)
+        self.osc_send_state(State.WAIT)
 
     # set new state, returns False if already current state
     def _state_set(self, state):
@@ -150,9 +150,9 @@ class Logic:
     # ----- receiving osc -----
 
     def osc_receive_proximity(self, address, *args):
-        if self.verbose:
-            print(f"{address}: {args}")
         if len(args) == 1 and isnumber(args[0]):
+            if self.verbose:
+                print(f"{address}: {round(args[0], 2)}")
             self.proximity.update(args[0])
 
     def osc_receive_detecting(self, address, *args):

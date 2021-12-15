@@ -49,13 +49,14 @@ class Timer:
             self._timer.cancel()
         self._timer = SimpleTimer(self.timeout, self._timeout)
         if self.verbose:
-            print(self.name + ": started timer")
+            print(self.name + ": started")
 
     # cancel timer
     def cancel(self):
         if self._timer:
             self._timer.cancel()
-            print(self.name + ": cancelled timer")
+            if self.verbose:
+                print(self.name + ": cancelled")
         self._timer = None
 
     # returns True if timer is running
@@ -64,6 +65,6 @@ class Timer:
 
     def _timeout(self):
         if self.verbose:
-            print(self.name + ": timeout reached")
+            print(self.name + ": timeout")
         self._timer = None
         self.callback()
