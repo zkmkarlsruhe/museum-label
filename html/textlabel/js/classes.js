@@ -3,6 +3,20 @@
 
 import * as util from "./util.js"
 
+// return confidence 0-100 as abstract string
+function confidenceString(confidence) {
+  if(confidence >= 99) {
+    return "!"
+  }
+  else if(confidence < 80) {
+    return "?"
+  }
+  else if(confidence < 70) {
+    return "?!"
+  }
+  return ""
+}
+
 // ----- base -----
 
 // base class which fades in/out an id (either by name or reference)
@@ -106,7 +120,7 @@ export class Prompt extends BaseFades {
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
     if(html == "") {return} // ignore empty names
-    this.text.innerHTML = html
+    this.text.innerHTML = html + confidenceString(con)
     util.showId(this.id)
   }
 
@@ -179,23 +193,14 @@ export class Status extends BaseFades {
 
   // set current state text with language by ISO 639-1 two-letter language key,
   // ie. "en", "de", etc
-  setLang(state, key, confidence) {
+  setLang(state, key, con) {
     this.recordtimer.stop()
     let html = ""
     let index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
     if(html == "") {return} // ignore empty names
-    if(confidence >= 99) {
-      html = html + "!"
-    }
-    else if(confidence < 80) {
-      html = html + "?"
-    }
-    else if(confidence < 70) {
-      html = html + "?!"
-    }
-    this.text.innerHTML = html
+    this.text.innerHTML = html + confidenceString(con)
     util.showId(this.text)
   }
 
