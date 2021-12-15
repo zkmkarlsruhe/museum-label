@@ -179,13 +179,22 @@ export class Status extends BaseFades {
 
   // set current state text with language by ISO 639-1 two-letter language key,
   // ie. "en", "de", etc
-  setLang(state, key) {
+  setLang(state, key, confidence) {
     this.recordtimer.stop()
     let html = ""
     let index = this.data.lang.keys.indexOf(key)
     if(index < 0) {index = 0}
     html = this.data.lang.names[index]
     if(html == "") {return} // ignore empty names
+    if(confidence >= 99) {
+      html = html + "!"
+    }
+    else if(confidence < 80) {
+      html = html + "?"
+    }
+    else if(confidence < 70) {
+      html = html + "?!"
+    }
     this.text.innerHTML = html
     util.showId(this.text)
   }

@@ -16,7 +16,7 @@ let intro = {
   timer: new Timer(() => {
     // done with intro
     prompt.fadeOut()
-    confidence.show()
+    //confidence.show()
   }, 5000)
 }
 
@@ -50,7 +50,7 @@ vars = null
 
 const prompt = new Prompt(LANG, 250)
 const status = new Status(LANG, 250)
-const confidence = new Confidence()
+//const confidence = new Confidence()
 const label = new Label("assets/label", "html", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
@@ -69,7 +69,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
       if(state == "timeout") {
         // show en label
         label.fadeOut(() => {
-          label.setLang("en")
+          label.setLang("en", 100)
           label.fadeIn()
         })
       }
@@ -112,7 +112,7 @@ window.addEventListener("load", () => {
         setup("success")
       }
       setLang(key, 100)
-      confidence.show()
+      //confidence.show()
     }
     else if(event.key == "w") {
       clear()
@@ -121,7 +121,7 @@ window.addEventListener("load", () => {
 })
 
 // show de label on start
-label.setLang("de")
+label.setLang("de", 90)
 
 // ----- transitions -----
 
@@ -150,8 +150,8 @@ function setLang(key, con) {
     prompt.fadeOut()
     status.fadeIn()
   }
-  confidence.set(con)
-  status.setLang(current.state, key)
+  //confidence.set(con)
+  status.setLang(current.state, key, con)
   if(key == current.lang) {return}
   label.fadeOut(() => {
     label.setLang(key)
@@ -176,7 +176,7 @@ function setup(state) {
 // clear everything and fade to animation
 function clear() {
   intro.timer.stop()
-  confidence.hide()
+  //confidence.hide()
   prompt.fadeOut(() => {prompt.clear()})
   status.fadeOut(() => {status.clear()})
   label.fadeOut()
@@ -205,7 +205,6 @@ sketch.fadeIn = () => {
     window.clearTimeout(sketch.fade)
     sketch.fade = null
   }
-  if(!sketch.isHidden) {return}
   sketch.loop()
   sketch.fade = util.fadeInId("sketch", () => {
     sketch.isHidden = false
