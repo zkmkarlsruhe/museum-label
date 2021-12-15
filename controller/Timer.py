@@ -29,7 +29,8 @@ class SimpleTimer:
 
     async def _job(self):
         await asyncio.sleep(self._timeout)
-        await self._callback()
+        if self._callback:
+            await self._callback()
 
 # reusable timer
 class Timer:
