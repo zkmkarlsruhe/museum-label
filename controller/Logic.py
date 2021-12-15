@@ -78,6 +78,8 @@ class Logic:
         self.langIdentClient = SimpleUDPClient(addr, port)
         addr, port = websocket_addr
         self.websocketClient = SimpleUDPClient(addr, port)
+        # optional thingsboard client
+        self.tbsender = None
 
     # stop detection on exit
     def __del__(self):
@@ -154,6 +156,8 @@ class Logic:
             if self.verbose:
                 print(f"{address}: {round(args[0], 2)}")
             self.proximity.update(args[0])
+            if self.tbsender:
+                self.tbsender.send(self.proximity.is_close())
 
     def osc_receive_detecting(self, address, *args):
         if self.verbose:

@@ -36,7 +36,7 @@ class Proximity:
             if self.is_there is False:
                 self.exit_timer.cancel()
                 self.is_there = True
-                print(f"Proximity: enter {self.value}")
+                print(f"Proximity: enter {round(self.value, 2)}")
                 self.callback() # enter event
                 self.enter_timer.start()
         else:
@@ -59,5 +59,5 @@ class Proximity:
         pass
 
     def _exit(self):
-        print(f"Proximity: exit {self.value}")
+        print(f"Proximity: exit {round(self.value, 2)}")
         self.callback() # exit event

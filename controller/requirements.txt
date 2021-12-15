@@ -1,1 +1,2 @@
 python-osc==1.7.7
+requests

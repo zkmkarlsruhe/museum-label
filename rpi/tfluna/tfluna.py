@@ -86,7 +86,7 @@ args = parser.add_argument(
     default=None, help="set device identifier to include in message")
 args = parser.add_argument(
     "--tb-url", type=str, dest="tb_url", metavar="TB_URL",
-    default=None, help="send \"isThere\" message to a ThingsBoard url")
+    default=None, help="send \"isThere\" bool message to a ThingsBoard url")
 args = parser.add_argument(
     "--tb-message", type=str, nargs=1, dest="tb_message", metavar="TB_MESSAGE",
     default="isThere", help="set ThingsBoard \"isThere\" message name")
