@@ -32,7 +32,8 @@ INPUTCHAN=1
 HOST=127.0.0.1
 
 # controller
-VERBOSE=""
+VERBOSE=
+TBFLAGS=
 
 # platform specifics
 case "$(uname -s)" in
@@ -90,6 +91,8 @@ Options:
   --inputchan INT        audio input device channel, default $INPUTCHAN
   -c,--confidence FLOAT  langid min confidence 0 - 1, default $CONFIDENCE
   -t,--threshold INT     langid volume threshold 0 - 100, default $THRESHOLD
+  --tb-url               optional ThingsBoard url for sensor event sending
+  --tb-message           opional ThingsBoard message for sensor event sending
   -v,--verbose           enable verbose controller printing
 "
 
@@ -128,6 +131,16 @@ while [ "$1" != "" ] ; do
       checkarg "-t,--threshold" $1
       THRESHOLD=$1
       ;;
+    --tb-url)
+      shift 1
+      checkarg "--tb-url" $1
+      TBFLAGS="$TBFLAGS --tb-url $1"
+      ;;
+    --tb-message)
+      shift 1
+      checkarg "--tb-message" $1
+      TBFLAGS="$TBFLAGS --tb-message $1"
+      ;;
     -v|--verbose)
       VERBOSE="-v"
       ;;
@@ -150,6 +163,7 @@ if [ "$VERBOSE" != "" ] ; then
   echo "inputchan:  $INPUTCHAN"
   echo "confidence: $CONFIDENCE"
   echo "threshold:  $THRESHOLD"
+  echo "tb flags:   $TBFLAGS"
   echo "verbose:    true"
 fi
 
@@ -169,7 +183,7 @@ fi
 
 # start controller
 echo "===== controller"
-$CTLR --recvaddr $HOST $VERBOSE $@ &
+$CTLR --recvaddr $HOST $VERBOSE $TBFLAGS &
 sleep 1
 CTLR_PID=$(getpid controller.py)
 if [ "$VERBOSE" != "" ] ; then
@@ -178,7 +192,7 @@ fi
 
 # run langid & wait
 echo "===== langid"
-$LANGID $INPUTDEV --inputchan $INPUTCHAN \
+$LANGID --inputdev $INPUTDEV --inputchan $INPUTCHAN \
         -s "$HOST:5005" -c $CONFIDENCE -t $THRESHOLD \
         --nolisten --autostop -e `pwd`/scripts/sendlangs.sh
 
