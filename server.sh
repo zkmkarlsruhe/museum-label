@@ -180,6 +180,13 @@ fi
 
 # start baton
 echo "===== baton"
+BATON_PID=$(getpid baton.py)
+if [ "$BATON_PID" != "" ] ; then
+  echo "killing previous process: $BATON_PID"
+  kill -INT $BATON_PID 2>/dev/null || true
+  BATON_PID=
+  sleep 1
+fi
 $BATON --wshost $HOST &
 sleep 2
 BATON_PID=$(getpid baton.py)
@@ -189,6 +196,12 @@ fi
 
 # start controller
 echo "===== controller"
+if [ "$CTLR_PID" != "" ] ; then
+  echo "killing previous process: $CTLR_PID"
+  kill -INT $CTLR_PID 2>/dev/null || true
+  CTLR_PID=
+  sleep 1
+fi
 $CTLR --recvaddr $HOST $VERBOSE $TBFLAGS &
 sleep 2
 CTLR_PID=$(getpid controller.py)
