@@ -57,6 +57,8 @@ The proximity loaf sketch is a proximity sensor simualtor which sends proximity 
 Display
 -------
 
+Clone this repository to `~/` then set up automation...
+
 ### Autostart scripts
 
 Run non-GUI script at user login using cron: `crontab -e`
@@ -76,17 +78,17 @@ Run script in lxterminal via XDG desktop entry:
 
 ~~~
 mkdir -p ~/.config/autostart
-touch ~/.config/autostart/itl.desktop
+touch ~/.config/autostart/museumlabel.desktop
 ~~~
 
-add the following to `~/.config/autostart/itl.desktop` which runs the `runitl.sh` script after the user logs into LXDE:
+add the following to `~/.config/autostart/museumlabel.desktop` which runs the `rundisplay` script after the user logs into LXDE:
 
 ~~~
 [Desktop Entry]
 Type=Application
 Version=1.0
 Name=IntelligentTextLabel
-Exec=/usr/bin/lxterminal -e /home/pi/runitl.sh
+Exec=/usr/bin/lxterminal -e /home/pi/museum-label/scripts/rundisplay
 Categories=Utilities
 ~~~
 
