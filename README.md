@@ -57,24 +57,72 @@ The proximity loaf sketch is a proximity sensor simualtor which sends proximity 
 Display
 -------
 
-Clone this repository to `~/` then set up automation...
+Setting up a Raspberry PI 4...
 
-### Autostart scripts
+### Initial OS Setup
 
-Run non-GUI script at user login using cron: `crontab -e`
+_Assuming normal Raspberry Pi OS image._
+
+Set Country
+
+Country: United States
+Language: American English
+Timezone: Chicago?
+
+Default pi user password: PASSWORD
+
+Attach network connection and update
+
+Restart
+
+Set actual timezone:
+
+1. Open Pi menu->Preferences->Raspberry Pi Configuration
+2. Select Localisation tab and press Set Timezone...
+3. Choose Area: Europe, Location: Berlin
+
+### Install
+
+#### System
 
 ~~~
-@reboot /home/pi/script
+sudo apt install vim
 ~~~
 
-Run GUI script using LXDE autostart:
+#### museum-label
+
+Clone this repository to `~/`:
 
 ~~~
-mkdir -p ~/.config/lxsession/LXDE-pi
-echo "@sh /home/pi/script" > ~/.config/lxsession/LXDE-pi/autostart
+cd ~/
+git clone https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/museum-label.git
 ~~~
 
-Run script in lxterminal via XDG desktop entry:
+#### TFLuna
+
+Prepare script dependencies:
+
+~~~
+cd museum-label
+make display
+~~~
+
+### Setup
+
+#### Enable serial for TF Luna
+
+UART 3 -> TXD GPIO pin 4
+
+https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-uarts
+
+Add the following to /boot/config.txt
+
+dtoverlay=uart3
+
+#### Autostart scripts
+
+
+Run GUI script in lxterminal via XDG desktop entry:
 
 ~~~
 mkdir -p ~/.config/autostart
@@ -92,7 +140,7 @@ Exec=/usr/bin/lxterminal -e /home/pi/museum-label/scripts/rundisplay
 Categories=Utilities
 ~~~
 
-### Enable Screen Sharing
+#### Enable Screen Sharing
 
 Enable the VNC server on the RPI for remote management:
 
@@ -100,6 +148,8 @@ https://www.jimbobbennett.io/screen-sharing-a-raspberry-pi-from-a-mac/
 
 Server
 ------
+
+Setting up macOS on a Mac mini...
 
 ### Apache
 
