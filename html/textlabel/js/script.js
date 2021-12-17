@@ -101,11 +101,6 @@ const receiver = new OSCReceiver(host, port, function(message) {
 window.addEventListener("load", () => {
   receiver.open()
 
-  status.fadeIn()
-  status.recordonly = false
-  status.setState("detect")
-  status.text.innerHTML = "English"
-
   // debug key commands
   document.onkeyup = (event) => {
     if(event.keyCode >= 48 && event.keyCode <= 55) { // 0-7
