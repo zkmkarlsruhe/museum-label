@@ -75,6 +75,11 @@ getpid() {
   fi
 }
 
+handle_sigint() {
+  killall LanguageIdentifier 2>/dev/null || true
+}
+
+
 ##### parse command line arguments
 
 HELP="USAGE: $(basename $0) [OPTIONS]
@@ -152,6 +157,8 @@ while [ "$1" != "" ] ; do
 done
 
 ##### main
+
+trap "handle_sigint" INT
 
 cd $(dirname "$0")
 
