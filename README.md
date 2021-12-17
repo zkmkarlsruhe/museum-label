@@ -13,8 +13,6 @@ Copyright (c) 2021 Dan Wilcox.
 
 BSD Simplified License.
 
-_The following are bare bone notes which will be updated soon._
-
 Overview
 --------
 

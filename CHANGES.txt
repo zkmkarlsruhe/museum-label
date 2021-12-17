@@ -1,19 +1,39 @@
-0.4.0: 2021 TBD
+1.0.0: 2021 Dec 18
+
+BioMedien exhibition
+
+* added baton and LanguageIdentifier as submodules
+* added thingsboard sending to tfluna and controller scripts
+* added meta Makefile to ease setup and deployment
+* added and expanded scripting & automation
+
+* updated and expanded tfluna script with commandline options, bug fixes, etc
+* updated controller proximity interaction handling 
+* updated textlabel interaction handling based on observation and feedback 
+* updated documentation
+
+* removed label json files in favor of html translations for now
+
+0.4.0: 2021 Nov 9
 
 prototype 2
 
 * added changelog
+* added display, server, and textlabel run scripts
 
 * textlabel:
-  - now show label while handling state changes
-  - fixed set debug var error
+- fixed set debug var error
+  - replaced video loop with p5 animation
+  - added state icons and large lang confirmation to prompt
   - added noise.json file with symbol text
+  - now show label while handling state changes
   - removed localized prompt text in favor of simple state and lang display
 
 * controller:
   - updated logic to restart listening after detection success or failure
   - activity timeout is now used if there is no audio activity when listening
   - fail state now sends detected noise lang message
+  - make sure to cancel timers on exit
 
 0.3.0: 2021 Oct 14
 
