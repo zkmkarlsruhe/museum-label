@@ -218,5 +218,5 @@ $LANGID $INPUTDEV --inputchan $INPUTCHAN \
 
 # stop
 echo "===== stopping server"
-kill -INT $CTLR_PID 2>/dev/null || true
-kill -INT $BATON_PID 2>/dev/null || true
+kill $CTLR_PID 2>/dev/null || true
+kill $BATON_PID 2>/dev/null || true
