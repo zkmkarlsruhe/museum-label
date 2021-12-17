@@ -15,10 +15,8 @@ BSD Simplified License.
 
 _The following are bare bone notes which will be updated soon._
 
-Implementations
----------------
-
-### LID digitial display system
+Overview
+--------
 
 Basic interaction:
 
@@ -33,26 +31,36 @@ Components:
 * LanguageIdentifier: live audio language identifier
 * baton: OSC to websocket relay server
 * web clients: digital info display, interaction prompt, etc
+* tfluna: sensor read script which sends events over OSC
 
 Communication overview:
 
 ~~~
 LanguageIdentifier <-OSC-> controller -OSC-> baton <-websocket-> web clients
+tfluna --------------OSC-------^
 proximity -----------OSC-------^
 ~~~
 
+Quick Start
+-----------
+
 Quick startup (on macOS):
 
+* clone this repo
+* build LanguageIdentifier, see `LanguageIdentifier/README.md`
+* install [loaf](http://danomatika.com/code/loaf)
+* start loaf.app and drag `proximity/main.lua` onto the loaf window
+* run the following:
+
 ~~~
-cd ../digital-displays
-loaf proximity &
-
-./run.sh
+cd ../museum-label
+make server
+./server.sh
 ~~~
 
-Open webclient index.html files in a web browser.
+Open webclient index.html files in a web browser. You may need to disable your lcoal browser file restrictions to load all files.
 
-The proximity loaf sketch is a proximity sensor simualtor which sends proximity sensor values (normalized 0-1) to the controller server.
+The proximity loaf sketch is a proximity sensor simulator which sends proximity sensor values (normalized 0-1) to the controller server.
 
 Display
 -------
