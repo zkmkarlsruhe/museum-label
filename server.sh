@@ -175,7 +175,7 @@ fi
 
 # leave empty for default device
 if [ "$INPUTDEV" != "" ] ; then
-  INPUTDEV="--inputdev $1"
+  INPUTDEV="--inputdev $INPUTDEV"
 fi
 
 # start baton
