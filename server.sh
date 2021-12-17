@@ -196,6 +196,7 @@ fi
 
 # start controller
 echo "===== controller"
+CTLR_PID=$(getpid controller.py)
 if [ "$CTLR_PID" != "" ] ; then
   echo "killing previous process: $CTLR_PID"
   kill -INT $CTLR_PID 2>/dev/null || true
