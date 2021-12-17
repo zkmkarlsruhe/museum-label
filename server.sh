@@ -192,7 +192,7 @@ fi
 
 # run langid & wait
 echo "===== langid"
-$LANGID --inputdev $INPUTDEV --inputchan $INPUTCHAN \
+$LANGID $INPUTDEV --inputchan $INPUTCHAN \
         -s "$HOST:5005" -c $CONFIDENCE -t $THRESHOLD \
         --nolisten --autostop -e `pwd`/scripts/sendlangs.sh
 
