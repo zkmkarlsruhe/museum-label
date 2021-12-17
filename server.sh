@@ -79,7 +79,6 @@ handle_sigint() {
   killall LanguageIdentifier 2>/dev/null || true
 }
 
-
 ##### parse command line arguments
 
 HELP="USAGE: $(basename $0) [OPTIONS]
@@ -182,7 +181,7 @@ fi
 # start baton
 echo "===== baton"
 $BATON --wshost $HOST &
-sleep 1
+sleep 2
 BATON_PID=$(getpid baton.py)
 if [ "$VERBOSE" != "" ] ; then
   echo "baton: $BATON_PID"
@@ -191,7 +190,7 @@ fi
 # start controller
 echo "===== controller"
 $CTLR --recvaddr $HOST $VERBOSE $TBFLAGS &
-sleep 1
+sleep 2
 CTLR_PID=$(getpid controller.py)
 if [ "$VERBOSE" != "" ] ; then
   echo "controller: $CTLR_PID"
