@@ -92,24 +92,28 @@ export class Prompt extends BaseFades {
     let html = ""
     this.show()
     switch(state) {
-      case "wait": break;
+      case "wait":
+        this.text.innerHTML = ""
+        break
       case "listen":
-        html = "<div class='icon icon-large lang'></div>"
-        break;
+        this.text.innerHTML = "<div class='icon icon-large lang'></div>"
+        break
       case "detect":
-        return;
+        // keep listen icon
+        return
       case "success":
         this.hide() // hide until replaced by lang name
-        break;
+        break
       case "fail":
-        html = "<div class='icon icon-large question'></div>"
-        break;
+        this.text.innerHTML = "<div class='icon icon-large question'></div>"
+        break
       case "timeout":
-        html = "<div class='icon icon-large timeout'></div>"
-        break;
-      default: break;
+        this.text.innerHTML = "<div class='icon icon-large timeout'></div>"
+        break
+      default:
+        this.text.innerHTML = ""
+        break
     }
-    this.text.innerHTML = html
   }
 
   // set current state text with language by ISO 639-1 two-letter language key,
@@ -147,48 +151,82 @@ export class Status extends BaseFades {
   constructor(data, fade) {
     super(document.getElementById("status"), fade)
     this.text = document.getElementById("status-text")
+    this.icon = document.getElementById("status-icon")
     this.data = data
+    this.recordonly = false // show flashing record icon only?
     this.recordtimer = new Timer(() => {
-      if(util.isIdHidden("record")) {
-        util.showId("record")
+      let record = document.getElementById("record")
+      if(!record.classList.contains("record-black")) {
+      //if(util.isIdHidden("record")) {
+        //util.showId("record")
+        this.icon.innerHTML = "<div id=\"record\" class='icon icon-small record-black'></div>"
       }
       else {
-        util.hideId("record")
+        //util.hideId("record")
+        this.icon.innerHTML = "<div id=\"record\" class='icon icon-small'></div>"
       }
     }, 1000)
   }
 
-  // set text based on state
+  // set icon and text based on state
   setState(state) {
-    let html = ""
-    util.showId(this.text)
+    if(this.recordonly) {
+      switch(state) {
+        case "listen":
+          this.recordtimer.stop()
+          //if(document.getElementById("record")) {
+            this.icon.innerHTML = ""
+          //}
+          break
+        case "detect":
+          //util.showId(this.text)
+          this.icon.innerHTML = "<div id=\"record\" class='icon icon-small record-black'></div>"
+          this.recordtimer.repeat()
+          break
+        default:
+          break
+      }
+      this.text.innerHTML = ""
+      return
+    }
+    //util.showId(this.text)
     switch(state) {
-      case "wait": break;
+      case "wait":
+        this.icon.innerHTML = ""
+        this.text.innerHTML = ""
+        break
       case "listen":
         this.recordtimer.stop()
-        if(!document.getElementById("record")) {
-          return
-        }
-        break;
+        //if(document.getElementById("record")) {
+          this.icon.innerHTML = ""
+        //}
+        // keep lang name visible
+        break
       case "detect":
-        html = "<div id=\"record\" class='icon icon-small status-icon record-black'></div>"
+        this.icon.innerHTML = "<div id=\"record\" class='icon icon-small status-icon record-black'></div>"
         this.recordtimer.repeat()
-        break;
+        // keep lang name visible
+        break
       case "success":
         this.recordtimer.stop()
-        util.hideId(this.text) // hide until replaced by lang name
-        break;
+        this.icon.innerHTML = ""
+        this.text.innerHTML = "" // hide until replaced by lang name
+        break
       case "fail":
         this.recordtimer.stop()
-        html ="<div class='icon icon-small status-icon question-black'></div>"
-        break;
+        this.icon.innerHTML = "<div class='icon icon-small status-icon question-black'></div>"
+        this.text.innerHTML = ""
+        break
       case "timeout":
+        this.text.innerHTML = ""
         this.recordtimer.stop()
-        html = "<div class='icon icon-small status-icon timeout-black'></div>"
-        break;
-      default: break;
+        this.icon.innerHTML = "<div class='icon icon-small status-icon timeout-black'></div>"
+        this.text.innerHTML = ""
+        break
+      default:
+        this.text.innerHTML = ""
+        break
     }
-    this.text.innerHTML = html
   }
 
   // set current state text with language by ISO 639-1 two-letter language key,
@@ -201,29 +239,14 @@ export class Status extends BaseFades {
     html = this.data.lang.names[index]
     if(html == "") {return} // ignore empty names
     this.text.innerHTML = html + confidenceString(con)
-    util.showId(this.text)
+    //util.showId(this.text)
   }
 
-  // clear text
+  // clear icon and text
   clear() {
     this.recordtimer.stop()
+    this.icon.innerHTML = ""
     this.text.innerHTML = ""
-  }
-
-}
-
-// ----- confidence -----
-
-// simple confidence value display
-export class Confidence extends BaseFades {
-
-  constructor() {
-    super(document.getElementById("confidence"), 0)
-  }
-
-  /// set current confidence value in percent
-  set(value) {
-    this.id.innerHTML = value + "%"
   }
 
 }

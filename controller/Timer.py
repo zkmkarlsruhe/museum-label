@@ -30,7 +30,7 @@ class SimpleTimer:
     async def _job(self):
         await asyncio.sleep(self._timeout)
         if self._callback:
-            await self._callback()
+            await self._callback() # FIXME: sometimes throws NoneType can't be used in 'await' expression
 
 # reusable timer
 class Timer:
