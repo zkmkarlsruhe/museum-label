@@ -56,6 +56,10 @@ getpid() {
   echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
 }
 
+handle_sigint() {
+  rpi/textlabel.sh stop
+}
+
 ##### parse command line arguments
 
 HELP="USAGE: $(basename $0) [OPTIONS] [ARGS]
@@ -109,6 +113,8 @@ done
 
 ##### main
 
+trap "handle_sigint" INT
+
 cd $(dirname "$0")
 
 echo "===== museum label display ====="
@@ -122,6 +128,13 @@ if [ "$VERBOSE" != "" ] ; then
 fi
 
 echo "===== sensor"
+SENSOR_PID=$(getpid tfluna.py)
+if [ "$CTLR_PID" != "" ] ; then
+  echo "killing previous process: $SENSOR_PID"
+  kill -INT $SENSOR_PID 2>/dev/null || true
+  SENSOR_PID=
+  sleep 1
+fi
 $SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV &
 sleep 1
 SENSOR_PID=$(getpid tfluna.py)
