@@ -73,26 +73,12 @@ canvas {
 }
 
 #status-text {
-  /*line-height: 1.25em;*/
-  /*color: red;*/
+  display: inline-block;
 }
 
-.status-icon {
-  position: absolute;
-  top: -0.5em;
-  right: -0.5em
-}
-
-/* ----- confidence ----- */
-
-#confidence {
-  position: fixed;
-  right: 5%;
-  bottom: 0.75em;
-  z-index: 2;
-  text-align: right;
-  font-size: 0.8em;
-  /*background-color: red;*/
+#status-icon {
+  display: inline-block;
+  vertical-align: text-top;
 }
 
 /* ----- label ----- */
@@ -163,12 +149,12 @@ canvas {
 .icon {
   background-repeat: no-repeat;
   background-position: center;
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 
 .icon-small {
-  height: 2em;
-  width: 2em;
+  height: 1.2em;
+  width: 1.2em;
 }
 
 .icon-large {

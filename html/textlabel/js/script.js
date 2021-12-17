@@ -2,7 +2,7 @@
    Dan Wilcox ZKM | Hertz-Lab 2021 */
 
 import LANG from "./LANG.js"
-import {Prompt, Status, Confidence, Label, OSCReceiver, Timer} from "./classes.js"
+import {Prompt, Status, Label, OSCReceiver, Timer} from "./classes.js"
 import * as util from "./util.js"
 
 // osc host & port
@@ -16,7 +16,7 @@ let intro = {
   timer: new Timer(() => {
     // done with intro
     prompt.fadeOut()
-    //confidence.show()
+    status.recordonly = false
   }, 5000)
 }
 
@@ -50,7 +50,6 @@ vars = null
 
 const prompt = new Prompt(LANG, 250)
 const status = new Status(LANG, 250)
-//const confidence = new Confidence()
 const label = new Label("assets/label", "html", 250)
 const receiver = new OSCReceiver(host, port, function(message) {
   if(util.debug) {
@@ -102,6 +101,11 @@ const receiver = new OSCReceiver(host, port, function(message) {
 window.addEventListener("load", () => {
   receiver.open()
 
+  status.fadeIn()
+  status.recordonly = false
+  status.setState("detect")
+  status.text.innerHTML = "English"
+
   // debug key commands
   document.onkeyup = (event) => {
     if(event.keyCode >= 48 && event.keyCode <= 55) { // 0-7
@@ -112,7 +116,6 @@ window.addEventListener("load", () => {
         setup("success")
       }
       setLang(key, 100)
-      //confidence.show()
     }
     else if(event.key == "w") {
       clear()
@@ -133,9 +136,9 @@ function setState(state) {
   }
   else {
     prompt.fadeOut()
-    status.fadeIn()
-    status.setState(state)
   }
+  status.fadeIn()
+  status.setState(state)
 }
 
 function setLang(key, con) {
@@ -148,9 +151,7 @@ function setLang(key, con) {
   }
   else {
     prompt.fadeOut()
-    status.fadeIn()
   }
-  //confidence.set(con)
   status.setLang(current.state, key, con)
   if(key == current.lang) {return}
   label.fadeOut(() => {
@@ -163,6 +164,7 @@ function setLang(key, con) {
 function setup(state) {
   sketch.fadeOut()
   label.fadeIn()
+  status.recordonly = intro.enabled
   if(intro.enabled) {
     // wait a bit on transition from animation
     //window.setTimeout(() => {setState(state)}, 750)
@@ -176,7 +178,6 @@ function setup(state) {
 // clear everything and fade to animation
 function clear() {
   intro.timer.stop()
-  //confidence.hide()
   prompt.fadeOut(() => {prompt.clear()})
   status.fadeOut(() => {status.clear()})
   label.fadeOut()
