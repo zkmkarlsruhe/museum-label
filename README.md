@@ -210,14 +210,14 @@ Two scripts automate starting each system in a loop to handle crashes:
 
 Two simple cronjobs can be enabled to start & stop each system using the run scripts.
 
-For example, add following to `crontab -e`:
+For example, add following to `crontab -e` if this repo is cloned to the Desktop of the "intelligentmuseum" user on macOS:
 
 ~~~
 # key
 # min hour day month dayofweek
 
 # start at 9 am
-0 9 * * * /Users/agents/Desktop/museum-label/scripts/runserver
+0 9 * * * /Users/intelligentmuseum/Desktop/museum-label/scripts/runserver
 # stop at 2 am
-0 2 * * * /Users/agents/Desktop/museum-label/scripts/killserver
+0 2 * * * /Users/intelligentmuseum/Desktop/museum-label/scripts/killserver
 ~~~

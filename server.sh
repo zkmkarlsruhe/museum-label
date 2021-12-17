@@ -25,7 +25,7 @@ LANGID=LanguageIdentifier/langid
 # LanguageIdentifier
 CONFIDENCE=0.5
 THRESHOLD=10
-INPUTDEV=0
+INPUTDEV=
 INPUTCHAN=1
 
 # osc and websocket host address
@@ -99,15 +99,10 @@ while [ "$1" != "" ] ; do
       echo "$HELP"
       exit 0
       ;;
-    -c|--confidence)
+    --host)
       shift 1
-      checkarg "-c,--confidence" $1
-      CONFIDENCE=$1
-      ;;
-    -t|--threshold)
-      shift 1
-      checkarg "-t,--threshold" $1
-      THRESHOLD=$1
+      checkarg "--host" $1
+      HOST=$1
       ;;
     -l|--list)
       $LID -l
@@ -123,10 +118,15 @@ while [ "$1" != "" ] ; do
       checkarg "--inputchan" $1
       INPUTCHAN=$1
       ;;
-    --host)
+    -c|--confidence)
       shift 1
-      checkarg "--host" $1
-      HOST=$1
+      checkarg "-c,--confidence" $1
+      CONFIDENCE=$1
+      ;;
+    -t|--threshold)
+      shift 1
+      checkarg "-t,--threshold" $1
+      THRESHOLD=$1
       ;;
     -v|--verbose)
       VERBOSE="-v"
@@ -153,6 +153,11 @@ if [ "$VERBOSE" != "" ] ; then
   echo "verbose:    true"
 fi
 
+# leave empty for default device
+if [ "$INPUTDEV" != "" ] ; then
+  INPUTDEV="--inputdev $1"
+fi
+
 # start baton
 echo "===== baton"
 $BATON --wshost $HOST &
@@ -173,7 +178,7 @@ fi
 
 # run langid & wait
 echo "===== langid"
-$LANGID --inputdev $INPUTDEV --inputchan $INPUTCHAN \
+$LANGID $INPUTDEV --inputchan $INPUTCHAN \
         -s "$HOST:5005" -c $CONFIDENCE -t $THRESHOLD \
         --nolisten --autostop -e `pwd`/scripts/sendlangs.sh
 
