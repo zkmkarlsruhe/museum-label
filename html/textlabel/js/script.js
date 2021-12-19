@@ -65,10 +65,10 @@ const receiver = new OSCReceiver(host, port, function(message) {
     else {
       current.state = state
       setup(state)
-      if(state == "timeout") {
+      if(state == "fail" || state == "timeout") {
         // show en label
         label.fadeOut(() => {
-          label.setLang("en")
+          label.setLang("de")
           label.fadeIn()
         })
       }
@@ -81,7 +81,7 @@ const receiver = new OSCReceiver(host, port, function(message) {
   }
   else if(message.address == "/lang") {
     if(message.args.length < 2 ||
-     (message.args[0].type != "f" && message.args[0].type != "i")) {return}
+       (message.args[0].type != "f" && message.args[0].type != "i")) {return}
     if(current.state == "wait") {return}
     sketch.fadeOut()
     let index = message.args[0].value

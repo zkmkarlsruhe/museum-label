@@ -41,16 +41,19 @@ class BaseFades {
   constructor(id, fade) {
     this.id = id
     this.fade = fade
+    this._timer = null
   }
 
   // fade out, calls optional callback function on completion
   fadeOut(callback) {
-    util.fadeOutId(this.id, callback, this.fade)
+    this._cancel()
+    this._timer = util.fadeOutId(this.id, callback, this.fade)
   }
 
   // fade out, calls optional callback function on completion
   fadeIn(callback) {
-    util.fadeInId(this.id, callback, this.fade)
+    this._cancel()
+    this._timer = util.fadeInId(this.id, callback, this.fade)
   }
 
   // hide immediately
@@ -61,6 +64,13 @@ class BaseFades {
   // show imediately
   show() {
     util.showId(this.id)
+  }
+
+  _cancel() {
+    if(this._timer) {
+      window.clearTimeout(this._timer)
+    }
+    this._timer = null
   }
 
 }
