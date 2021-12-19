@@ -167,12 +167,9 @@ export class Status extends BaseFades {
     this.recordtimer = new Timer(() => {
       let record = document.getElementById("record")
       if(!record.classList.contains("record-black")) {
-      //if(util.isIdHidden("record")) {
-        //util.showId("record")
         this.icon.innerHTML = "<div id=\"record\" class='icon icon-small record-black'></div>"
       }
       else {
-        //util.hideId("record")
         this.icon.innerHTML = "<div id=\"record\" class='icon icon-small'></div>"
       }
     }, 1000)
@@ -184,12 +181,9 @@ export class Status extends BaseFades {
       switch(state) {
         case "listen":
           this.recordtimer.stop()
-          //if(document.getElementById("record")) {
-            this.icon.innerHTML = ""
-          //}
+          this.icon.innerHTML = ""
           break
         case "detect":
-          //util.showId(this.text)
           this.icon.innerHTML = "<div id=\"record\" class='icon icon-small record-black'></div>"
           this.recordtimer.repeat()
           break
@@ -199,7 +193,6 @@ export class Status extends BaseFades {
       this.text.innerHTML = ""
       return
     }
-    //util.showId(this.text)
     switch(state) {
       case "wait":
         this.icon.innerHTML = ""
@@ -207,9 +200,7 @@ export class Status extends BaseFades {
         break
       case "listen":
         this.recordtimer.stop()
-        //if(document.getElementById("record")) {
-          this.icon.innerHTML = ""
-        //}
+        this.icon.innerHTML = "<div class='icon icon-small status-icon lang-black'></div>"
         // keep lang name visible
         break
       case "detect":
@@ -249,7 +240,6 @@ export class Status extends BaseFades {
     html = this.data.lang.names[index]
     if(html == "") {return} // ignore empty names
     this.text.innerHTML = html + confidenceString(con)
-    //util.showId(this.text)
   }
 
   // clear icon and text
