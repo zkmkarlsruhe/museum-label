@@ -1,3 +1,14 @@
+1.0.1: 2021 Dec 19
+
+textlabel tweaks
+
+* stop existing fade timers before starting next fade, this hopefully fixes
+  issue where wait animation may sometimes stay on screen while textlabel is
+  visible
+* show de text on timeout instead of en text
+* show de text label on fail instead of leaving noise text
+* show speak language icon for listen state in status as well
+
 1.0.0: 2021 Dec 18
 
 BioMedien exhibition
@@ -21,15 +32,15 @@ prototype 2
 * added changelog
 * added display, server, and textlabel run scripts
 
-* textlabel:
-- fixed set debug var error
+textlabel:
+  - fixed set debug var error
   - replaced video loop with p5 animation
   - added state icons and large lang confirmation to prompt
   - added noise.json file with symbol text
   - now show label while handling state changes
   - removed localized prompt text in favor of simple state and lang display
 
-* controller:
+controller:
   - updated logic to restart listening after detection success or failure
   - activity timeout is now used if there is no audio activity when listening
   - fail state now sends detected noise lang message
