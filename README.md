@@ -279,3 +279,9 @@ For example, add following to `crontab -e` if this repo is cloned to the Desktop
 # stop at 2 am
 0 2 * * * /Users/intelligentmuseum/Desktop/museum-label/scripts/killserver
 ~~~
+
+Optionally, to be safe and restart everything at midnight, add the following to crontab via `crontab -e`:
+
+~~~
+@daily root /sbin/reboot
+~~~
