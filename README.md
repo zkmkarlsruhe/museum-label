@@ -1,5 +1,5 @@
-AI-assited Museum Label
-=======================
+AI-assisted Museum Label
+========================
 
 Auto-adaptive, AI-supported museum label with language identification
 
