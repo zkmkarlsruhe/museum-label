@@ -1,3 +1,15 @@
+1.0.2: 2022 Feb 21
+
+* fixed server.sh -l/--list flag
+
+* added note about crontab to readme
+* added system & tech diagrams
+
+* updated submodules to latest bugfix versions
+* wait 1 second on server.sh shutdown
+
+* remove explicit encoding as python 3 uses utf-8 by default
+
 1.0.1: 2021 Dec 19
 
 textlabel tweaks
