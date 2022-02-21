@@ -14,7 +14,6 @@
 #
 # This code has been developed at ZKM | Hertz-Lab as part of „The Intelligent
 # Museum“ generously funded by the German Federal Cultural Foundation.
-# -*- coding: utf-8 -*
 
 import socket
 
