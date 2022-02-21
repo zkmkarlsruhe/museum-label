@@ -37,4 +37,3 @@ class OSCSender:
         host,port = self.addr
         print(f"osc sender: {host} {port}")
         print(f"osc sender: sending {self.address}")
-
