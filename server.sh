@@ -112,7 +112,7 @@ while [ "$1" != "" ] ; do
       HOST=$1
       ;;
     -l|--list)
-      $LID -l
+      $LANGID -l
       exit 0
       ;;
     --inputdev)
@@ -220,3 +220,4 @@ $LANGID $INPUTDEV --inputchan $INPUTCHAN \
 echo "===== stopping server"
 kill $CTLR_PID 2>/dev/null || true
 kill $BATON_PID 2>/dev/null || true
+sleep 1
