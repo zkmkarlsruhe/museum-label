@@ -30,7 +30,7 @@ class UDPSender:
     # send distance value
     # TODO: ignore sending until timeout after a send error?
     def send(self, distance, tfluna):
-        message = self.message + " " + str(devid) if tfluna.devid else self.message
+        message = self.message + " " + str(tfluna.devid) if tfluna.devid else self.message
         message = (message + " " + str(distance)).encode()
         try:
             self.client.sendto(message, self.addr)
