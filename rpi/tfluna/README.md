@@ -81,15 +81,17 @@ The serial port should now be available as `/dev/ttyAMA0`.
 
 If the port cannot be read (permissions issues), try the following [suggested on Stack Exchange](https://raspberrypi.stackexchange.com/a/48258 ):
 
-1. remove anything that looks like `console=serial0,115200
+1. Remove anything that looks like `console=serial0,115200
 , console=tty1` in `/boot/cmdline.txt` file
-2. disable the default tty and give the uer access to the `dialout` group
+2. Disable the default tty and give the user access to the `dialout` group
 ~~~
 sudo systemctl mask serial-getty@ttyAMA0.service
 sudo adduser $USER dialout
+~~~
+3. Reboot
+~~~
 sudo reboot
 ~~~
-3. reboot
 
 #### UART 3
 
@@ -119,12 +121,18 @@ The serial port should now be available as `/dev/ttyAMA1`.
 
 Some versions of the TF-Luna come with an included "USB to TTL" dongle which is essentially a USB serial port adapter with bare pins for the sensor. 
 
+On macOS, once the adapter is plugged in, it's serial port should be available at some variation of `/dev/tty.usbserial-*` such as `/dev/tty.usbserial-410` or `/dev/tty.usbserial-510`.
+
 Running
 -------
 
 Start reading the sensor at serial port `DEV` on the commandline via the virtual environment wrapper script:
 
     ./tfluna DEV
+
+For example:
+
+    ./tfluna /dev/ttyAMA1
 
 It can simply sit in the background and send events over a networking connection. To configure the send address and ports as well as various other options, see the commandline argument help for tfluna by running:
 
