@@ -23,7 +23,7 @@ import luna
 ##### parser
 
 parser = argparse.ArgumentParser(description='''
-Sends TF Luna LIDAR proximity distance measurements over OSC (default) or UDP
+Send TF-Luna LIDAR proximity distance measurements over OSC (default) or UDP
 and optional "isThere" presence events to a ThingsBoard URL.
 
 Distance format is cm integer or normalized float (inverted, 1 near to 0 far).

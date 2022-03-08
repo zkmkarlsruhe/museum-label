@@ -1,5 +1,13 @@
 #! /usr/bin/env python3
 #
+# Copyright (c) 2020 ZKM | Museums Technik
+# Daniel Heiss <heiss@zkm.de>
+# Marc Schütze <mschuetze@zkm.de>
+#
+# BSD Simplified License.
+# For information on usage and redistribution, and for a DISCLAIMER OF ALL
+# WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+#
 # ref: http://sfriederichs.github.io/how-to/python/udp/2017/12/07/UDP-Communication.html
 
 import socket
