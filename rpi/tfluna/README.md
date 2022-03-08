@@ -1,6 +1,8 @@
 tfluna
 ======
 
+![tfluna icon](media/icon.png)
+
 Forward TF-Luna LIDAR sensor events over OSC, UDP, or Thingsboard.
 
 This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum). 
@@ -49,7 +51,7 @@ The TF-Luna can be read over one of the built-in serial ports connected to the G
 
 https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-uarts
 
-![pi tfluna wiring diagram](pi%20tfluna%20wiring%20diagram.png)
+![pi tfluna wiring diagram](media/pi%20tfluna%20wiring%20diagram.png)
 
 _Note: RX/TX wires may be different colors._
 
