@@ -49,7 +49,12 @@ Quick Start
 
 Quick server startup for testing on macOS:
 
-* Clone this repo
+* Clone this repo and submodules
+~~~
+git clone git@git.zkm.de:Hertz-Lab/Research/intelligent-museum/museum-label.git
+cd museum-label
+git submodule update --init --recursive
+~~~
 * Build LanguageIdentifier, see `LanguageIdentifier/README.md`
 * Install server dependencies:
 ~~~
