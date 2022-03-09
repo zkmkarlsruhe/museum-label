@@ -4,3 +4,6 @@
 [submodule "baton"]
 	path = baton
 	url = https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/baton.git
+[submodule "tfluna"]
+	path = tfluna
+	url = https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/tfluna.git
