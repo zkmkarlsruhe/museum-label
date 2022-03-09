@@ -336,4 +336,4 @@ The [ZKM | Center for Art and Media](https://zkm.de/en) and the [Deutsches Museu
 
 As part of the project, digital curating will be critically examined using various approaches of digital art. Experimenting with new digital aesthetics and forms of expression enables new museum experiences and thus new ways of museum communication and visitor participation. The museum is transformed to a place of experience and critical exchange.
 
-![Logo](baton/media/Logo_ZKM_DMN_KSB.png)
+![Logo](media/Logo_ZKM_DMN_KSB.png)
