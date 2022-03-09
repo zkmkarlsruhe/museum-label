@@ -1,7 +1,7 @@
 AI-assisted Museum Label
 ========================
 
-![text label FR](media/text%20label%20FR.jpg)
+![text label FR](media/text%20label%20FR%20small.jpg)
 
 Auto-adaptive, AI-supported museum label with language identification
 
@@ -18,7 +18,7 @@ BSD Simplified License.
 Overview
 --------
 
-![text label FR](media/gallery%20install.jpg)
+![text label FR](media/gallery%20install%20small.jpg)
 
 Basic interaction:
 
