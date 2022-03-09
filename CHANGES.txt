@@ -1,3 +1,16 @@
+1.1.0: 2022 Mar 09
+
+* fixed device id when sending with UDP, 
+
+* added install pictures and screenshots
+* added project attribution
+
+* tfluna now split into a separate repo and readded as a submodule
+* filled out tfluna documentation and readme info
+* updated display and textlabel scripts to run on macOS
+
+* removed old rpi-specific config scripts and support files
+
 1.0.2: 2022 Feb 21
 
 * fixed server.sh -l/--list flag
