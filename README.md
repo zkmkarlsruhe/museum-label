@@ -1,6 +1,8 @@
 AI-assisted Museum Label
 ========================
 
+![text label FR](media/text%20label%20FR.jpg)
+
 Auto-adaptive, AI-supported museum label with language identification
 
 This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum). 
@@ -15,6 +17,8 @@ BSD Simplified License.
 
 Overview
 --------
+
+![text label FR](media/gallery%20install.jpg)
 
 Basic interaction:
 
@@ -42,7 +46,7 @@ tfluna --------------OSC-------^
 proximity -----------OSC-------^
 ~~~
 
-See also [system diagram PDF](doc/system%20diagram.pdf)
+See also [system diagram PDF](media/system%20diagram.pdf)
 
 Quick Start
 -----------
@@ -75,7 +79,9 @@ If the TF-Luna sensor and USB serial port adapter are available, the display com
 
 See `tfluna/README.md` for additional details.
 
-### Without TF-Luna Sensor
+### Proximity Simulator
+
+![proximity simulator](media/proximity.png)
 
 If the TF-Luna sensor is not available, the system can be given simulated sensor events.
 
