@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# open digital textlabel in chromium browser
+# open digital textlabel in chromium on Linux or default browser on macOS
 #
 # Copyright (c) 2021 ZKM | Hertz-Lab
 # Dan Wilcox <dan.wilcox@zkm.de>

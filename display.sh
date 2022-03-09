@@ -18,8 +18,8 @@ set -e
 
 ##### variables
 
-LABEL=rpi/textlabel.sh
-SENSOR=rpi/tfluna/tfluna
+LABEL=./textlabel.sh
+SENSOR=tfluna/tfluna
 
 # osc and websocket
 HOST=127.0.0.1

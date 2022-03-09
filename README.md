@@ -18,18 +18,21 @@ Overview
 
 Basic interaction:
 
-1. visitor walks up to installation
-2. installation prompts visitor to speak in their native language
-3. visitor speaks and installation listens
-4. installation shows which language it heard and adjusts digital info displays
+1. Visitor walks up to installation & stands in front of text label
+2. Text label prompts visitor to speak in their native language
+3. Visitor speaks and text label listens
+4. Installation shows which language it heard and adjusts digital info displays
+5. Repeat steps 3 & 4
 
 Components:
 
-* controller: installation logic controller OSC server
-* LanguageIdentifier: live audio language identifier
-* baton: OSC to websocket relay server
-* web clients: digital info display, interaction prompt, etc
-* tfluna: sensor read script which sends events over OSC
+* Server
+  - controller: installation logic controller OSC server
+  - LanguageIdentifier: live audio language identifier
+  - baton: OSC to websocket relay server
+* Display
+  - web clients: digital info display, interaction prompt, etc
+  - tfluna: sensor read script which sends events over OSC
 
 Communication overview:
 
@@ -39,31 +42,71 @@ tfluna --------------OSC-------^
 proximity -----------OSC-------^
 ~~~
 
+![system diagram](doc/system%20diagram.pdf)
+
 Quick Start
 -----------
 
-Quick startup (on macOS):
+Quick server startup for testing on macOS:
 
-* clone this repo
-* build LanguageIdentifier, see `LanguageIdentifier/README.md`
-* install [loaf](http://danomatika.com/code/loaf)
-* start loaf.app and drag `proximity/main.lua` onto the loaf window
-* run the following:
-
+* Clone this repo
+* Build LanguageIdentifier, see `LanguageIdentifier/README.md`
+* Install server dependencies:
 ~~~
 cd ../museum-label
 make server
+~~~
+* Start server:
+~~~
 ./server.sh
 ~~~
 
-Open webclient index.html files in a web browser. You may need to disable your lcoal browser file restrictions to load all files.
+### With TF-Luna Sensor
 
-The proximity loaf sketch is a proximity sensor simulator which sends proximity sensor values (normalized 0-1) to the controller server.
+If the TF-Luna sensor and USB serial port adapter are available, the display component can be run directly to start the sensor and open webclient in the browser:
+~~~
+./display.sh
+~~~
+
+See `tfluna/README.md` for additional details.
+
+### Without TF-Luna Sensor
+
+If the TF-Luna sensor is not available, the system can be given simulated sensor events.
+
+The proximity loaf sketch is a proximity sensor simulator which sends proximity sensor values (normalized 0-1) to the controller server. 
+
+* Install [loaf](http://danomatika.com/code/loaf)
+* Start loaf.app and drag `proximity/main.lua` onto the loaf window
+
+Open webclient index.html files in a web browser. You may need to disable your local browser file restrictions to load all files.
+
+Dependencies
+------------
+
+General dependency overview:
+
+* Python 3 & various libaries
+* openFrameworks
+
+See README.md files for the individual components for details.
 
 Display
 -------
 
-Setting up a Raspberry PI 4...
+The display component runs the proximity sensor and acts as the front end for the museum label.
+
+_The default system is a Raspberry Pi but the display can also be run on macOS with the TF-Luna sensor connected via a USB serial port adapter._
+
+Available html front-ends are located in the `html` directory:
+
+* demo0: very basic depected language display
+* demo1: displays a greeting in the detected language
+* demo2: displays example museum label text in the detected language
+* prompt: interaction logic prompt, ie. "Please speak in your native language."
+* textlabel: integrated prompt and museum label (current prototype)
+
+Setting up a Raspberry Pi 4...
 
 ### Initial OS Setup
 
@@ -104,7 +147,7 @@ cd ~/
 git clone https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/museum-label.git
 ~~~
 
-#### TFLuna
+#### TF-Luna
 
 Prepare script dependencies:
 
@@ -115,15 +158,9 @@ make display
 
 ### Setup
 
-#### Enable serial for TF Luna
+#### Enable serial for TF-Luna
 
-UART 3 -> TXD GPIO pin 4
-
-https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-uarts
-
-Add the following to /boot/config.txt
-
-dtoverlay=uart3
+See Setup section in `tfluna/README.md`.
 
 #### Autostart scripts
 
@@ -154,6 +191,10 @@ https://www.jimbobbennett.io/screen-sharing-a-raspberry-pi-from-a-mac/
 
 Server
 ------
+
+The server component runs the language identification from audio input, the logic controller, and web components.
+
+_The default system is currently macOS but should work in Linux as well._
 
 Setting up macOS on a Mac mini...
 
