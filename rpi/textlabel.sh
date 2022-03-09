@@ -20,12 +20,21 @@ HOST=localhost
 PORT=8081
 DIR=museum-label/textlabel
 
+# platform specifics
+case "$(uname -s)" in
+  Linux*)  PLATFORM=linux   ;;
+  Darwin*) PLATFORM=darwin  ;;
+  CYGWIN*) PLATFORM=windows ;;
+  MINGW*)  PLATFORM=windows ;;
+  *)       PLATFORM=unknown ;;
+esac
+
 ##### parse command line arguments
 
 USAGE="$(basename $0) [OPTIONS] COMMAND"
 HELP="USAGE: $USAGE
 
-  run digital textlabel in chromium browser
+  run digital textlabel in chromium on Linux or default browser on macOS
 
 Options:
   -h,--help    display this help message
@@ -73,18 +82,33 @@ fi
 
 ##### main
 
-case $CMD in
-  start)
-    URL=http://${HOST}/${DIR}/?host=${HOST}
-    #echo "opening $URL"
-    $CHROME --kiosk --noerrdialogs --disable-restore-session-state --use-gl=egl \
-            $URL 2> /dev/null
-    ;;
-  stop)
-    pkill -o chromium
-    ;;
-  status)
-    if pgrep chromium >/dev/null ; then exit 0 ; fi
-    exit 1
-    ;;
-esac
+URL=http://${HOST}/${DIR}/?host=${HOST}
+
+if [ $PLATFORM = darwin ] ; then
+  # open in default browser on macOS
+  case $CMD in
+    start)
+      open $URL
+      ;;
+    stop)
+      ;;
+    status)
+      exit 0
+      ;;
+  esac
+else
+  # open in Chromium on Linux
+  case $CMD in
+    start)
+      $CHROME --kiosk --noerrdialogs --disable-restore-session-state --use-gl=egl \
+              $URL 2> /dev/null
+      ;;
+    stop)
+      pkill -o chromium
+      ;;
+    status)
+      if pgrep chromium >/dev/null ; then exit 0 ; fi
+      exit 1
+      ;;
+  esac
+fi

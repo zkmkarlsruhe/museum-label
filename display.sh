@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # RPI Linux run script to start display client-side system,
-# quit chromium to shut everything down
+# quit sensor script to shut everything down
 #
 # Copyright (c) 2021 ZKM | Hertz-Lab
 # Dan Wilcox <dan.wilcox@zkm.de>
@@ -22,13 +22,29 @@ LABEL=rpi/textlabel.sh
 SENSOR=rpi/tfluna/tfluna
 
 # osc and websocket
-HOST=localhost
+HOST=127.0.0.1
 PORT=5005
 WSPORT=8081
 
 # sensor
-SENSOR_DEV=/dev/ttyAMA1
-VERBOSE=""
+SENSOR_DEV=
+VERBOSE=
+
+# platform specifics
+case "$(uname -s)" in
+  Linux*)
+    PLATFORM=linux
+    SENSOR_DEV=/dev/ttyAMA1
+    ;;
+  Darwin*)
+    PLATFORM=darwin
+    # open tfluna usb adapter on first tty.usbserial-###
+    SENSOR_DEV=$(ls /dev/tty.usbserial-* | head -n 1)
+    ;;
+  CYGWIN*) PLATFORM=windows ;;
+  MINGW*)  PLATFORM=windows ;;
+  *)       PLATFORM=unknown ;;
+esac
 
 ##### functions
 
@@ -52,12 +68,17 @@ checkarg() {
 # get the pid by script name, ie. getpidof controller.py -> 16243
 # $1 script or process name
 getpid() {
-  # pidof doesn't seem to return pids of python scripts by name
-  echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
+  if [ $PLATFORM = darwin ] ; then
+    # pidof is not part of BSD and Darwin is BSD-based
+    echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
+  else
+    # pidof doesn't seem to return pids of python scripts by name
+    echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
+  fi
 }
 
 handle_sigint() {
-  rpi/textlabel.sh stop
+  $LABEL stop
 }
 
 ##### parse command line arguments
@@ -127,26 +148,22 @@ if [ "$VERBOSE" != "" ] ; then
   echo "sensor args $@ "
 fi
 
+# run label in browser
+echo "===== label"
+$LABEL --host $HOST --port $WSPORT start &
+
+# run sensor & wait
 echo "===== sensor"
 SENSOR_PID=$(getpid tfluna.py)
-if [ "$CTLR_PID" != "" ] ; then
+if [ "$SENSOR_PID" != "" ] ; then
   echo "killing previous process: $SENSOR_PID"
   kill -INT $SENSOR_PID 2>/dev/null || true
   SENSOR_PID=
   sleep 1
 fi
-$SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV &
-sleep 1
-SENSOR_PID=$(getpid tfluna.py)
-if [ "$VERBOSE" != "" ] ; then
-  echo "sensor: $SENSOR_PID"
-fi
-
-# run label & wait
-echo "===== label"
-$LABEL --host $HOST --port $WSPORT start
+$SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV
 
 # stop
 echo "===== stopping display"
-kill -INT $SENSOR_PID 2>/dev/null || true
+$LABEL stop
 sleep 1
