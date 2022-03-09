@@ -42,7 +42,7 @@ tfluna --------------OSC-------^
 proximity -----------OSC-------^
 ~~~
 
-![system diagram](doc/system%20diagram.pdf)
+See also [system diagram PDF](doc/system%20diagram.pdf)
 
 Quick Start
 -----------
