@@ -1,6 +1,13 @@
+1.2.0: 2022 TBA
+
+* added local python webserver at localhost:8080
+
+* now use local webserver host & port by default
+* display script will run in loop if sensor is not found
+
 1.1.0: 2022 Mar 09
 
-* fixed device id when sending with UDP, 
+* fixed device id when sending with UDP
 
 * added install pictures and screenshots
 * added project attribution
