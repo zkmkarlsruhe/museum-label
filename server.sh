@@ -21,6 +21,7 @@ set -e
 BATON=baton/baton
 CTLR=controller/controller
 LANGID=LanguageIdentifier/langid
+WEBSERVER=./webserver.py
 
 # LanguageIdentifier
 CONFIDENCE=0.5
@@ -30,10 +31,14 @@ INPUTCHAN=1
 
 # osc and websocket host address
 HOST=127.0.0.1
+WSPORT=8081
 
 # controller
 VERBOSE=
 TBFLAGS=
+
+# webserver
+NOWEBSERVER=false
 
 # platform specifics
 case "$(uname -s)" in
@@ -90,13 +95,16 @@ Options:
   -h,--help              display this help message
   --host STR             controller osc and websocket host address
                          ie. ws://####:8081, default: $HOST
+  --wsport INT           websocket host port
+                         ie. ws://localhost:####, default: $WSPORT
   -l,--list              list audio input devices and exit
   --inputdev INT         audio input device number, default $INPUTDEV
   --inputchan INT        audio input device channel, default $INPUTCHAN
   -c,--confidence FLOAT  langid min confidence 0 - 1, default $CONFIDENCE
   -t,--threshold INT     langid volume threshold 0 - 100, default $THRESHOLD
   --tb-url               optional ThingsBoard url for sensor event sending
-  --tb-message           opional ThingsBoard message for sensor event sending
+  --tb-message           optional ThingsBoard message for sensor event sending
+  --no-webserver         run without local python webserver
   -v,--verbose           enable verbose controller printing
 "
 
@@ -110,6 +118,11 @@ while [ "$1" != "" ] ; do
       shift 1
       checkarg "--host" $1
       HOST=$1
+      ;;
+    --wsport)
+      shift 1
+      checkarg "--wsport" $1
+      WSPORT=$1
       ;;
     -l|--list)
       $LANGID -l
@@ -145,6 +158,9 @@ while [ "$1" != "" ] ; do
       checkarg "--tb-message" $1
       TBFLAGS="$TBFLAGS --tb-message $1"
       ;;
+    --no-webserver)
+      NOWEBSERVER=true
+      ;;
     -v|--verbose)
       VERBOSE="-v"
       ;;
@@ -165,17 +181,37 @@ echo "===== museum label server ====="
 date
 if [ "$VERBOSE" != "" ] ; then
   echo "host:       $HOST"
+  echo "wsport:     $WSPORT"
   echo "inputdev:   $INPUTDEV"
   echo "inputchan:  $INPUTCHAN"
   echo "confidence: $CONFIDENCE"
   echo "threshold:  $THRESHOLD"
   echo "tb flags:   $TBFLAGS"
+  echo "no server:  $NOWEBSERVER"
   echo "verbose:    true"
 fi
 
 # leave empty for default device
 if [ "$INPUTDEV" != "" ] ; then
   INPUTDEV="--inputdev $INPUTDEV"
+fi
+
+# start webserver
+if [ $NOWEBSERVER = false ] ; then
+  echo "===== webserver"
+  WEBSERVER_PID=$(getpid webserver.py)
+  if [ "$WEBSERVER_PID" != "" ] ; then
+    echo "killing previous process: $WEBSERVER_PID"
+    kill -INT $WEBSERVER_PID 2>/dev/null || true
+    WEBSERVER_PID=
+    sleep 1
+  fi
+  $WEBSERVER &
+  sleep 1
+  WEBSERVER_PID=$(getpid webserver.py)
+  if [ "$VERBOSE" != "" ] ; then
+    echo "webserver: $WEBSERVER_PID"
+  fi
 fi
 
 # start baton
@@ -187,7 +223,7 @@ if [ "$BATON_PID" != "" ] ; then
   BATON_PID=
   sleep 1
 fi
-$BATON --wshost $HOST &
+$BATON --wshost $HOST --wsport $WSPORT &
 sleep 2
 BATON_PID=$(getpid baton.py)
 if [ "$VERBOSE" != "" ] ; then
@@ -220,4 +256,7 @@ $LANGID $INPUTDEV --inputchan $INPUTCHAN \
 echo "===== stopping server"
 kill $CTLR_PID 2>/dev/null || true
 kill $BATON_PID 2>/dev/null || true
+if [ $NOWEBSERVER = false ] ; then
+  kill $WEBSERVER_PID 2>/dev/null || true
+fi
 sleep 1

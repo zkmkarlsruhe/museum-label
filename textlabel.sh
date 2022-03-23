@@ -17,7 +17,8 @@
 CHROME=/usr/bin/chromium-browser
 
 HOST=localhost
-PORT=8081
+WEBPORT=8080
+WSPORT=8081
 DIR=museum-label/textlabel
 
 # platform specifics
@@ -29,17 +30,41 @@ case "$(uname -s)" in
   *)       PLATFORM=unknown ;;
 esac
 
+##### functions
+
+# check argument and exit with error if not set
+# $1 argument name in error print
+# $2 argument
+checkarg() {
+  local arg=$2
+  local failed=false
+  if [ "$arg" = "" ] ; then
+    failed=true
+  elif [ "${arg%${arg-?}}"x = '-x' ] ; then
+    failed=true
+  fi
+  if [ "$failed" = true ] ; then
+    echo "$1 option requires an argument"
+    exit 1
+  fi
+}
+
 ##### parse command line arguments
 
-USAGE="$(basename $0) [OPTIONS] COMMAND"
+USAGE="$(basename $0) [OPTIONS] COMMAND [CLIENT]"
 HELP="USAGE: $USAGE
 
-  run digital textlabel in chromium on Linux or default browser on macOS
+  run digital textlabel in chromium on Linux or default browser on macOS,
+  assumes webserver and websocket are running on the same host
 
 Options:
-  -h,--help    display this help message
-  --host       websocket host ie. ws://####:8081 default: localhost
-  --port       websocket port ie. ws://localhost:####, default: 8081
+  -h,--help       display this help message
+  --host STR      webserver and websocket host address
+                  ie. ws://####:8081 default: $HOST
+  --webport INT   webserver port
+                  ie. http://localhost:###, default: $WEBPORT
+  --wsport INT    websocket host port
+                  ie. ws://localhost:####, default: $WSPORT
 
 Commands:
   start        start digital text label
@@ -58,13 +83,15 @@ while [ "$1" != "" ] ; do
       shift 1
       HOST="$1"
       ;;
-    --port)
+    --webport)
       shift 1
-      if [ $1 -lt 1024 ] ; then
-        echo "invalid port, must be <= 1024"
-        exit 1
-      fi
-      PORT="$1"
+      checkarg "--webport" $1
+      WEBPORT=$1
+      ;;
+    --wsport)
+      shift 1
+      checkarg "--wsport" $1
+      WSPORT=$1
       ;;
     *)
       break
@@ -82,7 +109,7 @@ fi
 
 ##### main
 
-URL=http://${HOST}/${DIR}/?host=${HOST}
+URL=http://${HOST}:${WEBPORT}/${DIR}/?host=${HOST}:${WSPORT}
 
 if [ $PLATFORM = darwin ] ; then
   # open in default browser on macOS

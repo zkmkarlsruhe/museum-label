@@ -25,6 +25,7 @@ SENSOR=tfluna/tfluna
 HOST=127.0.0.1
 PORT=5005
 WSPORT=8081
+WEBPORT=8080
 
 # sensor
 SENSOR_DEV=
@@ -78,7 +79,9 @@ getpid() {
 }
 
 handle_sigint() {
-  $LABEL stop
+  if [ "$SENSOR_PID" != "" ] ; then
+    kill $SENSOR_PID 2>/dev/null || true
+  fi
 }
 
 ##### parse command line arguments
@@ -86,16 +89,19 @@ handle_sigint() {
 HELP="USAGE: $(basename $0) [OPTIONS] [ARGS]
 
   run to museum label client-side sensor and display,
-  quit chromium to shut everything down
+  quit script to shut everything down
 
 Options:
-  -h,--help         display this help message
-  --host STR        osc and websocket host address
-                    ie. ws://####:8081, default: $HOST
-  --wsport INT      websocket host port
-                    ie. ws://localhost:####, default: $WSPORT
-  --port INT        osc host port, default: $PORT
-  -v,--verbose      enable verbose sensor printing
+  -h,--help       display this help message
+  --host STR      osc and websocket host
+                  ie. ws://####:8081, default: $HOST
+  --port INT      osc port, default: $PORT
+  --wsport INT    websocket port
+                  ie. ws://localhost:####, default: $WSPORT
+  --webport INT   webserver port
+                  ie. http://localhost:####, default: $WEBPORT
+  --no-sensor     run in loop without sensor
+  -v,--verbose    enable verbose sensor printing
 
 Arguments:
   Additional arguments are passed to the tfluna sensor script
@@ -122,6 +128,11 @@ while [ "$1" != "" ] ; do
       checkarg "--wsport" $1
       WSPORT=$1
       ;;
+    --webport)
+      shift 1
+      checkarg "--webport" $1
+      WEBPORT=$1
+      ;;
     -v|--verbose)
       VERBOSE="-v"
       ;;
@@ -141,27 +152,37 @@ cd $(dirname "$0")
 echo "===== museum label display ====="
 date
 if [ "$VERBOSE" != "" ] ; then
+  echo "sensor:  $SENSOR_DEV"
   echo "host:    $HOST"
   echo "port:    $PORT"
   echo "wsport:  $WSPORT"
+  echo "webport: $WEBPORT"
   echo "verbose: $VERBOSE"
-  echo "sensor args $@ "
+  echo "sensor args: $@ "
 fi
 
 # run label in browser
 echo "===== label"
-$LABEL --host $HOST --port $WSPORT start &
+$LABEL --host $HOST --webport $WEBPORT --wsport $WSPORT start &
 
 # run sensor & wait
-echo "===== sensor"
-SENSOR_PID=$(getpid tfluna.py)
-if [ "$SENSOR_PID" != "" ] ; then
-  echo "killing previous process: $SENSOR_PID"
-  kill -INT $SENSOR_PID 2>/dev/null || true
-  SENSOR_PID=
-  sleep 1
+if [ "$SENSOR_DEV" = "" ] || [ ! -e $SENSOR_DEV ] ; then
+  echo "===== no sensor"
+  echo "sensor not found, running loop"
+  while true ; do
+    sleep 1
+  done
+else
+  echo "===== sensor"
+  SENSOR_PID=$(getpid tfluna.py)
+  if [ "$SENSOR_PID" != "" ] ; then
+    echo "killing previous process: $SENSOR_PID"
+    kill -INT $SENSOR_PID 2>/dev/null || true
+    SENSOR_PID=
+    sleep 1
+  fi
+  $SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV
 fi
-$SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV
 
 # stop
 echo "===== stopping display"

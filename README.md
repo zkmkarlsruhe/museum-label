@@ -34,6 +34,7 @@ Components:
   - controller: installation logic controller OSC server
   - LanguageIdentifier: live audio language identifier
   - baton: OSC to websocket relay server
+  - webserver.py: basic http file server
 * Display
   - web clients: digital info display, interaction prompt, etc
   - tfluna: sensor read script which sends events over OSC
@@ -41,7 +42,7 @@ Components:
 Communication overview:
 
 ~~~
-LanguageIdentifier <-OSC-> controller -OSC-> baton <-websocket-> web clients
+LanguageIdentifier <-OSC-> controller -OSC-> baton -websocket-> web clients
 tfluna --------------OSC-------^
 proximity -----------OSC-------^
 ~~~
@@ -51,31 +52,37 @@ See also [system diagram PDF](media/system%20diagram.pdf)
 Quick Start
 -----------
 
-Quick server startup for testing on macOS:
+Quick startup for testing on a single system
 
-* Clone this repo and submodules
+Setup:
+1. Clone this repo and submodules
 ~~~
 git clone git@git.zkm.de:Hertz-Lab/Research/intelligent-museum/museum-label.git
 cd museum-label
 git submodule update --init --recursive
 ~~~
-* Build LanguageIdentifier, see `LanguageIdentifier/README.md`
-* Install server dependencies:
+2. Build LanguageIdentifier, see `LanguageIdentifier/README.md`
+3. Install python dependencies:
 ~~~
 cd ../museum-label
-make server
+make
 ~~~
-* Start server:
+
+Run:
+1. Start server:
 ~~~
 ./server.sh
 ~~~
-
-### With TF-Luna Sensor
-
-If the TF-Luna sensor and USB serial port adapter are available, the display component can be run directly to start the sensor and open webclient in the browser:
+2. On a second commandline, start display:
 ~~~
-./display.sh
+./display
 ~~~
+
+### TF-Luna Sensor
+
+If the TF-Luna sensor and USB serial port adapter are available, the display component will try to find the serial device path. If this simple detection doesn't work, you can provide the path as a display script argument:
+
+    ./display.sh /dev/tty.usbserial-401
 
 See `tfluna/README.md` for additional details.
 
@@ -87,217 +94,84 @@ If the TF-Luna sensor is not available, the system can be given simulated sensor
 
 The proximity loaf sketch is a proximity sensor simulator which sends proximity sensor values (normalized 0-1) to the controller server. 
 
-* Install [loaf](http://danomatika.com/code/loaf)
-* Start loaf.app and drag `proximity/main.lua` onto the loaf window
+1. Download and install [loaf](http://danomatika.com/code/loaf)
+2. Start loaf.app and drag `proximity/main.lua` onto the loaf window
 
-Open webclient index.html files in a web browser. You may need to disable your local browser file restrictions to load all files.
+If the server is running, drag the virtual visitor towards the artwork to initiate the detection process.
 
 Dependencies
 ------------
 
 General dependency overview:
 
-* Python 3 & various libaries
+* Python 3 & various libraries
 * openFrameworks
 
 See README.md files for the individual components for details.
+
+Server
+------
+
+The server component runs language identification from audio input, the logic controller, and web components.
+
+Start the server with default settings via:
+
+    ./server.sh
+
+To print available options, use the `--help` flag:
+
+    ./server.sh --help
+
+_The default system is currently macOS but should work in Linux as well._
+
+See `SETUP_MAC.md` for details on setting up macOS on a Mac mini to run the server component.
+
+### Webserver
+
+By default, the server script starts a local Python webserver on port 8080. The various clients can be reached in a browser on port 8080 using `http://HOST:8080/museum-label/NAME`. To open demo1, for example: `http://192.168.1.100:8080/museum-label/demo1`.
+
+If the clients are being served via a webserver installed on the system, such as Apache httpd, run the server script *without* the Python webserver:
+
+    ./server.sh --no-webserver
+
+The webserver root should route `/museum-label` to the `html` directory.
+
+_Running Apache is suggested for production environments._
 
 Display
 -------
 
 The display component runs the proximity sensor and acts as the front end for the museum label.
 
-_The default system is a Raspberry Pi but the display can also be run on macOS with the TF-Luna sensor connected via a USB serial port adapter._
+Start the display with default settings via:
 
-Available html front-ends are located in the `html` directory:
+    ./display.sh
 
-* demo0: very basic depected language display
+To provide the sensor device path as the first argument:
+
+    ./display.sh /dev/ttyAMA0
+
+If the server component runs on a different system, provide the host address:
+
+    ./display.sh --host 192.168.1.100
+
+To print available options, use the `--help` flag:
+
+    ./display.sh --help
+
+If the sensor unavailable, the script will run a loop until it is exited.
+
+Available html front-end clients are located in the `html` directory:
+
+* demo0: very basic detected language display
 * demo1: displays a greeting in the detected language
 * demo2: displays example museum label text in the detected language
 * prompt: interaction logic prompt, ie. "Please speak in your native language."
 * textlabel: integrated prompt and museum label (current prototype)
 
-Setting up a Raspberry Pi 4...
+_The default system is a Raspberry Pi but the display can also be run on macOS with the TF-Luna sensor connected via a USB serial port adapter._
 
-### Initial OS Setup
-
-_Assuming normal Raspberry Pi OS image._
-
-Set Country
-
-Country: United States
-Language: American English
-Timezone: Chicago?
-
-Default pi user password: PASSWORD
-
-Attach network connection and update
-
-Restart
-
-Set actual timezone:
-
-1. Open Pi menu->Preferences->Raspberry Pi Configuration
-2. Select Localisation tab and press Set Timezone...
-3. Choose Area: Europe, Location: Berlin
-
-### Install
-
-#### System
-
-~~~
-sudo apt install vim
-~~~
-
-#### museum-label
-
-Clone this repository to `~/`:
-
-~~~
-cd ~/
-git clone https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/museum-label.git
-~~~
-
-#### TF-Luna
-
-Prepare script dependencies:
-
-~~~
-cd museum-label
-make display
-~~~
-
-### Setup
-
-#### Enable serial for TF-Luna
-
-See Setup section in `tfluna/README.md`.
-
-#### Autostart scripts
-
-
-Run GUI script in lxterminal via XDG desktop entry:
-
-~~~
-mkdir -p ~/.config/autostart
-touch ~/.config/autostart/museumlabel.desktop
-~~~
-
-add the following to `~/.config/autostart/museumlabel.desktop` which runs the `rundisplay` script after the user logs into LXDE:
-
-~~~
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=IntelligentTextLabel
-Exec=/usr/bin/lxterminal -e /home/pi/museum-label/scripts/rundisplay
-Categories=Utilities
-~~~
-
-#### Enable Screen Sharing
-
-Enable the VNC server on the RPI for remote management:
-
-https://www.jimbobbennett.io/screen-sharing-a-raspberry-pi-from-a-mac/
-
-Server
-------
-
-The server component runs the language identification from audio input, the logic controller, and web components.
-
-_The default system is currently macOS but should work in Linux as well._
-
-Setting up macOS on a Mac mini...
-
-### Apache
-
-macOS 11 deprecates Apache and it will be removed in future OS versions, so we install from Homebrew
-
-* https://getgrav.org/blog/macos-bigsur-apache-multiple-php-ver
-* https://wpbeaches.com/installing-configuring-apache-on-macos-using-homebrew/
-
-First, unload built-in Apache just in case:
-
-~~~
-sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-~~~
-
-#### Install
-
-_Assumes user account is "intelligentmuseum"._
-
-Install:
-~~~
-brew install httpd
-~~~
-
-Edit `/usr/local/etc/httpd/httpd.conf` and change:
-
-~~~
-Listen 80
-~~~
-
-uncomment:
-
-~~~
-LoadModule rewrite_module libexec/apache2/mod_rewrite.so
-~~~
-
-change the user & group:
-
-~~~
-User intelligentmuseum
-Group staff
-~~~
-
-and add:
-
-~~~
-ServerName localhost
-~~~
-
-and change the server document directory:
-
-~~~
-DocumentRoot "/Users/intelligentmuseum/Sites"
-<Directory "/Users/intelligentmuseum/Sites">
-...
-    AllowOverride All
-~~~
-
-uncomment:
-
-~~~
-# Fancy directory listings
-Include /opt/homebrew/etc/httpd/extra/httpd-autoindex.conf
-~~~
-
-and add the following to the end:
-
-~~~
-# Fancy Indexing
-<IfModule mod_autoindex.c>
-IndexOptions FancyIndexing IconHeight=24 IconWidth=24
-</IfModule>
-~~~
-
-Last, make user `Sites` directory for webserver root:
-
-    mkdir -p ~/Sites
-
-### Apache control
-
-Starting:
-
-    brew services start httpd
-
-Stopping:
-
-    brew services stop httpd
-
-Restart apache after making any changes:
-
-    brew services restart httpd
+See `SETUP_RPI.md` for details on setting up a Raspberry Pi to run the display component.
 
 Scripts & Automation
 --------------------

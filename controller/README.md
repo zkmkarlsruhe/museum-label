@@ -51,7 +51,7 @@ To stop the controller, use CTRL+C to issue an interrupt signal.
 
 The Python script can be called directly without the wrapper script, but requires manually enabling or disabling the virtual environment:
 
-Aactivate the virtual environment before the first run in a new commandline session:
+Activate the virtual environment before the first run in a new commandline session:
 
     source venv/bin/activate
 
