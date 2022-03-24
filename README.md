@@ -106,27 +106,57 @@ General dependency overview:
 
 * Python 3 & various libraries
 * openFrameworks
+* ofxTensorFlow2
 
-See README.md files for the individual components for details.
+See the README.md file for each the individual components subdirectory for details.
 
 Server
 ------
 
 The server component runs language identification from audio input, the logic controller, and web components.
 
+### Setup
+
+1. Python dependencies (easy)
+2. LanguageIdentifier (involved)
+
+_The default system is currently macOS but should work in Linux as well._
+
+See `SETUP_MAC.md` for details on setting up macOS on a Mac mini to run Apache as the webserver for production environments.
+
+#### Python
+
+Install the server Python dependencies, run:
+
+     make server
+
+#### LanguageIdentifier
+
+Next, build the LanguageIdentifier application. The system will need a compiler chain, openFrameworks, and ofxTensorFlow2 installed and additional steps may be needed based on the platform, such as generating the required project files.
+
+See `LanguageIdentifier/README.md` for additional details.
+
+Once ready, build via Makefile:
+
+    cd LanguageIdentifier
+    make ReleaseTF2
+    make RunRelease
+
+This should result in a LanguageIdentifier binary or .app in the `LanguageIdentifier/bin` subdirectory which can be invoked through the `LanguageIdentifier/langid` wrapper script. See `./LanguageIdentifier/langid --help` for help option info.
+
+### Usage
+
 Start the server with default settings via:
 
     ./server.sh
+
+To stop, quit the LanguageIdentifier application or the script and the script will then kill it's subservices before exiting.
 
 To print available options, use the `--help` flag:
 
     ./server.sh --help
 
-_The default system is currently macOS but should work in Linux as well._
-
-See `SETUP_MAC.md` for details on setting up macOS on a Mac mini to run the server component.
-
-### Webserver
+#### Webserver
 
 By default, the server script starts a local Python webserver on port 8080. The various clients can be reached in a browser on port 8080 using `http://HOST:8080/museum-label/NAME`. To open demo1, for example: `http://192.168.1.100:8080/museum-label/demo1`.
 
@@ -143,6 +173,23 @@ Display
 
 The display component runs the proximity sensor and acts as the front end for the museum label.
 
+### Setup
+
+1. Python dependencies (easy)
+2. TF-Luna hardware (medium)
+
+_The default system is a Raspberry Pi but the display can also be run on macOS with the TF-Luna sensor connected via a USB serial port adapter._
+
+See `SETUP_RPI.md` for details on setting up a Raspberry Pi to run the display component.
+
+#### Python
+
+Install the display Python dependencies, run:
+
+     make display
+
+### Usage
+
 Start the display with default settings via:
 
     ./display.sh
@@ -155,11 +202,15 @@ If the server component runs on a different system, provide the host address:
 
     ./display.sh --host 192.168.1.100
 
+To stop, quit the script and it will then kill it's subservices before exiting.
+
 To print available options, use the `--help` flag:
 
     ./display.sh --help
 
-If the sensor unavailable, the script will run a loop until it is exited.
+If the sensor is unavailable, the script will run a loop until it is exited.
+
+#### Web Clients
 
 Available html front-end clients are located in the `html` directory:
 
@@ -168,10 +219,6 @@ Available html front-end clients are located in the `html` directory:
 * demo2: displays example museum label text in the detected language
 * prompt: interaction logic prompt, ie. "Please speak in your native language."
 * textlabel: integrated prompt and museum label (current prototype)
-
-_The default system is a Raspberry Pi but the display can also be run on macOS with the TF-Luna sensor connected via a USB serial port adapter._
-
-See `SETUP_RPI.md` for details on setting up a Raspberry Pi to run the display component.
 
 Scripts & Automation
 --------------------
