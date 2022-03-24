@@ -11,14 +11,14 @@ import urllib.request, urllib.parse, urllib.error
 import posixpath
 import os
 
-host = "localhost"
-port = 8080
-
 class Server(BaseHTTPRequestHandler):
 
     # *very basic* routing
     webroot = "museum-label" # if found, URL root...
     fileroot = "html"        # ...translates to file path root
+
+    # print requests?
+    verbose = False
 
     # simply serve files via GET
     def do_GET(self):
@@ -77,6 +77,11 @@ class Server(BaseHTTPRequestHandler):
             path = os.path.join(path, word)
         return path
 
+    # only log requests when verbose
+    def log_request(self, *args):
+        if Server.verbose:
+            super().log_request(args)
+
 if __name__ == "__main__":
     import argparse
 
@@ -88,10 +93,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--port", action="store", dest="port",
         default=8080, type=int, help="server port ie. http://localhost:####, default: 8080")
+    parser.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+        help="enable verbose printing")
     args = parser.parse_args()
 
     # server
     server = HTTPServer((args.host, args.port), Server)
+    Server.verbose = args.verbose
     print(f"server started http://{args.host}:{args.port}")
     try:
         server.serve_forever()
@@ -99,4 +107,3 @@ if __name__ == "__main__":
         pass
     finally:
         server.server_close()
-    print("server stopped")
