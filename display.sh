@@ -52,7 +52,7 @@ esac
 # check argument and exit with error if not set
 # $1 argument name in error print
 # $2 argument
-checkarg() {
+check_arg() {
   local arg=$2
   local failed=false
   if [ "$arg" = "" ] ; then
@@ -66,9 +66,9 @@ checkarg() {
   fi
 }
 
-# get the pid by script name, ie. getpidof controller.py -> 16243
+# get the pid by script name, ie. get_pid controller.py -> 16243
 # $1 script or process name
-getpid() {
+get_pid() {
   if [ $PLATFORM = darwin ] ; then
     # pidof is not part of BSD and Darwin is BSD-based
     echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
@@ -78,9 +78,30 @@ getpid() {
   fi
 }
 
+# kill process ids silently
+# $@ process ids
+kill_pids() {
+  kill $@ 2>/dev/null || true
+}
+
+# kill script or process if already running
+# $1 script or process name
+# $2 verbose, set true to print when killing process
+kill_prev() {
+  local pid=$(get_pid $1)
+  if [ "$pid" != "" ] ; then
+    if [ $2 ] ; then
+      echo "killing previous process: $pid"
+    fi
+    kill_pids $pid
+    sleep 1
+  fi
+}
+
+# called if script receives Ctrl-C
 handle_sigint() {
   if [ "$SENSOR_PID" != "" ] ; then
-    kill $SENSOR_PID 2>/dev/null || true
+    kill_pids $SENSOR_PID
   fi
 }
 
@@ -115,22 +136,22 @@ while [ "$1" != "" ] ; do
       ;;
     --host)
       shift 1
-      checkarg "--host" $1
+      check_arg "--host" $1
       HOST=$1
       ;;
     --port)
       shift 1
-      checkarg "--port" $1
+      check_arg "--port" $1
       PORT=$1
       ;;
     --wsport)
       shift 1
-      checkarg "--wsport" $1
+      check_arg "--wsport" $1
       WSPORT=$1
       ;;
     --webport)
       shift 1
-      checkarg "--webport" $1
+      check_arg "--webport" $1
       WEBPORT=$1
       ;;
     -v|--verbose)
@@ -174,13 +195,7 @@ if [ "$SENSOR_DEV" = "" ] || [ ! -e $SENSOR_DEV ] ; then
   done
 else
   echo "===== sensor"
-  SENSOR_PID=$(getpid tfluna.py)
-  if [ "$SENSOR_PID" != "" ] ; then
-    echo "killing previous process: $SENSOR_PID"
-    kill -INT $SENSOR_PID 2>/dev/null || true
-    SENSOR_PID=
-    sleep 1
-  fi
+  kill_prev tfluna.py true
   $SENSOR $VERBOSE --max-distance 250 -e 1 -d $HOST -p $PORT --message "/proximity" -n $@ $SENSOR_DEV
 fi
 

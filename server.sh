@@ -54,7 +54,7 @@ esac
 # check argument and exit with error if not set
 # $1 argument name in error print
 # $2 argument
-checkarg() {
+check_arg() {
   local arg=$2
   local failed=false
   if [ "$arg" = "" ] ; then
@@ -68,9 +68,9 @@ checkarg() {
   fi
 }
 
-# get the pid by script name, ie. getpidof controller.py -> 16243
+# get the pid by script name, ie. get_pid controller.py -> 16243
 # $1 script or process name
-getpid() {
+get_pid() {
   if [ $PLATFORM = darwin ] ; then
     # pidof is not part of BSD and Darwin is BSD-based
     echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
@@ -80,8 +80,29 @@ getpid() {
   fi
 }
 
+# kill process ids silently
+# $@ process ids
+kill_pids() {
+  kill $@ 2>/dev/null || true
+}
+
+# kill script or process if already running
+# $1 script or process name
+# $2 verbose, set true to print when killing process
+kill_prev() {
+  local pid=$(get_pid $1)
+  if [ "$pid" != "" ] ; then
+    if [ $2 ] ; then
+      echo "killing previous process: $pid"
+    fi
+    kill_pids $pid
+    sleep 1
+  fi
+}
+
+# called if script receives Ctrl-C
 handle_sigint() {
-  killall LanguageIdentifier 2>/dev/null || true
+  kill_prev LanguageIdentifier
 }
 
 ##### parse command line arguments
@@ -116,12 +137,12 @@ while [ "$1" != "" ] ; do
       ;;
     --host)
       shift 1
-      checkarg "--host" $1
+      check_arg "--host" $1
       HOST=$1
       ;;
     --wsport)
       shift 1
-      checkarg "--wsport" $1
+      check_arg "--wsport" $1
       WSPORT=$1
       ;;
     -l|--list)
@@ -130,32 +151,32 @@ while [ "$1" != "" ] ; do
       ;;
     --inputdev)
       shift 1
-      checkarg "--inputdev" $1
+      check_arg "--inputdev" $1
       INPUTDEV=$1
       ;;
     --inputchan)
       shift 1
-      checkarg "--inputchan" $1
+      check_arg "--inputchan" $1
       INPUTCHAN=$1
       ;;
     -c|--confidence)
       shift 1
-      checkarg "-c,--confidence" $1
+      check_arg "-c,--confidence" $1
       CONFIDENCE=$1
       ;;
     -t|--threshold)
       shift 1
-      checkarg "-t,--threshold" $1
+      check_arg "-t,--threshold" $1
       THRESHOLD=$1
       ;;
     --tb-url)
       shift 1
-      checkarg "--tb-url" $1
+      check_arg "--tb-url" $1
       TBFLAGS="$TBFLAGS --tb-url $1"
       ;;
     --tb-message)
       shift 1
-      checkarg "--tb-message" $1
+      check_arg "--tb-message" $1
       TBFLAGS="$TBFLAGS --tb-message $1"
       ;;
     --no-webserver)
@@ -199,16 +220,10 @@ fi
 # start webserver
 if [ $NOWEBSERVER = false ] ; then
   echo "===== webserver"
-  WEBSERVER_PID=$(getpid webserver.py)
-  if [ "$WEBSERVER_PID" != "" ] ; then
-    echo "killing previous process: $WEBSERVER_PID"
-    kill -INT $WEBSERVER_PID 2>/dev/null || true
-    WEBSERVER_PID=
-    sleep 1
-  fi
+  kill_prev webserver.py true
   $WEBSERVER &
   sleep 1
-  WEBSERVER_PID=$(getpid webserver.py)
+  WEBSERVER_PID=$(get_pid webserver.py)
   if [ "$VERBOSE" != "" ] ; then
     echo "webserver: $WEBSERVER_PID"
   fi
@@ -216,32 +231,20 @@ fi
 
 # start baton
 echo "===== baton"
-BATON_PID=$(getpid baton.py)
-if [ "$BATON_PID" != "" ] ; then
-  echo "killing previous process: $BATON_PID"
-  kill -INT $BATON_PID 2>/dev/null || true
-  BATON_PID=
-  sleep 1
-fi
+kill_prev baton.py true
 $BATON --wshost $HOST --wsport $WSPORT &
 sleep 2
-BATON_PID=$(getpid baton.py)
+BATON_PID=$(get_pid baton.py)
 if [ "$VERBOSE" != "" ] ; then
   echo "baton: $BATON_PID"
 fi
 
 # start controller
 echo "===== controller"
-CTLR_PID=$(getpid controller.py)
-if [ "$CTLR_PID" != "" ] ; then
-  echo "killing previous process: $CTLR_PID"
-  kill -INT $CTLR_PID 2>/dev/null || true
-  CTLR_PID=
-  sleep 1
-fi
+kill_prev controller.py true
 $CTLR --recvaddr $HOST $VERBOSE $TBFLAGS &
 sleep 2
-CTLR_PID=$(getpid controller.py)
+CTLR_PID=$(get_pid controller.py)
 if [ "$VERBOSE" != "" ] ; then
   echo "controller: $CTLR_PID"
 fi
@@ -254,9 +257,5 @@ $LANGID $INPUTDEV --inputchan $INPUTCHAN \
 
 # stop
 echo "===== stopping server"
-kill $CTLR_PID 2>/dev/null || true
-kill $BATON_PID 2>/dev/null || true
-if [ $NOWEBSERVER = false ] ; then
-  kill $WEBSERVER_PID 2>/dev/null || true
-fi
+kill_pids $CTLR_PID $BATON_PID $WEBSERVER_PID
 sleep 1

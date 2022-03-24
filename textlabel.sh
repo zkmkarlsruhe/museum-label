@@ -35,7 +35,7 @@ esac
 # check argument and exit with error if not set
 # $1 argument name in error print
 # $2 argument
-checkarg() {
+check_arg() {
   local arg=$2
   local failed=false
   if [ "$arg" = "" ] ; then
@@ -85,12 +85,12 @@ while [ "$1" != "" ] ; do
       ;;
     --webport)
       shift 1
-      checkarg "--webport" $1
+      check_arg "--webport" $1
       WEBPORT=$1
       ;;
     --wsport)
       shift 1
-      checkarg "--wsport" $1
+      check_arg "--wsport" $1
       WSPORT=$1
       ;;
     *)
