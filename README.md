@@ -1,7 +1,7 @@
 AI-assisted Museum Label
 ========================
 
-![text label FR](media/text%20label%20FR%20small.jpg)
+![museum-label icon](media/museum-label.png)
 
 Auto-adaptive, AI-supported museum label with language identification
 
@@ -170,6 +170,8 @@ _Running Apache is suggested for production environments._
 
 Display
 -------
+
+![text label FR](media/text%20label%20FR%20small.jpg)
 
 The display component runs the proximity sensor and acts as the front end for the museum label.
 
