@@ -220,45 +220,6 @@ Available html front-end clients are located in the `html` directory:
 * prompt: interaction logic prompt, ie. "Please speak in your native language."
 * textlabel: integrated prompt and museum label (current prototype)
 
-Scripts & Automation
---------------------
-
-Main scripts wrap starting the display or server:
-
-* display.sh: starts sensor sender and chromium
-* server.sh: starts websocket relay, logic controller, and language identifier
-
-### Run
-
-Two scripts automate starting each system in a loop to handle crashes:
-
-* scripts/rundisplay: runs display.sh in a loop
-* scripts/runserver: runs server.sh in a loop
-* scripts/killdisplay: kills the main display script
-* scripts/killserver: kills the main server script
-
-### Cron
-
-Two simple cronjobs can be enabled to start & stop each system using the run scripts.
-
-For example, add following to `crontab -e` if this repo is cloned to the Desktop of the "intelligentmuseum" user on macOS:
-
-~~~
-# key
-# min hour day month dayofweek
-
-# start at 9 am
-0 9 * * * /Users/intelligentmuseum/Desktop/museum-label/scripts/runserver
-# stop at 2 am
-0 2 * * * /Users/intelligentmuseum/Desktop/museum-label/scripts/killserver
-~~~
-
-Optionally, to be safe and restart everything at midnight, add the following to crontab via `crontab -e`:
-
-~~~
-@daily root /sbin/reboot
-~~~
-
 The Intelligent Museum
 ----------------------
 
