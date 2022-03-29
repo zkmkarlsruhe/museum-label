@@ -28,6 +28,7 @@ CONFIDENCE=0.5
 THRESHOLD=10
 INPUTDEV=
 INPUTCHAN=1
+CMDFLAGS=
 
 # osc and websocket host address
 HOST=127.0.0.1
@@ -123,6 +124,7 @@ Options:
   --inputchan INT        audio input device channel, default $INPUTCHAN
   -c,--confidence FLOAT  langid min confidence 0 - 1, default $CONFIDENCE
   -t,--threshold INT     langid volume threshold 0 - 100, default $THRESHOLD
+  -e,--exec STRING       optional command to execute on language detection
   --tb-url               optional ThingsBoard url for sensor event sending
   --tb-message           optional ThingsBoard message for sensor event sending
   --no-webserver         run without local python webserver
@@ -169,6 +171,11 @@ while [ "$1" != "" ] ; do
       check_arg "-t,--threshold" $1
       THRESHOLD=$1
       ;;
+    -e|--exec)
+      shift 1
+      check_arg "-e,--exec" $1
+      CMDFLAGS="-e $1"
+      ;;
     --tb-url)
       shift 1
       check_arg "--tb-url" $1
@@ -208,6 +215,7 @@ if [ "$VERBOSE" != "" ] ; then
   echo "confidence: $CONFIDENCE"
   echo "threshold:  $THRESHOLD"
   echo "tb flags:   $TBFLAGS"
+  echo "cmd flags:  $CMDFLAGS"
   echo "no server:  $NOWEBSERVER"
   echo "verbose:    true"
 fi
@@ -253,7 +261,7 @@ fi
 echo "===== langid"
 $LANGID $INPUTDEV --inputchan $INPUTCHAN \
         -s "$HOST:5005" -c $CONFIDENCE -t $THRESHOLD \
-        --nolisten --autostop -e `pwd`/scripts/sendlangs.sh
+        --nolisten --autostop $CMDFLAGS
 
 # stop
 echo "===== stopping server"
