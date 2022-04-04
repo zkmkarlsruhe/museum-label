@@ -77,7 +77,7 @@ get_pid() {
     echo $(ps -ef | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f3)
   else
     # pidof doesn't seem to return pids of python scripts by name
-    echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f2)
+    echo $(ps ax | grep "$1" | grep -wv grep | tr -s ' ' | cut -d ' ' -f1)
   fi
 }
 
