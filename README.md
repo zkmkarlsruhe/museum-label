@@ -57,7 +57,7 @@ Quick startup for testing on a single system
 Setup:
 1. Clone this repo and submodules
 ~~~
-git clone git@git.zkm.de:Hertz-Lab/Research/intelligent-museum/museum-label.git
+git clone https://git.zkm.de/Hertz-Lab/Research/intelligent-museum/museum-label.git
 cd museum-label
 git submodule update --init --recursive
 ~~~

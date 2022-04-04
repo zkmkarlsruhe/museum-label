@@ -109,7 +109,7 @@ fi
 
 ##### main
 
-URL=http://${HOST}:${WEBPORT}/${DIR}/?host=${HOST}:${WSPORT}
+URL="http://${HOST}:${WEBPORT}/${DIR}/?host=${HOST}&port=${WSPORT}"
 
 if [ $PLATFORM = darwin ] ; then
   # open in default browser on macOS
