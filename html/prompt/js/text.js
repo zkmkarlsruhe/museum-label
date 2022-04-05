@@ -4,14 +4,14 @@
 const text = {
   lang: {
     keys: ["noise", "zh", "en", "fr", "de", "it", "ru", "es"],
-    names: ["noise", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "Pусский", "Español"]
+    names: ["noise", "中文", "English", "Français", "Deutsch", "Italiano", "Pусский", "Español"]
   },
   noise: {},
   zh: {
     wait: "",
     listen: "请用您的母语发言。",
     detect: "我在听。请继续前进。",
-    success: "我想我听说... <lang>",
+    success: "我想我听到了... <lang>",
     fail: "我无法理解你。",
     timeout: "我无法识别你的语言。因此，我向你展示英文文本标签。"
   },

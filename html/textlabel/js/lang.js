@@ -5,7 +5,7 @@
 const lang = {
   lang: {
     keys: ["noise", "zh", "en", "fr", "de", "it", "ru", "es"],
-    names: ["???", "Zhōngwén", "English", "Français", "Deutsch", "Italiano", "Русский", "Español"]
+    names: ["???", "中文", "English", "Français", "Deutsch", "Italiano", "Русский", "Español"]
   }
 }
 
