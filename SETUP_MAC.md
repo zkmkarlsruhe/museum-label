@@ -96,3 +96,21 @@ Stopping:
 Restart apache after making any changes:
 
     brew services restart httpd
+
+Apache errors
+-------------
+
+If Apache doesn't seem to be running and the following error ocurrs starting it:
+
+~~~
+Error: Failure while executing; `/bin/launchctl bootstrap gui/502 /Users/intelligentmuseum/Library/LaunchAgents/homebrew.mxcl.httpd.plist` exited with 5.
+~~~
+
+Try making sure the default Apache installed with macOS is not running:
+~~~
+brew services stop httpd
+sudo apachectl -k stop
+brew services start httpd
+~~~
+
+Reference: https://stackoverflow.com/a/71664267

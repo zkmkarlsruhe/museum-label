@@ -1,7 +1,7 @@
 AI-assisted Museum Label
 ========================
 
-![museum-label icon](media/museum-label.png)
+![museum-label icon](media/icon.png)
 
 Auto-adaptive, AI-supported museum label with language identification
 
@@ -18,18 +18,17 @@ BSD Simplified License.
 Overview
 --------
 
-![text label FR](media/gallery%20install%20small.jpg)
+![usage diagram](media/usage%20diagram.png)
 
 Basic interaction:
-
 1. Visitor walks up to installation & stands in front of text label
 2. Text label prompts visitor to speak in their native language
 3. Visitor speaks and text label listens
 4. Installation shows which language it heard and adjusts digital info displays
-5. Repeat steps 3 & 4
+5. Repeat steps 3 & 4 while visitor is present
+6. Return to wait state after visitor leaves and a timeout elapses
 
 Components:
-
 * Server
   - controller: installation logic controller OSC server
   - LanguageIdentifier: live audio language identifier
@@ -40,7 +39,6 @@ Components:
   - tfluna: sensor read script which sends events over OSC
 
 Communication overview:
-
 ~~~
 LanguageIdentifier <-OSC-> controller -OSC-> baton -websocket-> web clients
 tfluna --------------OSC-------^
@@ -49,10 +47,36 @@ proximity -----------OSC-------^
 
 See also [system diagram PDF](media/system%20diagram.pdf)
 
+Hardware
+--------
+
+![museum-label](media/museum-label.png)
+
+Hardware used for the fall 2021 protoype (reference implementation):
+* Server:
+  - Apple Mac mini
+  - Yamaha AG03 audio interface
+  - AKG C 417 PP 130 lapel condensor microphone (run directly into RPi display case)
+  - HDMI display\*
+* Display:
+  - Raspbery PI 4 with 32 GB nano SD card
+  - Waveshare 10.1" 1024x600 HDMI display
+  - TF-Luna LIDAR distance sensor (connected to RPi GPIO pins)
+  - Micro HDMI to HDMI adapter (RPi -> screen)
+  - Flat HDMI cable extension cable with low-profile 90 degree plug (screen input)
+  - Flat USB A to Micro USB extension cable with low-profile 90 degree plug (screen power)
+  - Custom 3D printed case
+
+Both systems are connected to a local network using ethernet cables. The display is wired through a hole in the wall directly behind it providing access for the RPi USB-C power, ethernet, and AKG microphone cables. The server Mac mini is concealed in the wall directly behind the display.
+
+See also the installation [technical diagram PDF](media/technical%20diagram.pdf)
+
+\*: _On macOS, an active display is required for the LanguageIdentifier openFrameworks application to run at 60 fps, otherwise it will be framerate throttled and interaction timing will slow._
+
 Quick Start
 -----------
 
-Quick startup for testing on a single system
+Quick startup for testing on a single macOS system
 
 Setup:
 1. Clone this repo and submodules
@@ -171,8 +195,6 @@ _Running Apache is suggested for production environments._
 Display
 -------
 
-![text label FR](media/text%20label%20FR%20small.jpg)
-
 The display component runs the proximity sensor and acts as the front end for the museum label.
 
 ### Setup
@@ -221,6 +243,15 @@ Available html front-end clients are located in the `html` directory:
 * demo2: displays example museum label text in the detected language
 * prompt: interaction logic prompt, ie. "Please speak in your native language."
 * textlabel: integrated prompt and museum label (current prototype)
+
+Gallery Install
+---------------
+
+Images of the prototype installed for the BioMedien exhibition, fall 2021 at ZKM Karlsruhe. The empty frame to the left of the museum label is an artwork placeholder.
+
+![gallery install](media/gallery%20install%20small.jpg)
+
+![text label FR](media/text%20label%20FR%20small.jpg)
 
 The Intelligent Museum
 ----------------------
