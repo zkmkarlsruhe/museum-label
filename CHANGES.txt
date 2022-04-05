@@ -1,9 +1,23 @@
-1.2.0: 2022 TBA
+1.2.0: 2022 Apr 05
 
-* added local python webserver at localhost:8080
+* fixed get_pid script function on Linux
+* fixed Chinese confirmation prompt
+
+* added local python webserver at localhost:8080 (default)
+  start ./server.sh with --webport 80 --no-webserver if using Apache, etc
+* added prototype hardware info to readme
+* added info about cloning submodules
 
 * now use local webserver host & port by default
-* display script will run in loop if sensor is not found
+* display script will now run in loop if sensor is not found
+* scripts now accept web port via --webport option
+* server script now accepts lang detection command via -e/--exec option
+* prefer 中文 over Zhōngwén when referring to the Chinese language
+* readme system setup info split into seaprate markdown files
+* updated readme git clone example link to use https
+
+* moved automation scripts and info to a separate repo
+* removed private password and ThingsBoard URLs from repo history
 
 1.1.0: 2022 Mar 09
 
