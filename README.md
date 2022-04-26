@@ -40,7 +40,7 @@ Components:
 
 Communication overview:
 ~~~
-LanguageIdentifier <-OSC-> controller -OSC-> baton -websocket-> web clients
+LanguageIdentifier <-OSC-> controller <-OSC-> baton <-websocket-> web clients
 tfluna --------------OSC-------^
 proximity -----------OSC-------^
 ~~~
@@ -116,12 +116,23 @@ See `tfluna/README.md` for additional details.
 
 If the TF-Luna sensor is not available, the system can be given simulated sensor events.
 
-The proximity loaf sketch is a proximity sensor simulator which sends proximity sensor values (normalized 0-1) to the controller server. 
+There are two proximity sensor simulators which send proximity sensor values (normalized 0-1) to the controller server: a browser implementation using p5.js and a desktop implementation using loaf (Lua Osc And openFrameworks).
+
+Once a simulator is started, drag the virtual visitor towards the artwork to initiate the detection process, as long as the server is running.
+
+#### p5.js Browser Simulator
+
+The proximity browser sketch is written in Javascript using p5.js. To run it, open the main index.html file in a web browser:
+
+1. Start a webbrowser and open `proximity/html./index.html`
+2. If the "websocket is not connected" error is shown, make sure the server is running and refresh the browser page.
+
+#### loaf Desktop Simulator
+
+The proximity loaf sketch is written in Lua using openFrameworks bindings. To run it, you will need to use the loaf interpreter:
 
 1. Download and install [loaf](http://danomatika.com/code/loaf)
-2. Start loaf.app and drag `proximity/main.lua` onto the loaf window
-
-If the server is running, drag the virtual visitor towards the artwork to initiate the detection process.
+2. Start loaf.app and drag `proximity/loaf/main.lua` onto the loaf window
 
 Dependencies
 ------------

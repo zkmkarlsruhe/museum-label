@@ -1,0 +1,23 @@
+/* Proximity Simulator
+   Dan Wilcox ZKM | Hertz-Lab 2022 */
+
+html, body {
+  margin: 0;
+  padding: 0;
+
+  font-family: "Courier", monospace;
+  color: black;
+
+  background-color: white;
+
+  /* no accidental drag select */
+  user-select: none;
+
+  /* no scroll bounce */
+  position: fixed;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+}

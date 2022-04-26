@@ -240,7 +240,7 @@ fi
 # start baton
 echo "===== baton"
 kill_prev baton.py true
-$BATON --wshost $HOST --wsport $WSPORT &
+$BATON --wshost $HOST --wsport $WSPORT --sendport 5005 &
 sleep 2
 BATON_PID=$(get_pid baton.py)
 if [ "$VERBOSE" != "" ] ; then
