@@ -1,4 +1,4 @@
-1.3.0: TBA
+1.3.0: 2022 Apr 28
 
 * added p5.js proximity simulator implementation
 
