@@ -97,6 +97,10 @@ Restart apache after making any changes:
 
     brew services restart httpd
 
+To check config file for errors:
+
+    apachectl configtest
+
 Apache errors
 -------------
 
