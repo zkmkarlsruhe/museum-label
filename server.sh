@@ -229,7 +229,7 @@ fi
 if [ $NOWEBSERVER = false ] ; then
   echo "===== webserver"
   kill_prev webserver.py true
-  $WEBSERVER &
+  $WEBSERVER --host $HOST &
   sleep 1
   WEBSERVER_PID=$(get_pid webserver.py)
   if [ "$VERBOSE" != "" ] ; then
