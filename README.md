@@ -1,17 +1,32 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/zkmkarlsruhe/zkm-open-source/main/assets/zkm-logo-light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/zkmkarlsruhe/zkm-open-source/main/assets/zkm-logo.svg">
+    <img alt="ZKM" src="https://raw.githubusercontent.com/zkmkarlsruhe/zkm-open-source/main/assets/zkm-logo.svg" width="120">
+  </picture>
+</p>
+
 AI-assisted Museum Label
 ========================
+
+[![ZKM](https://img.shields.io/badge/ZKM-Karlsruhe-blue)](https://zkm.de)
+[![License: BSD-2-Clause](https://img.shields.io/badge/License-BSD--2--Clause-blue.svg)](LICENSE.txt)
+
+Part of [ZKM Open Source](https://github.com/zkmkarlsruhe)
+
+---
 
 ![museum-label icon](media/icon.png)
 
 Auto-adaptive, AI-supported museum label with language identification
 
-This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum). 
+This code base has been developed by [ZKM | Hertz-Lab](https://zkm.de/en/about-the-zkm/organization/hertz-lab) as part of the project [»The Intelligent Museum«](#the-intelligent-museum).
 
 Please raise issues, ask questions, throw in ideas or submit code, as this repository is intended to be an open platform to collaboratively improve language identification.
 
-Copyright (c) 2021 ZKM | Karlsruhe.  
-Copyright (c) 2021 Paul Bethge.  
-Copyright (c) 2021 Dan Wilcox.  
+Copyright (c) 2021 ZKM | Karlsruhe.
+Copyright (c) 2021 Paul Bethge.
+Copyright (c) 2021 Dan Wilcox.
 
 BSD Simplified License.
 
